@@ -27,13 +27,6 @@ CREATE TABLE food(
 	primary key(id)
 );
 
-CREATE TABLE room_status(
-	id int auto_increment,
-	description varchar(255),
-	
-	primary key(id)
-);
-
 CREATE TABLE room_amenties(
 	id_room_type int,
 	id_amenities int,
@@ -88,7 +81,7 @@ CREATE TABLE room_type(
 	area float,
 	capacity int,
 	id_bed_type int,
-	images text,
+	image text,
 	
 	primary key(id)
 );
@@ -128,7 +121,8 @@ CREATE TABLE reservation(
 	id_guest int ,
 	id_table int,
 	guest_number int,
-	reservation_time timestamp default now(),
+	reservation_time timestamp,
+	create_date timestamp default now(),
 	
 	primary key(id)
 );
@@ -147,6 +141,7 @@ CREATE TABLE booking(
 	id_status int,
 	paid_amount decimal,
 	total decimal,
+	create_date timestamp default now(),
 	
 	primary key(id)
 );
@@ -195,7 +190,4 @@ ALTER TABLE booking ADD CONSTRAINT fk_id_guest_booking FOREIGN KEY(id_guest) REF
 ALTER TABLE booking ADD CONSTRAINT fk_id_payment_status_booking FOREIGN KEY(id_payment_status) REFERENCES payment_status(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_payment_booking FOREIGN KEY(id_payment) REFERENCES payment_method(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_status_booking FOREIGN KEY(id_status) REFERENCES booking_status(id);
-
-
-
 
