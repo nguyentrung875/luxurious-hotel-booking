@@ -1,8 +1,8 @@
-CREATE DATABASE hotelbooking;
+CREATE DATABASE luxurioushotel;
 SET TIME_ZONE="+7:00";
 SHOW VARIABLES LIKE '%time_zone%';
 
-USE hotelbooking;
+USE luxurioushotel;
 
 CREATE TABLE amenities(
 	id int auto_increment,
