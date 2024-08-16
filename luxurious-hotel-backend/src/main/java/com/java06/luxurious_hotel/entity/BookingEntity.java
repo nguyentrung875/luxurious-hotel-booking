@@ -6,6 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "booking")
@@ -46,15 +47,15 @@ public class BookingEntity {
     private BookingStatusEntity bookingStatus;
 
     @Column(name = "paid_amount")
-    private BigDecimal paidAmount;
+    private double paidAmount;
 
     @Column(name = "total")
-    private BigDecimal total;
+    private double total;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "booking")
-    private List<RoomBookingEntity> roomBookings;
+    private Set<RoomBookingEntity> roomBookings;
 
 }

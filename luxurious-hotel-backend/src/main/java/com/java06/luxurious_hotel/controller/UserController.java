@@ -12,6 +12,6 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<?> getAll(){
-        return new ResponseEntity<>("Hello luxurious", HttpStatus.OK);
+        return new ResponseEntity<>("Hello user luxurious", HttpStatus.OK);
     }
 }

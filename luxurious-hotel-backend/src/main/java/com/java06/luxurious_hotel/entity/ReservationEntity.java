@@ -6,6 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "reservation")
@@ -32,6 +33,6 @@ public class ReservationEntity {
     private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "reservation")
-    private List<OrderEntity> orders;
+    private Set<OrderEntity> orders;
 
 }

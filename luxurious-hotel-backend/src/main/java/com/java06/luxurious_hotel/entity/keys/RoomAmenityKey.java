@@ -13,6 +13,6 @@ public class RoomAmenityKey implements Serializable {
     @Column(name = "id_room_type")
     private int idRoomType;
 
-    @Column(name = "id_amenities")
-    private int idAmenities;
+    @Column(name = "id_amenity")
+    private int idAmenity;
 }

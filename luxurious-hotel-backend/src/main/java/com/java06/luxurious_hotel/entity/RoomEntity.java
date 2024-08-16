@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "room")
@@ -22,9 +23,9 @@ public class RoomEntity {
     private RoomTypeEntity roomType;
 
     @OneToMany(mappedBy = "room")
-    private List<RoomAmenityEntity> roomAmenities;
+    private Set<RoomAmenityEntity> roomAmenities;
 
     @OneToMany(mappedBy = "room")
-    private List<RoomBookingEntity> roomBookings;
+    private Set<RoomBookingEntity> roomBookings;
 
 }

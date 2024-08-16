@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "order_status")
@@ -17,5 +18,5 @@ public class OrderStatusEntity {
     private String name;
 
     @OneToMany(mappedBy = "orderStatus")
-    private List<OrderEntity> orders;
+    private Set<OrderEntity> orders;
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "tables")
@@ -17,5 +18,5 @@ public class TableEntity {
     private String name;
 
     @OneToMany(mappedBy = "table")
-    private List<ReservationEntity> reservations;
+    private Set<ReservationEntity> reservations;
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "bed_type" )
@@ -17,5 +18,5 @@ public class BedTypeEntity {
     private String name;
 
     @OneToMany(mappedBy = "bedType")
-    private List<RoomTypeEntity> roomTypeEntities;
+    private Set<RoomTypeEntity> roomTypeEntities;
 }

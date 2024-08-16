@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "food")
@@ -20,11 +21,11 @@ public class FoodEntity {
     private String description;
 
     @Column(name = "price")
-    private BigDecimal price;
+    private double price;
 
     @OneToMany(mappedBy = "food")
-    private List<FoodMenuEntity> foodMenus;
+    private Set<FoodMenuEntity> foodMenus;
 
     @OneToMany(mappedBy = "food")
-    private List<OrderEntity> orders;
+    private Set<OrderEntity> orders;
 }

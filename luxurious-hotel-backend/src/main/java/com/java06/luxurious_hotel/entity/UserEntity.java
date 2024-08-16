@@ -47,7 +47,7 @@ public class UserEntity {
     private RoleEntity role;
 
     @OneToMany(mappedBy = "guest")
-    private List<ReservationEntity> reservations;
+    private Set<ReservationEntity> reservations;
 
     @OneToMany(mappedBy = "guest")
     private Set<BookingEntity> bookings;
