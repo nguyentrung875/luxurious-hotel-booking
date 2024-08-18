@@ -23,6 +23,7 @@ CREATE TABLE food(
 	name varchar(255),
 	description text,
 	price decimal,
+	image text,
 	
 	primary key(id)
 );
@@ -191,6 +192,12 @@ ALTER TABLE booking ADD CONSTRAINT fk_id_payment_status_booking FOREIGN KEY(id_p
 ALTER TABLE booking ADD CONSTRAINT fk_id_payment_booking FOREIGN KEY(id_payment) REFERENCES payment_method(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_status_booking FOREIGN KEY(id_status) REFERENCES booking_status(id);
 
+INSERT INTO `role` (name) VALUES
+('ROLE_ADMIN'),
+('ROLE_GUEST'),
+('ROLE_HOTEL_MANAGER'),
+('ROLE_RES_MANAGER');
+
 
 INSERT INTO bed_type (name)
 VALUES ('Single Bed'),
@@ -210,6 +217,42 @@ VALUES ('Standard Room', '', 200, 40, 2, 3,''),
 ('Suite Room', '', 1000, 300, 4, 5,''),
 ('Family Room', '', 900, 200, 6, 8,'')
 ;
+
+-- Standard Room (id_room_type = 1)
+INSERT INTO room (name, id_room_type) VALUES
+('101', 1),
+('102', 1),
+('103', 1),
+('104', 1);
+
+-- Superior Room (id_room_type = 2)
+INSERT INTO room (name, id_room_type) VALUES
+('201', 2),
+('202', 2),
+('203', 2),
+('204', 2);
+
+-- Deluxe Room (id_room_type = 3)
+INSERT INTO room (name, id_room_type) VALUES
+('301', 3),
+('302', 3),
+('303', 3),
+('304', 3);
+
+-- Suite Room (id_room_type = 4)
+INSERT INTO room (name, id_room_type) VALUES
+('401', 4),
+('402', 4),
+('403', 4),
+('404', 4);
+
+-- Family Room (id_room_type = 5)
+INSERT INTO room (name, id_room_type) VALUES
+('501', 5),
+('502', 5),
+('503', 5),
+('504', 5);
+
 
 INSERT INTO amenity (description) VALUES
 ('Free Wi-Fi'),
@@ -301,3 +344,185 @@ INSERT INTO room_amenity (id_room_type, id_amenity) VALUES
 (5, 17), -- Cable/Satellite TV
 (5, 18), -- Mini-Bar
 (5, 19); -- Balcony/Terrace
+
+INSERT INTO order_status (name) VALUES
+('New Order'),
+('Order Confirmed'),
+('In the Kitchen'),
+('Ready to Serve'),
+('Served'),
+('Completed'),
+('Cancelled'),
+('Pending Payment'),
+('Paid'),
+('Refunded');
+
+INSERT INTO booking_status (name) VALUES
+('Pending Confirmation'),
+('Confirmed'),
+('Checked In'),
+('Checked Out'),
+('Cancelled');
+
+INSERT INTO payment_status (name) VALUES
+('Pending'),
+('Completed'),
+('Failed'),
+('Refunded'),
+('Partially Paid'),
+('Cancelled'),
+('Awaiting Confirmation');
+
+INSERT INTO payment_method (name) VALUES
+('Credit Card'),
+('Debit Card'),
+('PayPal'),
+('Bank Transfer'),
+('Cash'),
+('Gift Card');
+
+-- Thêm dự liệu mẫu cho nhà hàng ----------------------------------------------------------------------------------------------------------------------
+INSERT INTO tables (name) VALUES
+('Table 1'),
+('Table 2'),
+('Table 3'),
+('Table 4'),
+('Table 5'),
+('Table 6'),
+('Table 7'),
+('Table 8'),
+('Table 9'),
+('Table 10'),
+('Table 11'),
+('Table 12'),
+('Table 13'),
+('Table 14'),
+('Table 15'),
+('Table 16'),
+('Table 17'),
+('Table 18'),
+('Table 19'),
+('Table 20'); 
+
+INSERT INTO menu (name) VALUES
+('Breakfast'),
+('Lunch'),
+('Dinner'),
+('Starters'),
+('Beverages');
+
+INSERT INTO food (name, description, image, price) VALUES
+-- Breakfast items
+('Pancakes', 'Fluffy pancakes served with maple syrup and butter.', 'pancakes.jpg', 8.99),
+('Omelette', 'Three-egg omelette with cheese, mushrooms, and peppers.', 'omelette.jpg', 9.49),
+('French Toast', 'Golden French toast served with syrup and fresh berries.', 'french_toast.jpg', 9.99),
+('Breakfast Burrito', 'Tortilla filled with scrambled eggs, sausage, and cheese.', 'breakfast_burrito.jpg', 10.49),
+('Bagel with Cream Cheese', 'Toasted bagel with a generous spread of cream cheese.', 'bagel_cream_cheese.jpg', 4.99),
+('Avocado Toast', 'Toasted bread topped with mashed avocado and a sprinkle of salt.', 'avocado_toast.jpg', 6.49),
+('Yogurt Parfait', 'Layers of yogurt, granola, and fresh fruit.', 'yogurt_parfait.jpg', 7.99),
+('Smoothie Bowl', 'Blended smoothie topped with granola and fresh fruit.', 'smoothie_bowl.jpg', 8.49),
+('Granola', 'Crunchy granola served with milk or yogurt.', 'granola.jpg', 5.99),
+('Fruit Salad', 'A mix of fresh seasonal fruits.', 'fruit_salad.jpg', 6.99),
+
+-- Lunch items
+('Caesar Salad', 'Crisp romaine lettuce with Caesar dressing, croutons, and parmesan.', 'caesar_salad.jpg', 7.99),
+('Grilled Chicken Sandwich', 'Grilled chicken breast with lettuce, tomato, and mayo on a toasted bun.', 'grilled_chicken_sandwich.jpg', 11.49),
+('Turkey Club', 'Turkey, bacon, lettuce, and tomato on toasted bread.', 'turkey_club.jpg', 10.99),
+('Veggie Wrap', 'Tortilla filled with mixed vegetables and hummus.', 'veggie_wrap.jpg', 9.49),
+('BLT Sandwich', 'Bacon, lettuce, and tomato on toasted bread.', 'blt_sandwich.jpg', 10.49),
+('Chicken Quesadilla', 'Tortilla filled with chicken and cheese, served with salsa.', 'chicken_quesadilla.jpg', 12.49),
+('Tomato Soup', 'Hearty tomato soup served with a slice of bread.', 'tomato_soup.jpg', 8.99),
+('Pasta Salad', 'Cold pasta salad with vegetables and Italian dressing.', 'pasta_salad.jpg', 9.99),
+('Club Sandwich', 'Triple-decker sandwich with turkey, ham, bacon, lettuce, and tomato.', 'club_sandwich.jpg', 11.99),
+('Fish Tacos', 'Soft tortillas filled with grilled fish, cabbage slaw, and sauce.', 'fish_tacos.jpg', 13.49),
+
+-- Dinner items
+('Spaghetti Carbonara', 'Classic Italian pasta with creamy egg sauce, pancetta, and parmesan.', 'spaghetti_carbonara.jpg', 13.99),
+('Cheeseburger', 'Juicy beef burger with cheddar cheese, lettuce, tomato, and pickles.', 'cheeseburger.jpg', 12.99),
+('Grilled Salmon', 'Salmon fillet grilled to perfection, served with vegetables.', 'grilled_salmon.jpg', 18.99),
+('Roast Chicken', 'Roasted chicken with herbs and spices, served with mashed potatoes.', 'roast_chicken.jpg', 15.49),
+('Beef Stroganoff', 'Tender beef in a creamy mushroom sauce, served over noodles.', 'beef_stroganoff.jpg', 16.99),
+('Vegetarian Lasagna', 'Layers of pasta, cheese, and vegetables in a rich tomato sauce.', 'vegetarian_lasagna.jpg', 14.49),
+('Pork Chops', 'Grilled pork chops with apple sauce, served with rice.', 'pork_chops.jpg', 17.99),
+('Seafood Paella', 'Spanish rice dish with a mix of seafood and vegetables.', 'seafood_paella.jpg', 19.49),
+('Ribeye Steak', 'Juicy ribeye steak cooked to your preference, served with fries.', 'ribeye_steak.jpg', 22.99),
+('Chicken Alfredo', 'Pasta in a creamy Alfredo sauce with grilled chicken.', 'chicken_alfredo.jpg', 15.99),
+
+-- Starters items
+('Bruschetta', 'Toasted bread topped with tomato, basil, and garlic.', 'bruschetta.jpg', 6.99),
+('Stuffed Mushrooms', 'Mushrooms filled with cheese and herbs, then baked.', 'stuffed_mushrooms.jpg', 7.49),
+('Spring Rolls', 'Crispy rolls filled with vegetables and served with dipping sauce.', 'spring_rolls.jpg', 8.49),
+('Chicken Wings', 'Spicy chicken wings served with celery and blue cheese dressing.', 'chicken_wings.jpg', 9.99),
+('Nachos', 'Tortilla chips topped with cheese, jalapenos, and served with salsa.', 'nachos.jpg', 7.99),
+
+-- Beverages items
+('Coffee', 'Freshly brewed coffee.', 'coffee.jpg', 2.99),
+('Tea', 'A variety of hot and iced teas.', 'tea.jpg', 2.49),
+('Orange Juice', 'Freshly squeezed orange juice.', 'orange_juice.jpg', 3.49),
+('Lemonade', 'Refreshing lemonade made with fresh lemons.', 'lemonade.jpg', 3.99),
+('Soft Drink', 'Choice of cola, diet cola, or lemon-lime soda.', 'soft_drink.jpg', 2.49),
+('Iced Coffee', 'Chilled coffee served over ice with milk.', 'iced_coffee.jpg', 3.99),
+('Hot Chocolate', 'Rich hot chocolate topped with whipped cream.', 'hot_chocolate.jpg', 3.49),
+('Milkshake', 'Creamy milkshake in a variety of flavors.', 'milkshake.jpg', 4.99),
+('Sparkling Water', 'Chilled sparkling water with a hint of citrus.', 'sparkling_water.jpg', 3.49),
+('Cocktail', 'Choice of popular cocktails like Mojito, Margarita, and Martini.', 'cocktail.jpg', 7.99);
+
+-- Breakfast menu (id_menu = 1)
+INSERT INTO food_menu (id_menu, id_food) VALUES
+(1, 1), -- Pancakes
+(1, 2), -- Omelette
+(1, 3), -- French Toast
+(1, 4), -- Breakfast Burrito
+(1, 5), -- Bagel with Cream Cheese
+(1, 6), -- Avocado Toast
+(1, 7), -- Yogurt Parfait
+(1, 8), -- Smoothie Bowl
+(1, 9), -- Granola
+(1, 10); -- Fruit Salad
+
+-- Lunch menu (id_menu = 2)
+INSERT INTO food_menu (id_menu, id_food) VALUES
+(2, 11), -- Caesar Salad
+(2, 12), -- Grilled Chicken Sandwich
+(2, 13), -- Turkey Club
+(2, 14), -- Veggie Wrap
+(2, 15), -- BLT Sandwich
+(2, 16), -- Chicken Quesadilla
+(2, 17), -- Tomato Soup
+(2, 18), -- Pasta Salad
+(2, 19), -- Club Sandwich
+(2, 20); -- Fish Tacos
+
+-- Dinner menu (id_menu = 3)
+INSERT INTO food_menu (id_menu, id_food) VALUES
+(3, 21), -- Spaghetti Carbonara
+(3, 22), -- Cheeseburger
+(3, 23), -- Grilled Salmon
+(3, 24), -- Roast Chicken
+(3, 25), -- Beef Stroganoff
+(3, 26), -- Vegetarian Lasagna
+(3, 27), -- Pork Chops
+(3, 28), -- Seafood Paella
+(3, 29), -- Ribeye Steak
+(3, 30); -- Chicken Alfredo
+
+-- Starters menu (id_menu = 4)
+INSERT INTO food_menu (id_menu, id_food) VALUES
+(4, 31), -- Bruschetta
+(4, 32), -- Stuffed Mushrooms
+(4, 33), -- Spring Rolls
+(4, 34), -- Chicken Wings
+(4, 35); -- Nachos
+
+-- Beverages menu (id_menu = 5)
+INSERT INTO food_menu (id_menu, id_food) VALUES
+(5, 36), -- Coffee
+(5, 37), -- Tea
+(5, 38), -- Orange Juice
+(5, 39), -- Lemonade
+(5, 40), -- Soft Drink
+(5, 41), -- Iced Coffee
+(5, 42), -- Hot Chocolate
+(5, 43), -- Milkshake
+(5, 44), -- Sparkling Water
+(5, 45); -- Cocktail
