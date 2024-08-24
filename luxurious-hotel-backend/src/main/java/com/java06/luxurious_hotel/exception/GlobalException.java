@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalException {
 
-
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleException(Exception e) {
         APIResponse apiResponse = new APIResponse();

@@ -4,9 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record AddBookingRequest (
+        String firstName,
+        String lastName,
+        String phone,
+        String email,
         String checkInDate,
         String checkOutDate,
         int roomNumber,
+        String rooms,
         int idGuest,
         int adultNumber,
         int childrenNumber,
