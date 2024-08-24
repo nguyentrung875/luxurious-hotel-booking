@@ -112,7 +112,7 @@ CREATE TABLE user(
 	email varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL UNIQUE,
 	address text,
 	summary text,
-	id_role int,
+	id_role int DEFAULT 1, /*mặc định là ROLE_GUEST*/
 	
 	primary key(id)
 );
@@ -193,8 +193,8 @@ ALTER TABLE booking ADD CONSTRAINT fk_id_payment_booking FOREIGN KEY(id_payment)
 ALTER TABLE booking ADD CONSTRAINT fk_id_status_booking FOREIGN KEY(id_status) REFERENCES booking_status(id);
 
 INSERT INTO `role` (name) VALUES
-('ROLE_ADMIN'),
 ('ROLE_GUEST'),
+('ROLE_ADMIN'),
 ('ROLE_HOTEL_MANAGER'),
 ('ROLE_RES_MANAGER');
 
@@ -526,3 +526,13 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 (5, 43), -- Milkshake
 (5, 44), -- Sparkling Water
 (5, 45); -- Cocktail
+
+-- ---------------------------------------------------------------------------------------------------------------
+-- Phần thêm/sửa/xóa dữ liệu nếu cần:
+-- TRUNG
+
+-- HẬU
+
+-- THANH
+
+-- THÁI
