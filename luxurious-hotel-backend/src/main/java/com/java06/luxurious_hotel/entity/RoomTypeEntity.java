@@ -40,5 +40,8 @@ public class RoomTypeEntity {
     @OneToMany(mappedBy = "roomType")
     private Set<RoomEntity> rooms;
 
+    @OneToMany(mappedBy = "roomType")
+    private Set<RoomAmenityEntity> roomAmenities;
+
 
 }

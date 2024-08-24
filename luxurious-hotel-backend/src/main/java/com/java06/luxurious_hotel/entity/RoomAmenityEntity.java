@@ -14,7 +14,7 @@ public class RoomAmenityEntity {
     @ManyToOne
     @MapsId("idRoomType")
     @JoinColumn(name = "id_room_type")
-    private RoomEntity room;
+    private RoomTypeEntity roomType;
 
     @ManyToOne
     @MapsId("idAmenity")
