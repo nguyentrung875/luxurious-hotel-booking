@@ -1,9 +1,6 @@
 package com.java06.luxurious_hotel.service.imp;
 
-import com.java06.luxurious_hotel.entity.BookingEntity;
-import com.java06.luxurious_hotel.entity.RoomBookingEntity;
-import com.java06.luxurious_hotel.entity.RoomEntity;
-import com.java06.luxurious_hotel.entity.UserEntity;
+import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.payload.request.AddBookingRequest;
 import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.repository.UserRepository;
@@ -30,18 +27,20 @@ public class BookingServiceImp implements BookingService {
     @Transactional
     @Override
     public void addNewBooking(AddBookingRequest request) {
-        //Thêm khách booking vào table user
+        //1. Thêm khách booking vào table user
         UserEntity userEntity = new UserEntity();
         userEntity.setFirstName(request.firstName());
         userEntity.setLastName(request.lastName());
         userEntity.setPhone(request.phone());
         userEntity.setEmail(request.email());
 
-        
+        RoleEntity role = new RoleEntity();
+        role.setId(1);
+        userEntity.setRole(role);
 
-        userRepository.save(userEntity);
+        UserEntity newGuest = userRepository.save(userEntity);
 
-        //Thêm booking
+        //2. Thêm booking
         BookingEntity newBooking = new BookingEntity();
 
         newBooking.setCheckIn(LocalDate.parse(request.checkInDate()).atStartOfDay());
@@ -57,7 +56,21 @@ public class BookingServiceImp implements BookingService {
             return roomEntity;
         }).toList();
 
+        newBooking.setGuest(newGuest);
+        newBooking.setAdultNumber(request.adultNumber());
+        newBooking.setChildrenNumber(request.childrenNumber());
 
-        RoomBookingEntity roomBookingEntity = new RoomBookingEntity();
+        PaymentMethodEntity paymentMethod = new PaymentMethodEntity();
+        paymentMethod.setId(request.idPayment());
+        newBooking.setPaymentMethod(paymentMethod);
+
+        PaymentStatusEntity paymentStatus = new PaymentStatusEntity();
+        paymentStatus.setId(request.idPaymentStatus());
+        newBooking.setPaymentStatus(paymentStatus);
+
+        newBooking.setPaidAmount(request.paidAmount());
+        newBooking.setTotal(request.total());
+
+        bookingRepository.save(newBooking);
     }
 }

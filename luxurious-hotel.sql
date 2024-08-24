@@ -103,13 +103,13 @@ CREATE TABLE room_booking(
 
 CREATE TABLE user(
 	id int auto_increment,
-	username varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL UNIQUE,
+	username varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
 	password varchar(100),
 	first_name varchar(100),
 	last_name varchar(100),
 	dob date,
 	phone varchar(20) unique not null,
-	email varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL UNIQUE,
+	email varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
 	address text,
 	summary text,
 	id_role int DEFAULT 1, /*mặc định là ROLE_GUEST*/
@@ -186,7 +186,7 @@ ALTER TABLE reservation ADD CONSTRAINT fk_id_guest_reservation FOREIGN KEY(id_gu
 ALTER TABLE reservation ADD CONSTRAINT fk_id_table_reservation FOREIGN KEY(id_table) REFERENCES tables(id);
 ALTER TABLE room_booking ADD CONSTRAINT fk_id_room_room_booking FOREIGN KEY(id_room) REFERENCES room(id);
 ALTER TABLE room_booking ADD CONSTRAINT fk_id_booking_room_booking FOREIGN KEY(id_booking) REFERENCES booking(id);
-ALTER TABLE user ADD CONSTRAINT fk_id_role_user FOREIGN KEY(id_role) REFERENCES user(id);
+ALTER TABLE user ADD CONSTRAINT fk_id_role_user FOREIGN KEY(id_role) REFERENCES role(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_guest_booking FOREIGN KEY(id_guest) REFERENCES user(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_payment_status_booking FOREIGN KEY(id_payment_status) REFERENCES payment_status(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_payment_booking FOREIGN KEY(id_payment) REFERENCES payment_method(id);
