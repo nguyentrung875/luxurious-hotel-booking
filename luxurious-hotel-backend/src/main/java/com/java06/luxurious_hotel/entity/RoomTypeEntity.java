@@ -22,10 +22,10 @@ public class RoomTypeEntity {
     private String overview;
 
     @Column(name = "price")
-    private BigDecimal price;
+    private double price;
 
     @Column(name = "area")
-    private float area;
+    private double area;
 
     @Column(name = "capacity")
     private int capacity;
