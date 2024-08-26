@@ -532,6 +532,27 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 -- TRUNG
 
 -- HẬU
+	// đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
+RENAME TABLE user TO users;
+RENAME TABLE role TO roles;
+ALTER TABLE users DROP FOREIGN KEY fk_id_role_user;
+ALTER TABLE users ADD CONSTRAINT fk_id_role_users FOREIGN KEY(id_role) REFERENCES roles(id);
+
+	// dữ liệu test user, reservation
+INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+('johndoe', 123, 'John', 'Doe', '1990-01-01', '123-456-7890', 'johndoe@example.com', '123 Main St, City, Country', 'A short bio about John Doe.', 2),
+('janedoe', 123, 'Jane', 'Doe', '1992-02-02', '234-567-8901', 'janedoe@example.com', '456 Elm St, City, Country', 'A short bio about Jane Doe.', 2),
+('bobsmith', 123, 'Bob', 'Smith', '1985-03-03', '345-678-9012', 'bobsmith@example.com', '789 Oak St, City, Country', 'A short bio about Bob Smith.', 2);
+INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUE
+(2,1,1,'2024-08-01 00:00:00','2024-08-01 00:00:00');
+INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,children_number,id_payment_status,id_payment,id_status,paid_amount,total,create_date)
+VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,1000,'2024-07-01 12:00:00');
+INSERT INTO room_booking (id_room,id_booking)
+VALUES (1,1);
+INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,children_number,id_payment_status,id_payment,id_status,paid_amount,total,create_date)
+VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,800,'2024-07-01 12:00:00');
+INSERT INTO room_booking (id_room,id_booking)
+VALUES (2,2);
 
 -- THANH
 
