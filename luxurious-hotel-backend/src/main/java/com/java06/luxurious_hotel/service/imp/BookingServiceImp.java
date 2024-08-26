@@ -1,8 +1,10 @@
 package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.entity.*;
-import com.java06.luxurious_hotel.payload.request.AddBookingRequest;
+import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.repository.BookingRepository;
+import com.java06.luxurious_hotel.repository.RoomBookingRepository;
+import com.java06.luxurious_hotel.repository.RoomRepository;
 import com.java06.luxurious_hotel.repository.UserRepository;
 import com.java06.luxurious_hotel.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,13 +23,28 @@ public class BookingServiceImp implements BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
+    private RoomBookingRepository roomBookingRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Transactional
     @Override
     public void addNewBooking(AddBookingRequest request) {
+
         //1. Thêm khách booking vào table user
         UserEntity userEntity = new UserEntity();
+
+        //Kiểm tra xem guest đã đặt phòng trước đó hay chưa thông qua sdt
+        var optional = userRepository.findUserEntityByPhone(request.phone());
+        if (optional.isPresent()){
+            userEntity = optional.get();
+        }
+
+        //Cập nhật lại thông tin guest
         userEntity.setFirstName(request.firstName());
         userEntity.setLastName(request.lastName());
         userEntity.setPhone(request.phone());
@@ -47,15 +63,6 @@ public class BookingServiceImp implements BookingService {
         newBooking.setCheckOut(LocalDate.parse(request.checkOutDate()).atStartOfDay());
         newBooking.setRoomNumber(request.roomNumber());
 
-        //Lấy danh sách room từ chuỗi roomId
-        String[] listRoomId = request.rooms().split(",");
-        List<RoomEntity> rooms = Arrays.stream(listRoomId).map(item -> {
-            int roomId = Integer.parseInt(item);
-            RoomEntity roomEntity = new RoomEntity();
-            roomEntity.setId(roomId);
-            return roomEntity;
-        }).toList();
-
         newBooking.setGuest(newGuest);
         newBooking.setAdultNumber(request.adultNumber());
         newBooking.setChildrenNumber(request.childrenNumber());
@@ -68,9 +75,36 @@ public class BookingServiceImp implements BookingService {
         paymentStatus.setId(request.idPaymentStatus());
         newBooking.setPaymentStatus(paymentStatus);
 
+        BookingStatusEntity bookingStatus = new BookingStatusEntity();
+        bookingStatus.setId(1);
+        newBooking.setBookingStatus(bookingStatus);
+
+        newBooking.setCreateDate(LocalDateTime.now());
+
         newBooking.setPaidAmount(request.paidAmount());
         newBooking.setTotal(request.total());
 
-        bookingRepository.save(newBooking);
+        BookingEntity insertedBooking = bookingRepository.save(newBooking);
+
+        //3. Thêm dữ liệu vào bảng room_booking
+        //Lấy danh sách room từ chuỗi roomId
+        String[] listRoomId = request.rooms().split(",");
+        List<RoomBookingEntity> rooms = Arrays.stream(listRoomId).map(item -> {
+
+            int roomId = Integer.parseInt(item);
+//            RoomEntity roomEntity = new RoomEntity();
+//            roomEntity.setId(roomId);
+
+            RoomEntity roomEntity = roomRepository.findRoomEntityById(roomId);
+
+            RoomBookingEntity roomBooking = new RoomBookingEntity();
+            roomBooking.setRoom(roomEntity);
+            roomBooking.setBooking(insertedBooking);
+
+            return roomBooking;
+        }).toList();
+
+        roomBookingRepository.saveAll(rooms);
+
     }
 }

@@ -1,10 +1,7 @@
-package com.java06.luxurious_hotel.payload.response;
+package com.java06.luxurious_hotel.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
