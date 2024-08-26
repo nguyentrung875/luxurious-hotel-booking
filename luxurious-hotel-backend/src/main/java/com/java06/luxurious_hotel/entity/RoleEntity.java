@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@Entity(name = "role")
+@Entity(name = "roles")
 public class RoleEntity {
 
     @Id

@@ -24,9 +24,9 @@ public class UserController {
     }
 
     @PostMapping("/guests")
-    public ResponseEntity<?> getAllGuest(@RequestParam int idRole){
-        List<GuestDTO> listGuest = userService.getListGuest(idRole);
+    public ResponseEntity<?> getAllGuest(){
+        List<GuestDTO> listGuest = userService.getListGuest("ROLE_GUEST");
         System.out.println("test = " + listGuest);
-        return new ResponseEntity<>(listGuest, HttpStatus.OK);
+        return new ResponseEntity<>(listGuest , HttpStatus.OK);
     }
 }
