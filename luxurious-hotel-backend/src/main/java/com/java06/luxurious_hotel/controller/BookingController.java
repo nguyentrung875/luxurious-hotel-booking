@@ -1,7 +1,7 @@
 package com.java06.luxurious_hotel.controller;
 
-import com.java06.luxurious_hotel.payload.request.AddBookingRequest;
-import com.java06.luxurious_hotel.payload.response.APIResponse;
+import com.java06.luxurious_hotel.request.AddBookingRequest;
+import com.java06.luxurious_hotel.response.APIResponse;
 import com.java06.luxurious_hotel.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

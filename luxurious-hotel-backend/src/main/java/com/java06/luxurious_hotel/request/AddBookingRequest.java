@@ -1,4 +1,4 @@
-package com.java06.luxurious_hotel.payload.request;
+package com.java06.luxurious_hotel.request;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

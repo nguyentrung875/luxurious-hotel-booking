@@ -1,8 +1,7 @@
 package com.java06.luxurious_hotel.controller;
 
 import com.java06.luxurious_hotel.dto.GuestDTO;
-import com.java06.luxurious_hotel.entity.UserEntity;
-import com.java06.luxurious_hotel.payload.response.APIResponse;
+import com.java06.luxurious_hotel.response.APIResponse;
 import com.java06.luxurious_hotel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

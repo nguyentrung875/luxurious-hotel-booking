@@ -1,6 +1,6 @@
 package com.java06.luxurious_hotel.exception;
 
-import com.java06.luxurious_hotel.payload.response.APIResponse;
+import com.java06.luxurious_hotel.response.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

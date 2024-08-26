@@ -9,7 +9,7 @@ import lombok.Data;
 public class RoomBookingEntity {
 
     @EmbeddedId
-    private RoomBookingKey roomBookingKey;
+    private RoomBookingKey roomBookingKey = new RoomBookingKey();
 
     @ManyToOne
     @MapsId("idRoom")
