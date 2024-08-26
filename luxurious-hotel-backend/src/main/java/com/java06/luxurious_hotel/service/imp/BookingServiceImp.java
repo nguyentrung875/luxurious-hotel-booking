@@ -6,6 +6,7 @@ import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.repository.RoomBookingRepository;
 import com.java06.luxurious_hotel.repository.RoomRepository;
 import com.java06.luxurious_hotel.repository.UserRepository;
+import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,12 @@ public class BookingServiceImp implements BookingService {
     @Transactional
     @Override
     public void addNewBooking(AddBookingRequest request) {
+    /*
+        1. Kiểm tra thông xem khách đó đã book trước đó hay chưa thông qua sdt
+        1. Thêm khách booking vào table user
+        2. Thêm booking
+        3. Thêm dữ liệu vào bảng room_booking
+     * */
 
         //1. Thêm khách booking vào table user
         UserEntity userEntity = new UserEntity();
@@ -92,10 +99,8 @@ public class BookingServiceImp implements BookingService {
         List<RoomBookingEntity> rooms = Arrays.stream(listRoomId).map(item -> {
 
             int roomId = Integer.parseInt(item);
-//            RoomEntity roomEntity = new RoomEntity();
-//            roomEntity.setId(roomId);
-
-            RoomEntity roomEntity = roomRepository.findRoomEntityById(roomId);
+            RoomEntity roomEntity = new RoomEntity();
+            roomEntity.setId(roomId);
 
             RoomBookingEntity roomBooking = new RoomBookingEntity();
             roomBooking.setRoom(roomEntity);
@@ -106,5 +111,29 @@ public class BookingServiceImp implements BookingService {
 
         roomBookingRepository.saveAll(rooms);
 
+    }
+
+    @Transactional
+    @Override
+    public void editBooking(UpdateBookingRequest request) {
+        /*
+        * 1. Tìm Booking thông qua id
+        * 2. Update thông tin user
+        * 3. Update thông tin booking
+        * 4. Update bảng room_booking
+        * */
+
+        BookingEntity updateBooking = new BookingEntity();
+        updateBooking.setId(request.idBooking());
+
+        updateBooking.setCheckIn(LocalDate.parse(request.checkInDate()).atStartOfDay());
+        updateBooking.setCheckOut(LocalDate.parse(request.checkOutDate()).atStartOfDay());
+        updateBooking.setRoomNumber(request.roomNumber());
+
+    }
+
+    @Override
+    public boolean deleteBooking(int idBooking) {
+        return false;
     }
 }
