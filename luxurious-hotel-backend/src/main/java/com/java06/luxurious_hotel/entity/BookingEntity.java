@@ -2,6 +2,7 @@ package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -52,7 +53,7 @@ public class BookingEntity {
     @Column(name = "total")
     private double total;
 
-    @Column(name = "create_date")
+    @Column(name = "create_date", updatable = false)
     private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "booking")

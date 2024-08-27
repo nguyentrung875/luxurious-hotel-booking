@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface BookingService {
     void addNewBooking(AddBookingRequest request);
-    void editBooking(UpdateBookingRequest request);
-    boolean deleteBooking(int idBooking);
+    void updateBooking(UpdateBookingRequest request);
+    void deleteBooking(int idBooking);
 }

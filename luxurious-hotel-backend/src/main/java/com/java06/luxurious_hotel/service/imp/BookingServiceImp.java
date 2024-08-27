@@ -1,13 +1,14 @@
 package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.entity.*;
-import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.repository.RoomBookingRepository;
 import com.java06.luxurious_hotel.repository.RoomRepository;
 import com.java06.luxurious_hotel.repository.UserRepository;
+import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,46 +95,75 @@ public class BookingServiceImp implements BookingService {
         BookingEntity insertedBooking = bookingRepository.save(newBooking);
 
         //3. Thêm dữ liệu vào bảng room_booking
-        //Lấy danh sách room từ chuỗi roomId
-        String[] listRoomId = request.rooms().split(",");
-        List<RoomBookingEntity> rooms = Arrays.stream(listRoomId).map(item -> {
-
-            int roomId = Integer.parseInt(item);
-            RoomEntity roomEntity = new RoomEntity();
-            roomEntity.setId(roomId);
-
-            RoomBookingEntity roomBooking = new RoomBookingEntity();
-            roomBooking.setRoom(roomEntity);
-            roomBooking.setBooking(insertedBooking);
-
-            return roomBooking;
-        }).toList();
-
-        roomBookingRepository.saveAll(rooms);
-
+        this.updateRoomBooking(request.rooms(), insertedBooking);
     }
 
     @Transactional
     @Override
-    public void editBooking(UpdateBookingRequest request) {
-        /*
-        * 1. Tìm Booking thông qua id
-        * 2. Update thông tin user
-        * 3. Update thông tin booking
-        * 4. Update bảng room_booking
-        * */
-
+    public void updateBooking(UpdateBookingRequest request) {
+        //CẬP NHẬT BẢNG BOOKING
         BookingEntity updateBooking = new BookingEntity();
         updateBooking.setId(request.idBooking());
 
         updateBooking.setCheckIn(LocalDate.parse(request.checkInDate()).atStartOfDay());
         updateBooking.setCheckOut(LocalDate.parse(request.checkOutDate()).atStartOfDay());
         updateBooking.setRoomNumber(request.roomNumber());
+        updateBooking.setAdultNumber(request.adultNumber());
+        updateBooking.setChildrenNumber(request.childrenNumber());
+
+        PaymentMethodEntity paymentMethod = new PaymentMethodEntity();
+        paymentMethod.setId(request.idPayment());
+        updateBooking.setPaymentMethod(paymentMethod);
+
+        PaymentStatusEntity paymentStatus = new PaymentStatusEntity();
+        paymentStatus.setId(request.idPaymentStatus());
+        updateBooking.setPaymentStatus(paymentStatus);
+
+        BookingStatusEntity bookingStatus = new BookingStatusEntity();
+        bookingStatus.setId(request.idBookingStatus());
+        updateBooking.setBookingStatus(bookingStatus);
+
+        UserEntity guest = new UserEntity();
+        guest.setId(request.idGuest());
+        updateBooking.setGuest(guest);
+
+        updateBooking.setPaidAmount(request.paidAmount());
+        updateBooking.setTotal(request.total());
+
+        bookingRepository.save(updateBooking);
+
+        //CẬP NHẬT BẢNG ROOM_BOOKING
+        //1. Xóa các dòng có id_booking == updateBooking
+        roomBookingRepository.deleteAllByBooking(updateBooking);
+
+        //2. Thêm lại các phòng mới
+        this.updateRoomBooking(request.rooms(), updateBooking);
+    }
+
+    @Transactional
+    @Override
+    public void deleteBooking(int idBooking) {
+        BookingEntity delBooking = new BookingEntity();
+        delBooking.setId(idBooking);
+        roomBookingRepository.deleteAllByBooking(delBooking);
+        bookingRepository.delete(delBooking);
 
     }
 
-    @Override
-    public boolean deleteBooking(int idBooking) {
-        return false;
+    private void updateRoomBooking(String strRooms, BookingEntity booking) {
+        //Lấy danh sách room từ chuỗi roomId
+        String[] listRoomId = strRooms.split(",");
+        List<RoomBookingEntity> rooms = Arrays.stream(listRoomId).map(item -> {
+            int roomId = Integer.parseInt(item);
+            RoomEntity roomEntity = new RoomEntity();
+            roomEntity.setId(roomId);
+
+            RoomBookingEntity roomBooking = new RoomBookingEntity();
+            roomBooking.setRoom(roomEntity);
+            roomBooking.setBooking(booking);
+
+            return roomBooking;
+        }).toList();
+        roomBookingRepository.saveAll(rooms);
     }
 }
