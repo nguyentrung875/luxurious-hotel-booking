@@ -6,8 +6,11 @@ import com.java06.luxurious_hotel.entity.keys.RoomBookingKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, RoomBookingKey> {
+    List<RoomBookingEntity> getAllByBooking(BookingEntity booking);
     int deleteAllByBooking(BookingEntity bookingEntity);
     int deleteByBooking(BookingEntity bookingEntity);
 }

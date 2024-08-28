@@ -532,13 +532,13 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 -- TRUNG
 
 -- HẬU
-	// đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
+-- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
 RENAME TABLE user TO users;
 RENAME TABLE role TO roles;
 ALTER TABLE users DROP FOREIGN KEY fk_id_role_user;
 ALTER TABLE users ADD CONSTRAINT fk_id_role_users FOREIGN KEY(id_role) REFERENCES roles(id);
 
-	// dữ liệu test user, reservation
+-- dữ liệu test user, reservation
 INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
 ('johndoe', 123, 'John', 'Doe', '1990-01-01', '123-456-7890', 'johndoe@example.com', '123 Main St, City, Country', 'A short bio about John Doe.', 2),
 ('janedoe', 123, 'Jane', 'Doe', '1992-02-02', '234-567-8901', 'janedoe@example.com', '456 Elm St, City, Country', 'A short bio about Jane Doe.', 2),

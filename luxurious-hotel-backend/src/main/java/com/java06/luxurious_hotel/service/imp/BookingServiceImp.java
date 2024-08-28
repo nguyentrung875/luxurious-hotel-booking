@@ -1,5 +1,6 @@
 package com.java06.luxurious_hotel.service.imp;
 
+import com.java06.luxurious_hotel.dto.BookingDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.repository.RoomBookingRepository;
@@ -15,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImp implements BookingService {
@@ -35,6 +36,42 @@ public class BookingServiceImp implements BookingService {
 
     @Transactional
     @Override
+    public List<BookingDTO> getAllBooking() {
+
+        List<BookingDTO> bookingDTOList = bookingRepository.findAll().stream().map(item -> {
+            BookingDTO bookingDTO = new BookingDTO();
+            bookingDTO.setId(item.getId());
+            bookingDTO.setFirstName(item.getGuest().getFirstName());
+            bookingDTO.setLastName(item.getGuest().getLastName());
+            bookingDTO.setCheckIn(item.getCheckIn().toLocalDate());
+            bookingDTO.setCheckOut(item.getCheckOut().toLocalDate());
+            bookingDTO.setPaymentMethod(item.getPaymentMethod().getName());
+            bookingDTO.setPaymentStatus(item.getPaymentStatus().getName());
+            bookingDTO.setBookingStatus(item.getBookingStatus().getName());
+            bookingDTO.setPaidAmount(item.getPaidAmount());
+            bookingDTO.setTotal(item.getTotal());
+            bookingDTO.setAdultNo(item.getAdultNumber());
+            bookingDTO.setChildrenNo(item.getChildrenNumber());
+
+            List<RoomEntity> rooms = roomBookingRepository.getAllByBooking(item).stream().map(roomBooking -> roomBooking.getRoom()).toList();
+//            List<RoomEntity> rooms = item.getRoomBookings().stream().map(roomBooking -> roomBooking.getRoom()).toList();
+//            System.out.println("checkROOMS: " + item.getCheckIn() + item.getRoomBookings());
+
+            Map<String, List<String>> roomMap = rooms.stream().collect(Collectors.groupingBy(
+                    room -> room.getRoomType().getName()
+                            ,Collectors.mapping(RoomEntity::getName, Collectors.toList())
+            ));
+
+            bookingDTO.setRoomNo((HashMap<String, List<String>>) roomMap);
+
+            return bookingDTO;
+        }).toList();
+
+        return bookingDTOList;
+    }
+
+    @Transactional
+    @Override
     public void addNewBooking(AddBookingRequest request) {
     /*
         1. Kiểm tra thông xem khách đó đã book trước đó hay chưa thông qua sdt
@@ -48,7 +85,7 @@ public class BookingServiceImp implements BookingService {
 
         //Kiểm tra xem guest đã đặt phòng trước đó hay chưa thông qua sdt
         var optional = userRepository.findUserEntityByPhone(request.phone());
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             userEntity = optional.get();
         }
 
