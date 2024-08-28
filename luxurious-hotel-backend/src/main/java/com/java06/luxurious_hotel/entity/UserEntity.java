@@ -42,6 +42,9 @@ public class UserEntity {
     @Column(name = "summary")
     private String summary;
 
+    @Column(name = "image")
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "id_role")
     private RoleEntity role;

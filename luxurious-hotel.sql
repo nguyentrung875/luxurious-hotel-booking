@@ -557,3 +557,5 @@ VALUES (2,2);
 -- THANH
 
 -- THÁI
+ALTER TABLE users 
+ADD COLUMN image TEXT;
