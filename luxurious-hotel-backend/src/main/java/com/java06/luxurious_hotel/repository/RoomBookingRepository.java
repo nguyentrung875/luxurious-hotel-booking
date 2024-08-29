@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, RoomBookingKey> {
-    List<RoomBookingEntity> getAllByBooking(BookingEntity booking);
+    List<RoomBookingEntity> findByBooking(BookingEntity booking);
     int deleteAllByBooking(BookingEntity bookingEntity);
     int deleteByBooking(BookingEntity bookingEntity);
 }

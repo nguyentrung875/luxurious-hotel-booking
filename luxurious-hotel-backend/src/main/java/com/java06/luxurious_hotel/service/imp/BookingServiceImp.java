@@ -38,6 +38,12 @@ public class BookingServiceImp implements BookingService {
     @Override
     public List<BookingDTO> getAllBooking() {
 
+        var inDate = LocalDate.parse("2024-02-21").atStartOfDay();
+        var ouDate = LocalDate.parse("2024-02-24").atStartOfDay();
+
+        var roomEntityList = roomRepository.findBookedRoomsByDateRange(inDate, ouDate);
+        roomEntityList.forEach(item-> System.out.println("Hello: " + item));
+
         List<BookingDTO> bookingDTOList = bookingRepository.findAll().stream().map(item -> {
             BookingDTO bookingDTO = new BookingDTO();
             bookingDTO.setId(item.getId());
@@ -53,7 +59,7 @@ public class BookingServiceImp implements BookingService {
             bookingDTO.setAdultNo(item.getAdultNumber());
             bookingDTO.setChildrenNo(item.getChildrenNumber());
 
-            List<RoomEntity> rooms = roomBookingRepository.getAllByBooking(item).stream().map(roomBooking -> roomBooking.getRoom()).toList();
+            List<RoomEntity> rooms = roomBookingRepository.findByBooking(item).stream().map(roomBooking -> roomBooking.getRoom()).toList();
 //            List<RoomEntity> rooms = item.getRoomBookings().stream().map(roomBooking -> roomBooking.getRoom()).toList();
 //            System.out.println("checkROOMS: " + item.getCheckIn() + item.getRoomBookings());
 
@@ -73,14 +79,26 @@ public class BookingServiceImp implements BookingService {
     @Transactional
     @Override
     public void addNewBooking(AddBookingRequest request) {
-    /*
-        1. Kiểm tra thông xem khách đó đã book trước đó hay chưa thông qua sdt
+            /*
+        1. Kiểm tra các phòng có available trong khoảng tgian checkIn checkOut hay không
+        2. Kiểm tra thông xem khách đó đã book trước đó hay chưa thông qua sdt
         1. Thêm khách booking vào table user
         2. Thêm booking
         3. Thêm dữ liệu vào bảng room_booking
      * */
 
-        //1. Thêm khách booking vào table user
+        //KIỂM TRA PHÒNG CÓ AVAILABLE
+        String[] roomIds = request.rooms().split(",");
+        List<Integer> lisRoomId = Arrays.stream(roomIds).map(item -> Integer.parseInt(item)).toList();
+        LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
+        LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
+
+        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, lisRoomId);
+        if (notAvailableRoom.size() > 0) {
+            throw new RuntimeException("Rooms are not available " + notAvailableRoom.toString());
+        }
+
+        //THÊM KHÁCH HÀNG VÀO TABLE USER
         UserEntity userEntity = new UserEntity();
 
         //Kiểm tra xem guest đã đặt phòng trước đó hay chưa thông qua sdt
@@ -101,11 +119,11 @@ public class BookingServiceImp implements BookingService {
 
         UserEntity newGuest = userRepository.save(userEntity);
 
-        //2. Thêm booking
+        //2. Thêm MỚI BOOKING
         BookingEntity newBooking = new BookingEntity();
 
-        newBooking.setCheckIn(LocalDate.parse(request.checkInDate()).atStartOfDay());
-        newBooking.setCheckOut(LocalDate.parse(request.checkOutDate()).atStartOfDay());
+        newBooking.setCheckIn(inDate);
+        newBooking.setCheckOut(outDate);
         newBooking.setRoomNumber(request.roomNumber());
 
         newBooking.setGuest(newGuest);
@@ -131,13 +149,14 @@ public class BookingServiceImp implements BookingService {
 
         BookingEntity insertedBooking = bookingRepository.save(newBooking);
 
-        //3. Thêm dữ liệu vào bảng room_booking
+        //THÊM DỮ LIỆU VÀO BẢNG ROOM_BOOKING
         this.updateRoomBooking(request.rooms(), insertedBooking);
     }
 
     @Transactional
     @Override
     public void updateBooking(UpdateBookingRequest request) {
+
         //CẬP NHẬT BẢNG BOOKING
         BookingEntity updateBooking = new BookingEntity();
         updateBooking.setId(request.idBooking());
@@ -202,5 +221,25 @@ public class BookingServiceImp implements BookingService {
             return roomBooking;
         }).toList();
         roomBookingRepository.saveAll(rooms);
+    }
+
+    private List<String> checkAvailableRoom(LocalDateTime inDate, LocalDateTime outDate, List<Integer> bookRoomId){
+
+//        var booked = bookingRepository.findByCheckOutAfterAndCheckInBefore(inDate, outDate);
+//        List<Integer> listBookedRoomId = new ArrayList<>();
+//        booked.forEach(item -> {
+//            var s = roomBookingRepository.findByBooking(item);
+//            s.forEach(item2 -> listBookedRoomId.add(item2.getRoomBookingKey().getIdRoom()));
+//        });
+
+        List<String> notAvalableRooms = new ArrayList<>();
+        
+        List<RoomEntity> bookedRooms = roomRepository.findBookedRoomsByDateRange(inDate, outDate);
+        for (RoomEntity bookedRoom: bookedRooms){
+            if (bookRoomId.contains(bookedRoom.getId())){
+                notAvalableRooms.add(bookedRoom.getName());
+            }
+        }
+        return notAvalableRooms;
     }
 }
