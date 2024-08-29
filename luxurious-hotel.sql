@@ -530,6 +530,11 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 -- ---------------------------------------------------------------------------------------------------------------
 -- Phần thêm/sửa/xóa dữ liệu nếu cần:
 -- TRUNG
+-- Tìm id room đã được book trong khoảng thời gian
+SELECT rb.id_room
+FROM booking b 
+JOIN room_booking rb ON rb.id_booking = b.id 
+WHERE check_out > "2024-02-21" AND check_in < "2024-02-24"; 
 
 -- HẬU
 -- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
