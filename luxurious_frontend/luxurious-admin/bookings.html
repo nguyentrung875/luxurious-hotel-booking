@@ -3,14 +3,15 @@
 
 
 <!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/admin/bookings.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:24:38 GMT -->
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Best Luxurious Hotel Booking Template.">
-    <meta name="keywords"
-        content="hotel, booking, business, restaurant, spa, resort, landing, agency, corporate, start up, site design, new business site, business template, professional template, classic, modern">
-    <meta name="author" content="ashishmaraviya">
+	<meta name="keywords"
+		content="hotel, booking, business, restaurant, spa, resort, landing, agency, corporate, start up, site design, new business site, business template, professional template, classic, modern">
+	<meta name="author" content="ashishmaraviya">
 
 	<title>Luxurious - Hotel Booking HTML Template + Admin Dashboard</title>
 
@@ -29,6 +30,7 @@
 	<link href="assets/css/vendor/apexcharts.css" rel="stylesheet">
 	<link href="assets/css/vendor/simplebar.css" rel="stylesheet">
 	<link href="assets/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
 
 	<!-- Main CSS -->
 	<link id="mainCss" href="assets/css/style.css" rel="stylesheet">
@@ -36,10 +38,10 @@
 
 <body data-lh-mode="light">
 	<main class="wrapper sb-default">
-    <!-- Overlay -->
-    <div class="lh-loader">
-        <span class="loader"></span>
-    </div>
+		<!-- Overlay -->
+		<div class="lh-loader">
+			<span class="loader"></span>
+		</div>
 
 		<!-- Header -->
 		<header class="lh-header">
@@ -186,7 +188,7 @@
 								<li><a href="team-list.html" class="lh-page-link drop"><i
 											class="ri-git-commit-line"></i>Team List</a></li>
 							</ul>
-						</li>						
+						</li>
 						<li class="lh-sb-item-separator"></li>
 						<li class="lh-sb-title condense">Hotel | Resort</li>
 						<li class="lh-sb-item">
@@ -197,7 +199,8 @@
 						</li>
 						<li class="lh-sb-item">
 							<a href="guest-details.html" class="lh-page-link">
-								<i class="ri-user-search-line"></i><span class="condense"><span class="hover-title">Guest
+								<i class="ri-user-search-line"></i><span class="condense"><span
+										class="hover-title">Guest
 										Details</span> </span>
 							</a>
 						</li>
@@ -229,8 +232,8 @@
 						</li>
 						<li class="lh-sb-item">
 							<a href="menu-add.html" class="lh-page-link">
-								<i class="ri-restaurant-2-line"></i><span class="condense"><span
-										class="hover-title">Add Menu</span> </span>
+								<i class="ri-restaurant-2-line"></i><span class="condense"><span class="hover-title">Add
+										Menu</span> </span>
 							</a>
 						</li>
 						<li class="lh-sb-item">
@@ -530,22 +533,18 @@
 													</div>
 												</div>
 												<div class="avatar-edit">
-													<input type='file' id="imageUpload"
-														accept=".png, .jpg, .jpeg">
+													<input type='file' id="imageUpload" accept=".png, .jpg, .jpeg">
 													<label for="imageUpload"></label>
 												</div>
 											</div>
 											<div class="form-group p-b-15">
-												<input type="text" class="form-control"
-													placeholder="Enter name">
+												<input type="text" class="form-control" placeholder="Enter name">
 											</div>
 											<div class="form-group p-b-15">
-												<input type="text" class="form-control"
-													placeholder="Enter Phone No">
+												<input type="text" class="form-control" placeholder="Enter Phone No">
 											</div>
 											<div class="form-group p-b-15">
-												<input type="text" class="form-control"
-													placeholder="Enter Email">
+												<input type="text" class="form-control" placeholder="Enter Email">
 											</div>
 											<div class="form-group">
 												<textarea type="text" class="form-control"
@@ -585,45 +584,21 @@
 										</div>
 									</div>
 									<div class="col-md-6 col-sm-12">
+
 										<div class="lh-user-detail">
 											<ul>
-												<li><strong>Person : </strong>
+												<li><strong>Payment : </strong>
 													<div class="form-group">
-														<input type="text" class="form-control" placeholder="Enter Person">
+														<div class="form-group">
+															<select name="select" id="select">
+																<option value="option-1">Junior Suit</option>
+																<option value="option-2">Delux</option>
+																<option value="option-2">VIP</option>
+															</select>
+														</div>
 													</div>
 												</li>
-												<li><strong>Rooms : </strong>
-													<input type="text" class="form-control" placeholder="Enter Rooms">
-												</li>
-											</ul>
-										</div>
-									</div>
-									<div class="col-md-6 col-sm-12">
-										<div class="lh-user-detail">
-											<ul>
-												<li><strong>Bed type : </strong>
-													<div class="form-group">
-														<select name="select" id="select">
-															<option value="option-1">Single</option>
-															<option value="option-2">Double</option>
-														</select>
-													</div>
-												</li>
-												<li><strong>Proof : </strong>
-													<div class="form-group">
-														<select name="select" id="select">
-															<option value="option-1">Pan Card</option>
-															<option value="option-2">Adhar Card</option>
-														</select>
-													</div>
-												</li>
-											</ul>
-										</div>
-									</div>
-									<div class="col-md-6 col-sm-12">
-										<div class="lh-user-detail">
-											<ul>
-												<li><strong>Room Type : </strong>
+												<li><strong>Payment Status : </strong>
 													<div class="form-group">
 														<select name="select" id="select">
 															<option value="option-1">Junior Suit</option>
@@ -632,13 +607,84 @@
 														</select>
 													</div>
 												</li>
-												<li><strong>Payment : </strong>
+											</ul>
+										</div>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="lh-user-detail">
+											<ul>
+												<li><strong>Adult : </strong>
+													<div class="form-group">
+														<input type="number" class="form-control"
+															placeholder="Enter the number of adults">
+													</div>
+												</li>
+												<li><strong>Children : </strong>
+													<div class="form-group">
+														<input type="number" class="form-control"
+															placeholder="Enter the number of children">
+													</div>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="lh-user-detail">
+											<ul>
+												<li><strong>Booking Status :</strong>
 													<div class="form-group">
 														<select name="select" id="select">
-															<option value="option-1">Cash</option>
-															<option value="option-2">UPI</option>
-															<option value="option-2">Cheque</option>
+															<option value="option-1">Junior Suit</option>
+															<option value="option-2">Delux</option>
+															<option value="option-2">VIP</option>
 														</select>
+													</div>
+												</li>
+												<li><strong>Note : </strong>
+													<div class="form-group">
+														<input type="text" class="form-control"
+															placeholder="Note">
+													</div>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="lh-user-detail">
+											<ul>
+												<li><strong>Rooms : </strong>
+													<div class="form-group">
+														<select class="form-control chosen-select" multiple>
+															<optgroup label="Standard Room (200$/night)">
+																<option value="option1">101</option>
+																<option value="option2">202</option>
+																<option value="option3">301</option>
+																<option value="option4">401</option>
+															</optgroup>
+															<optgroup label="VIP Room (500$/night)">
+																<option value="option1">101</option>
+																<option value="option2">202</option>
+																<option value="option3">301</option>
+																<option value="option4">401</option>
+															</optgroup>
+															<optgroup label="Family Room (200$/night)">
+																<option value="option1">101</option>
+																<option value="option2">202</option>
+																<option value="option3">301</option>
+																<option value="option4">401</option>
+															</optgroup>
+														</select>
+													</div>
+												</li>
+										</div>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="lh-user-detail">
+											<ul>
+												<li><strong>Total : </strong>
+													<div class="form-group">
+														<input type="number" class="form-control"
+														placeholder="Total">
 													</div>
 												</li>
 											</ul>
@@ -693,7 +739,8 @@
 												<tr>
 													<td class="token">2650</td>
 													<td><img class="cat-thumb" src="assets/img/room/1.png"
-															alt="clients Image"><span class="name">Deluxe King Double Bed</span>
+															alt="clients Image"><span class="name">Deluxe King Double
+															Bed</span>
 													</td>
 													<td>15/01/2024</td>
 													<td>20/01/2024</td>
@@ -726,7 +773,8 @@
 												<tr>
 													<td class="token">2650</td>
 													<td><img class="cat-thumb" src="assets/img/room/2.png"
-															alt="clients Image"><span class="name">VIP King Double Bed</span></td>
+															alt="clients Image"><span class="name">VIP King Double
+															Bed</span></td>
 													<td>19/04/2024</td>
 													<td>29/04/2024</td>
 													<td>Pan Card</td>
@@ -758,7 +806,8 @@
 												<tr>
 													<td class="token">2365</td>
 													<td><img class="cat-thumb" src="assets/img/room/3.png"
-															alt="clients Image"><span class="name">Junior Suites Double Bed</span></td>
+															alt="clients Image"><span class="name">Junior Suites Double
+															Bed</span></td>
 													<td>01/07/2024</td>
 													<td>02/07/2024</td>
 													<td>Pan Card</td>
@@ -790,13 +839,15 @@
 												<tr>
 													<td class="token">2205</td>
 													<td><img class="cat-thumb" src="assets/img/room/4.png"
-															alt="clients Image"><span class="name">Deluxe King Double Bed</span></td>
+															alt="clients Image"><span class="name">Deluxe King Double
+															Bed</span></td>
 													<td>01/07/2024</td>
 													<td>02/07/2024</td>
 													<td>Adhar Card</td>
 													<td class="success">Gpay</td>
 													<td>$1200</td>
-													<td class="type"><span>Premium :</span> 103, 104, <span>Delux : </span>106</td>
+													<td class="type"><span>Premium :</span> 103, 104, <span>Delux :
+														</span>106</td>
 													<td class="rooms">
 														<span class="mem">12 Member</span> /
 														<span class="room">3 Room</span>
@@ -822,7 +873,8 @@
 												<tr>
 													<td class="token">2187</td>
 													<td><img class="cat-thumb" src="assets/img/room/5.png"
-															alt="clients Image"><span class="name">VVIP Queen Double Bed</span>
+															alt="clients Image"><span class="name">VVIP Queen Double
+															Bed</span>
 													</td>
 													<td>22/03/2024</td>
 													<td>05/04/2024</td>
@@ -855,7 +907,8 @@
 												<tr>
 													<td class="token">2050</td>
 													<td><img class="cat-thumb" src="assets/img/room/6.png"
-															alt="clients Image"><span class="name">Deluxe King Double Bed</span>
+															alt="clients Image"><span class="name">Deluxe King Double
+															Bed</span>
 													</td>
 													<td>09/09/2022</td>
 													<td>15/09/2022</td>
@@ -888,14 +941,16 @@
 												<tr>
 													<td class="token">1995</td>
 													<td><img class="cat-thumb" src="assets/img/room/2.png"
-															alt="clients Image"><span class="name">Junior Double Bed</span>
+															alt="clients Image"><span class="name">Junior Double
+															Bed</span>
 													</td>
 													<td>16/08/2024</td>
 													<td>20/08/2024</td>
 													<td>Pan Card</td>
 													<td class="success">Gpay</td>
 													<td>$1560</td>
-													<td class="type"><span>VIP : </span>204, <span>Junior : </span>401, 402</td>
+													<td class="type"><span>VIP : </span>204, <span>Junior : </span>401,
+														402</td>
 													<td class="rooms">
 														<span class="mem">6 Member</span> /
 														<span class="room">3 Room</span>
@@ -921,14 +976,16 @@
 												<tr>
 													<td class="token">1985</td>
 													<td><img class="cat-thumb" src="assets/img/room/4.png"
-															alt="clients Image"><span class="name">Deluxe King Double Bed</span>
+															alt="clients Image"><span class="name">Deluxe King Double
+															Bed</span>
 													</td>
 													<td>19/12/2021</td>
 													<td>25/12/2021</td>
 													<td>Pan Card</td>
 													<td class="success">Gpay</td>
 													<td>$1560</td>
-													<td class="type"><span>Deluxe : </span>104, <span>Junior : </span>401, 402</td>
+													<td class="type"><span>Deluxe : </span>104, <span>Junior :
+														</span>401, 402</td>
 													<td class="rooms">
 														<span class="mem">10 Member</span> /
 														<span class="room">4 Room</span>
@@ -987,8 +1044,9 @@
 												<tr>
 													<td class="token">1865</td>
 													<td><img class="cat-thumb" src="assets/img/room/1.png"
-															alt="clients Image"><span class="name">Deluxe King Double Bed</span>
-													</td>													
+															alt="clients Image"><span class="name">Deluxe King Double
+															Bed</span>
+													</td>
 													<td>28/02/2024</td>
 													<td>05/03/2024</td>
 													<td>Passport</td>
@@ -1176,10 +1234,15 @@
 	<script src="assets/js/vendor/daterangepicker.js"></script>
 	<script src="assets/js/vendor/date-range.js"></script>
 
+	<!-- Chosen Multiple Select -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.js"></script>
+
+
 	<!-- Main Custom -->
 	<script src="assets/js/main.js"></script>
 </body>
 
 
 <!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/admin/bookings.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:24:38 GMT -->
+
 </html>
