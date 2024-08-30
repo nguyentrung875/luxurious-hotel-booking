@@ -4,6 +4,7 @@ import com.java06.luxurious_hotel.dto.BookingDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
 import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
+import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
 import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.repository.RoomBookingRepository;
 import com.java06.luxurious_hotel.repository.RoomRepository;
@@ -39,36 +40,16 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public List<BookingDTO> getAllBooking() {
-
-
-        List<BookingDTO> bookingDTOList = bookingRepository.findAll().stream().map(item -> {
-            BookingDTO bookingDTO = new BookingDTO();
-            bookingDTO.setId(item.getId());
-            bookingDTO.setFirstName(item.getGuest().getFirstName());
-            bookingDTO.setLastName(item.getGuest().getLastName());
-            bookingDTO.setCheckIn(item.getCheckIn().toLocalDate());
-            bookingDTO.setCheckOut(item.getCheckOut().toLocalDate());
-            bookingDTO.setPaymentMethod(item.getPaymentMethod().getName());
-            bookingDTO.setPaymentStatus(item.getPaymentStatus().getName());
-            bookingDTO.setBookingStatus(item.getBookingStatus().getName());
-            bookingDTO.setPaidAmount(item.getPaidAmount());
-            bookingDTO.setTotal(item.getTotal());
-            bookingDTO.setAdultNo(item.getAdultNumber());
-            bookingDTO.setChildrenNo(item.getChildrenNumber());
-
-            List<RoomEntity> rooms = roomBookingRepository.findByBooking(item).stream().map(roomBooking -> roomBooking.getRoom()).toList();
-
-            Map<String, List<String>> roomMap = rooms.stream().collect(Collectors.groupingBy(
-                    room -> room.getRoomType().getName()
-                            ,Collectors.mapping(RoomEntity::getName, Collectors.toList())
-            ));
-
-            bookingDTO.setRoomNo((HashMap<String, List<String>>) roomMap);
-
-            return bookingDTO;
+        return bookingRepository.findAll().stream().map(booking -> {
+            return this.bookingEntityToBookingDTO(booking);
         }).toList();
+    }
 
-        return bookingDTOList;
+    @Override
+    public BookingDTO getDetailBooking(int idBooking) {
+        return bookingRepository.findById(idBooking).stream().map(booking -> {
+            return this.bookingEntityToBookingDTO(booking);
+        }).findFirst().orElseThrow(()->new BookingNotFoundException());
     }
 
     @Transactional
@@ -145,7 +126,7 @@ public class BookingServiceImp implements BookingService {
         BookingEntity insertedBooking = bookingRepository.save(newBooking);
 
         //THÊM DỮ LIỆU VÀO BẢNG ROOM_BOOKING
-        this.updateRoomBooking(request.rooms(), insertedBooking);
+        this.insertRoomBooking(request.rooms(), insertedBooking);
     }
 
     @Transactional
@@ -157,7 +138,8 @@ public class BookingServiceImp implements BookingService {
 
         //CẬP NHẬT BẢNG ROOM_BOOKING
         //1. Xóa các dòng có id_booking == updateBooking
-        roomBookingRepository.deleteAllByBooking(updateBooking);
+        roomBookingRepository.deleteByBooking(updateBooking);
+
 
         //KIỂM TRA PHÒNG CÓ AVAILABLE
         String[] roomIds = request.rooms().split(",");
@@ -170,12 +152,10 @@ public class BookingServiceImp implements BookingService {
             throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom.toString());
         }
 
-        //2. Thêm lại các phòng mới
-        this.updateRoomBooking(request.rooms(), updateBooking);
+        //Update lại các phòng mới
+        this.insertRoomBooking(request.rooms(), updateBooking);
 
         //CẬP NHẬT BẢNG BOOKING
-
-
         updateBooking.setCheckIn(LocalDate.parse(request.checkInDate()).atStartOfDay());
         updateBooking.setCheckOut(LocalDate.parse(request.checkOutDate()).atStartOfDay());
         updateBooking.setRoomNumber(request.roomNumber());
@@ -211,12 +191,15 @@ public class BookingServiceImp implements BookingService {
     public void deleteBooking(int idBooking) {
         BookingEntity delBooking = new BookingEntity();
         delBooking.setId(idBooking);
-        roomBookingRepository.deleteAllByBooking(delBooking);
-        bookingRepository.delete(delBooking);
+        if (roomBookingRepository.deleteByBooking(delBooking) <= 0) {
+            throw new BookingNotFoundException();
+        } else {
+            bookingRepository.delete(delBooking);
+        }
 
     }
 
-    private void updateRoomBooking(String strRooms, BookingEntity booking) {
+    private void insertRoomBooking(String strRooms, BookingEntity booking) {
         //Lấy danh sách room từ chuỗi roomId
         String[] listRoomId = strRooms.split(",");
         List<RoomBookingEntity> rooms = Arrays.stream(listRoomId).map(item -> {
@@ -230,7 +213,11 @@ public class BookingServiceImp implements BookingService {
 
             return roomBooking;
         }).toList();
-        roomBookingRepository.saveAll(rooms);
+        try{
+            roomBookingRepository.saveAll(rooms);
+        } catch (Exception e) {
+            throw new RoomNotFoundException(e.getCause().getMessage());
+        }
     }
 
     private List<String> checkAvailableRoom(LocalDateTime inDate, LocalDateTime outDate, List<Integer> bookRoomId){
@@ -252,4 +239,33 @@ public class BookingServiceImp implements BookingService {
         }
         return notAvalableRooms;
     }
+
+    private BookingDTO bookingEntityToBookingDTO(BookingEntity booking){
+
+        if (booking==null) return null;
+
+        BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.setId(booking.getId());
+        bookingDTO.setFirstName(booking.getGuest().getFirstName());
+        bookingDTO.setLastName(booking.getGuest().getLastName());
+        bookingDTO.setCheckIn(booking.getCheckIn().toLocalDate());
+        bookingDTO.setCheckOut(booking.getCheckOut().toLocalDate());
+        bookingDTO.setPaymentMethod(booking.getPaymentMethod().getName());
+        bookingDTO.setPaymentStatus(booking.getPaymentStatus().getName());
+        bookingDTO.setBookingStatus(booking.getBookingStatus().getName());
+        bookingDTO.setPaidAmount(booking.getPaidAmount());
+        bookingDTO.setTotal(booking.getTotal());
+        bookingDTO.setAdultNo(booking.getAdultNumber());
+        bookingDTO.setChildrenNo(booking.getChildrenNumber());
+
+        List<RoomEntity> rooms = roomBookingRepository.findByBooking(booking).stream().map(roomBooking -> roomBooking.getRoom()).toList();
+
+        Map<String, List<String>> roomMap = rooms.stream().collect(Collectors.groupingBy(
+                room -> room.getRoomType().getName()
+                ,Collectors.mapping(RoomEntity::getName, Collectors.toList())
+        ));
+
+        bookingDTO.setRoomNo((HashMap<String, List<String>>) roomMap);
+        return bookingDTO;
+    };
 }

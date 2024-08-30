@@ -5,6 +5,7 @@ import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import com.java06.luxurious_hotel.service.BookingService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,15 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<?> getAllBooking(){
-        HashMap<String, List<String>> map = new HashMap<>();
-        map.put("trung", Arrays.asList("101","102"));
-        map.put("thanh", Arrays.asList("202","102", "203"));
-
-
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setData(bookingService.getAllBooking());
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getBooking(@PathVariable int id){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(bookingService.getDetailBooking(id));
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
