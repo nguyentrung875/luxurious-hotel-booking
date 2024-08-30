@@ -2,6 +2,8 @@ package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.dto.BookingDTO;
 import com.java06.luxurious_hotel.entity.*;
+import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
+import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
 import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.repository.RoomBookingRepository;
 import com.java06.luxurious_hotel.repository.RoomRepository;
@@ -9,6 +11,7 @@ import com.java06.luxurious_hotel.repository.UserRepository;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,7 +90,7 @@ public class BookingServiceImp implements BookingService {
 
         var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, lisRoomId);
         if (notAvailableRoom.size() > 0) {
-            throw new RuntimeException("Rooms are not available " + notAvailableRoom.toString());
+            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom.toString());
         }
 
         //THÊM KHÁCH HÀNG VÀO TABLE USER
@@ -149,9 +152,29 @@ public class BookingServiceImp implements BookingService {
     @Override
     public void updateBooking(UpdateBookingRequest request) {
 
+        BookingEntity updateBooking = bookingRepository.findById(request.idBooking())
+                .orElseThrow(()-> new BookingNotFoundException());
+
+        //CẬP NHẬT BẢNG ROOM_BOOKING
+        //1. Xóa các dòng có id_booking == updateBooking
+        roomBookingRepository.deleteAllByBooking(updateBooking);
+
+        //KIỂM TRA PHÒNG CÓ AVAILABLE
+        String[] roomIds = request.rooms().split(",");
+        List<Integer> lisRoomId = Arrays.stream(roomIds).map(item -> Integer.parseInt(item)).toList();
+        LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
+        LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
+
+        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, lisRoomId);
+        if (notAvailableRoom.size() > 0) {
+            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom.toString());
+        }
+
+        //2. Thêm lại các phòng mới
+        this.updateRoomBooking(request.rooms(), updateBooking);
+
         //CẬP NHẬT BẢNG BOOKING
-        BookingEntity updateBooking = new BookingEntity();
-        updateBooking.setId(request.idBooking());
+
 
         updateBooking.setCheckIn(LocalDate.parse(request.checkInDate()).atStartOfDay());
         updateBooking.setCheckOut(LocalDate.parse(request.checkOutDate()).atStartOfDay());
@@ -180,12 +203,7 @@ public class BookingServiceImp implements BookingService {
 
         bookingRepository.save(updateBooking);
 
-        //CẬP NHẬT BẢNG ROOM_BOOKING
-        //1. Xóa các dòng có id_booking == updateBooking
-        roomBookingRepository.deleteAllByBooking(updateBooking);
 
-        //2. Thêm lại các phòng mới
-        this.updateRoomBooking(request.rooms(), updateBooking);
     }
 
     @Transactional
