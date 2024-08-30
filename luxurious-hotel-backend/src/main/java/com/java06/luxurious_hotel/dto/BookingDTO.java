@@ -1,6 +1,9 @@
 package com.java06.luxurious_hotel.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -11,6 +14,7 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDTO {
+
     private int id;
     private String firstName;
     private String lastName;
