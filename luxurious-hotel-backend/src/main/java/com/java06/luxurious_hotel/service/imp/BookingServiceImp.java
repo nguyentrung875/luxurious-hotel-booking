@@ -34,15 +34,9 @@ public class BookingServiceImp implements BookingService {
     @Autowired
     private UserRepository userRepository;
 
-    @Transactional
     @Override
     public List<BookingDTO> getAllBooking() {
 
-        var inDate = LocalDate.parse("2024-02-21").atStartOfDay();
-        var ouDate = LocalDate.parse("2024-02-24").atStartOfDay();
-
-        var roomEntityList = roomRepository.findBookedRoomsByDateRange(inDate, ouDate);
-        roomEntityList.forEach(item-> System.out.println("Hello: " + item));
 
         List<BookingDTO> bookingDTOList = bookingRepository.findAll().stream().map(item -> {
             BookingDTO bookingDTO = new BookingDTO();
@@ -60,8 +54,6 @@ public class BookingServiceImp implements BookingService {
             bookingDTO.setChildrenNo(item.getChildrenNumber());
 
             List<RoomEntity> rooms = roomBookingRepository.findByBooking(item).stream().map(roomBooking -> roomBooking.getRoom()).toList();
-//            List<RoomEntity> rooms = item.getRoomBookings().stream().map(roomBooking -> roomBooking.getRoom()).toList();
-//            System.out.println("checkROOMS: " + item.getCheckIn() + item.getRoomBookings());
 
             Map<String, List<String>> roomMap = rooms.stream().collect(Collectors.groupingBy(
                     room -> room.getRoomType().getName()
