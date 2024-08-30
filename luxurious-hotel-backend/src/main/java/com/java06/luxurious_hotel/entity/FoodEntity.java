@@ -1,13 +1,17 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "food")
 public class FoodEntity {
     @Id
@@ -24,8 +28,8 @@ public class FoodEntity {
     private double price;
 
     @OneToMany(mappedBy = "food")
-    private Set<FoodMenuEntity> foodMenus;
+    private List<FoodMenuEntity> foodMenus;
 
     @OneToMany(mappedBy = "food")
-    private Set<OrderEntity> orders;
+    private List<OrderEntity> orders;
 }
