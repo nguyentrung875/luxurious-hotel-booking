@@ -4,9 +4,11 @@ import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import com.java06.luxurious_hotel.service.BookingService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addBooking(@RequestBody AddBookingRequest request){
+    public ResponseEntity<?> addBooking(@Valid @RequestBody AddBookingRequest request){
         bookingService.addNewBooking(request);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("New booking added successfully");
@@ -41,7 +43,7 @@ public class BookingController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateBooking(@RequestBody UpdateBookingRequest request){
+    public ResponseEntity<?> updateBooking(@Valid @RequestBody UpdateBookingRequest request){
         bookingService.updateBooking(request);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("Update booking successfully");
