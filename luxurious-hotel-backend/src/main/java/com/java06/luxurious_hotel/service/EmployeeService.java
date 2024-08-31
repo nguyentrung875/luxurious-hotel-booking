@@ -9,4 +9,5 @@ import org.springframework.stereotype.Service;
 public interface EmployeeService {
     void addEmployee(AddEmployeeRequest addEmployeeRequest);
     Boolean updateEmployee(UpdateEmployeeRequest updateEmployeeRequest);
+    Boolean deleteEmployee(int employeeId);
 }

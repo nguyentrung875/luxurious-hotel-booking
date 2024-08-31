@@ -7,10 +7,7 @@ import com.java06.luxurious_hotel.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/employee")
@@ -34,6 +31,17 @@ public class EmployeeController {
             baseResponse.setMessage("Employee Updated Successfully");
         }else {
             baseResponse.setMessage("Employee Updated Failed");
+        }
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable int id) {
+        boolean isSuccess = employeeService.deleteEmployee(id);
+        BaseResponse baseResponse = new BaseResponse();
+        if (isSuccess) {
+            baseResponse.setMessage("Employee Deleted Successfully");
+        }else {
+            baseResponse.setMessage("Employee Deleted Failed");
         }
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
