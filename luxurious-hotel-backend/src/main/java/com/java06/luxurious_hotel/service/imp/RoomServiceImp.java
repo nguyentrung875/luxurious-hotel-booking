@@ -1,11 +1,10 @@
 package com.java06.luxurious_hotel.service.imp;
 
-import com.java06.luxurious_hotel.dto.GuestDTO;
-import com.java06.luxurious_hotel.dto.RoomByDateDTO;
-import com.java06.luxurious_hotel.dto.RoomTypeByDateDTO;
-import com.java06.luxurious_hotel.dto.RoomTypeDTO;
+import com.java06.luxurious_hotel.dto.*;
+import com.java06.luxurious_hotel.entity.BookingEntity;
 import com.java06.luxurious_hotel.entity.RoomBookingEntity;
 import com.java06.luxurious_hotel.entity.UserEntity;
+import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.repository.RoomBookingRepository;
 import com.java06.luxurious_hotel.repository.RoomTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,12 +24,16 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
     @Autowired
     private RoomBookingRepository roomBookingRepository;
 
+    @Autowired
+    private BookingRepository bookingRepository;
+
     @Override
     public List<RoomTypeByDateDTO> getRoomInfoByDate(String selectDateString) {
         LocalDateTime selectDate = LocalDate.parse(selectDateString).atStartOfDay();
 
         //Những booking có trong select date
         List<RoomBookingEntity> roomBookingEntityList = roomBookingRepository.findRoomBookingsBySelectedDate(selectDate);
+        List<BookingEntity> bookingEntityList = bookingRepository.findBookingsBySelectedDate(selectDate);
 
         //Lấy tất cả các Room Type của khách sạn
         return roomTypeRepository.findAll().stream().map(roomTypeEntity -> {
@@ -51,17 +55,27 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
 
                         //Guest checkin
                         if (roomBookingEntity.getBooking().getCheckIn().equals(selectDate)) {
-                            roomByDateDTO.setGuestCheckIn(this.getGuestDTO(roomBookingEntity));
+                            roomByDateDTO.setGuestCheckIn(this.getGuestByDateDTO(roomBookingEntity));
                         }
 
                         //Guest checkout
                         if (roomBookingEntity.getBooking().getCheckOut().equals(selectDate)) {
-                            roomByDateDTO.setGuestCheckOut(this.getGuestDTO(roomBookingEntity));
+                            roomByDateDTO.setGuestCheckOut(this.getGuestByDateDTO(roomBookingEntity));
                         }
 
                         //Guest Staying
                         if (roomBookingEntity.getBooking().getBookingStatus().getId() == 3) { //Trạng thái Checked In
-                            roomByDateDTO.setGuestStaying(this.getGuestDTO(roomBookingEntity));
+                            GuestByDateDTO guestByDateDTO = this.getGuestByDateDTO(roomBookingEntity);
+
+                            List<String> otherRooms = new ArrayList<>();
+                            roomBookingEntityList.forEach(roomBookingEntity1 -> {
+                                if (roomBookingEntity.getBooking().equals(roomBookingEntity1.getBooking())
+                                    && !roomBookingEntity.getRoom().equals(roomBookingEntity1.getRoom())){
+                                    otherRooms.add(roomBookingEntity1.getRoom().getName());
+                                }
+                            });
+                            guestByDateDTO.setOtherRooms(otherRooms);
+                            roomByDateDTO.setGuestStaying(guestByDateDTO);
                         }
                     }
                 });
@@ -73,8 +87,8 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
         }).toList();
     }
 
-    private GuestDTO getGuestDTO(RoomBookingEntity roomBookingEntity){
-        GuestDTO guestDTO = new GuestDTO();
+    private GuestByDateDTO getGuestByDateDTO(RoomBookingEntity roomBookingEntity) {
+        GuestByDateDTO guestDTO = new GuestByDateDTO();
         guestDTO.setIdSelectBooking(roomBookingEntity.getBooking().getId());
         guestDTO.setId(roomBookingEntity.getBooking().getGuest().getId());
         guestDTO.setFirstName(roomBookingEntity.getBooking().getGuest().getFirstName());

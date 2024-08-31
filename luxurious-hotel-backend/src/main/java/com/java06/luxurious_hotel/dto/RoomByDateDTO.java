@@ -5,15 +5,15 @@ import lombok.Data;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.util.List;
+
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomByDateDTO {
     private int id;
     private String name;
-    private GuestDTO guestCheckIn;
-    private GuestDTO guestCheckOut;
-    private GuestDTO guestStaying;
-    private int adultStaying;
-    private int childrenStaying;
-    private String otherRooms;
+    private GuestByDateDTO guestCheckIn;
+    private GuestByDateDTO guestCheckOut;
+    private GuestByDateDTO guestStaying;
+    private List<String> otherRooms;
 }
