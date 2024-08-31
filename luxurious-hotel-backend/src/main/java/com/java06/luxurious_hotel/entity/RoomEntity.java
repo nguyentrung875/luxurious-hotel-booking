@@ -26,9 +26,6 @@ public class RoomEntity {
     @JoinColumn(name = "id_room_type")
     private RoomTypeEntity roomType;
 
-//    @OneToMany(mappedBy = "room")
-//    private Set<RoomAmenityEntity> roomAmenities;
-
     @OneToMany(mappedBy = "room")
     private List<RoomBookingEntity> roomBookings;
 
