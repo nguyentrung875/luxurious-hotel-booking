@@ -3,6 +3,7 @@
 
 
 <!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/luxurious-html/checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:11:53 GMT -->
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +12,7 @@
     <meta name="keywords"
         content="hotel, booking, business, restaurant, spa, resort, landing, agency, corporate, start up, site design, new business site, business template, professional template, classic, modern">
     <title>Luxurious - Hotel Booking HTML Template</title>
-   
+
     <link rel="icon" href="assets/img/favicons/favicon.png" type="image/x-icon">
 
     <!-- Css All Plugins Files -->
@@ -23,6 +24,7 @@
     <link rel="stylesheet" href="assets/css/vendor/swiper-bundle.min.css">
     <link rel="stylesheet" href="assets/css/vendor/semantic.min.css">
     <link rel="stylesheet" href="assets/css/vendor/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
 
     <!-- Main Style -->
     <link rel="stylesheet" href="assets/css/style.css">
@@ -30,6 +32,7 @@
 </head>
 
 <body>
+
     <!-- Overlay -->
     <div class="overlay"></div>
     <div class="lh-loader">
@@ -293,69 +296,29 @@
                         <div class="lh-checkout-content">
                             <div class="lh-checkout-inner">
                                 <div class="lh-checkout-wrap mb-24">
-                                    <div class="lh-checkout-block lh-check-new">
-                                        <h3 class="lh-checkout-title">New Customer</h3>
-                                        <div class="lh-check-block-content">
-                                            <div class="lh-check-subtitle">Checkout Options</div>
-                                            <form action="#">
-                                                <span class="lh-new-option">
-                                                    <span>
-                                                        <input type="radio" id="account1" name="radio-group" checked>
-                                                        <label for="account1">Register Account</label>
-                                                    </span>
-                                                    <span>
-                                                        <input type="radio" id="account2" name="radio-group">
-                                                        <label for="account2">Guest Account</label>
-                                                    </span>
-                                                </span>
-                                            </form>
-                                            <div class="lh-new-desc">By creating an account you will be able to shop faster,
-                                                be up to date on an order's status, and keep track of the orders you have
-                                                previously made.
-                                            </div>
-                                            <div class="lh-new-btn"><a href="#" class="lh-buttons">Continue</a></div>
-    
-                                        </div>
-                                    </div>
+
                                     <div class="lh-checkout-block lh-check-login">
                                         <h3 class="lh-checkout-title">Returning Customer</h3>
                                         <div class="lh-check-login-form">
                                             <form action="#" method="post">
                                                 <span class="lh-check-login-wrap">
-                                                    <label>Email Address</label>
-                                                    <input type="text" name="name" placeholder="Enter your email address"
+                                                    <label>Phone</label>
+                                                    <input type="text" name="name" placeholder="Enter your phone"
                                                         required />
                                                 </span>
-                                                <span class="lh-check-login-wrap">
-                                                    <label>Password</label>
-                                                    <input type="password" name="password" placeholder="Enter your password"
-                                                        required />
-                                                </span>
-    
                                                 <span class="lh-check-login-wrap lh-check-login-btn">
-                                                    <button class="lh-buttons mr-12" type="submit">Login</button>
-                                                    <a class="lh-check-login-fp" href="#">Forgot Password?</a>
+                                                    <button class="lh-buttons mr-12" type="submit">Load
+                                                        Information</button>
                                                 </span>
                                             </form>
                                         </div>
                                     </div>
-    
+
                                 </div>
                                 <div class="lh-checkout-wrap">
                                     <div class="lh-checkout-block lh-check-bill">
-                                        <h3 class="lh-checkout-title">Billing Details</h3>
+                                        <h3 class="lh-checkout-title">Customer</h3>
                                         <div class="lh-bl-block-content">
-                                            <div class="lh-check-subtitle">Checkout Options</div>
-                                            <span class="lh-bill-option">
-                                                <span>
-                                                    <input type="radio" id="bill1" name="radio-group">
-                                                    <label for="bill1">I want to use an existing address</label>
-                                                </span>
-                                                <span>
-                                                    <input type="radio" id="bill2" name="radio-group" checked>
-                                                    <label for="bill2">I want to use new address</label>
-                                                </span>
-                                            </span>
                                             <div class="lh-check-bill-form">
                                                 <form action="#" method="post">
                                                     <span class="lh-bill-wrap lh-bill-half">
@@ -368,11 +331,22 @@
                                                         <input type="text" name="lastname"
                                                             placeholder="Enter your last name" required />
                                                     </span>
+                                                    <span class="lh-bill-wrap lh-bill-half">
+                                                        <label>Phone*</label>
+                                                        <input type="text" name="phone"
+                                                            placeholder="Enter your first name" required />
+                                                    </span>
+                                                    <span class="lh-bill-wrap lh-bill-half">
+                                                        <label>Email*</label>
+                                                        <input type="text" name="email"
+                                                            placeholder="Enter your last name" required />
+                                                    </span>
                                                     <span class="lh-bill-wrap">
                                                         <label>Address</label>
-                                                        <input type="text" name="address" placeholder="Address Line 1" />
+                                                        <input type="text" name="address"
+                                                            placeholder="Address Line 1" />
                                                     </span>
-                                                    <span class="lh-bill-wrap lh-bill-half mb-15">
+                                                    <!-- <span class="lh-bill-wrap lh-bill-half mb-15">
                                                         <label>City *</label>
                                                         <span class="lh-bl-select-inner">
                                                             <select name="ec_select_city" id="lh-select-city"
@@ -417,13 +391,13 @@
                                                                 <option value="5">Region/State 5</option>
                                                             </select>
                                                         </span>
-                                                    </span>
+                                                    </span> -->
                                                 </form>
                                             </div>
-    
+
                                         </div>
                                     </div>
-    
+
                                 </div>
                             </div>
                         </div>
@@ -448,15 +422,30 @@
                                         <i class="ri-calendar-line"></i>
                                     </div>
                                 </div>
-                                <div class="lh-side-reservation-from">
-                                    <label>Room</label>
-                                    <div class="custom-select reservation-form-control">
-                                        <select>
-                                            <option value="option1">1</option>
-                                            <option value="option2">2</option>
-                                            <option value="option3">3</option>
-                                            <option value="option4">4</option>
+                                <div class="lh-side-reservation-from trung__select">
+                                    <label>Rooms</label>
+                                    <div>
+                                        <select class="form-control chosen-select" multiple>
+                                            <optgroup label="Standard Room (200$/night)">
+                                                <option value="option1">101</option>
+                                                <option value="option2">202</option>
+                                                <option value="option3">301</option>
+                                                <option value="option4">401</option>
+                                            </optgroup>
+                                            <optgroup label="VIP Room (500$/night)">
+                                                <option value="option1">101</option>
+                                                <option value="option2">202</option>
+                                                <option value="option3">301</option>
+                                                <option value="option4">401</option>
+                                            </optgroup>
+                                            <optgroup label="Family Room (200$/night)">
+                                                <option value="option1">101</option>
+                                                <option value="option2">202</option>
+                                                <option value="option3">301</option>
+                                                <option value="option4">401</option>
+                                            </optgroup>
                                         </select>
+                                        <button id="getValues">Get Selected Values</button>
                                     </div>
                                 </div>
                                 <div class="lh-side-reservation-from">
@@ -485,40 +474,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="lh-side-reservation-from ex-service">
-                                    <h4>Extra Services</h4>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault1">
-                                        <label class="form-check-label" for="flexcheckboxDefault1">
-                                            Air Conditioner
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault2" checked>
-                                        <label class="form-check-label" for="flexcheckboxDefault2">
-                                            Free Internet
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault3" checked>
-                                        <label class="form-check-label" for="flexcheckboxDefault3">
-                                            LCD Television
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault4" checked>
-                                        <label class="form-check-label" for="flexcheckboxDefault4">
-                                            Microwave
-                                        </label>
-                                    </div>
-                                </div>
                                 <div class="lh-side-reservation-from">
-                                    <h4>Your Price</h4>
-                                    <span>$210 / per room</span>
+                                    <h4>Total</h4>
+                                    <p>$500</p>
                                 </div>
                                 <div class="lh-side-reservation-from">
                                     <div class="lh-side-reservation-from-buttons">
@@ -539,101 +497,103 @@
     <footer>
         <div class="container">
             <div class="footer-top-section">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 rs-pb-24 p-991 order-lg-1 order-md-2 order-2">
-                    <div class="lh-footer-cols-contain">
-                        <div class="lh-footer-heading">
-                            <h4>Explore</h4>
-                        </div>
-                        <ul>
-                            <li>
-                                <code>*</code>
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="about.html">About</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="room-details.html">Rooms & suites</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="spa.html">spa & Wellness</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="restaurant.html">Restaurant</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="gallery.html">Gallery</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="contact.html">Contact</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-6 rs-pb-24 order-lg-2 order-md-1 order-1">
-                    <div class="lh-social-media">
-                        <div class="footer-logos">
-                            <img src="assets/img/logo/logo.png" alt="logo">
-                        </div>
-                        <div class="lh-footer-social">
-                            <p>This is the dolor sit amet consectetur adipisicing elit. Libero voluptatem soluta eaque
-                                ullam accusantium animi!</p>
-                            <form class="lh-control-footer" role="search">
-                                <div class="lh-control-inner-icons">
-                                    <i class="ri-send-plane-line"></i>
-                                </div>
-                                <input class="form-control shadow-none me-4" type="search" placeholder="Subscribe..."
-                                    aria-label="Search">
-                            </form>
-                        </div>
-                        <div class="lh-follow-social">
-                            <h4 class="heading">Follow On Social</h4>
-                            <div class="footer-logo-image">
-                                <a href="#"><img src="assets/img/logo/facebook.png" alt="facebook"></a>
-                                <a href="#"><img src="assets/img/logo/twitter.png" alt="twitter"></a>
-                                <a href="#"><img src="assets/img/logo/instagram.png" alt="instagram"></a>
-                                <a href="#"><img src="assets/img/logo/linkedin.png" alt="linkedin"></a>
-                                <a href="#"><img src="assets/img/logo/dribbble.png" alt="dribbble"></a>
-                                <a href="#"><img src="assets/img/logo/pinterest.png" alt="pinterest"></a>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 rs-pb-24 p-991 order-lg-1 order-md-2 order-2">
+                        <div class="lh-footer-cols-contain">
+                            <div class="lh-footer-heading">
+                                <h4>Explore</h4>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 rs-pb-24 order-lg-3 order-md-3 order-3">
-                    <div class="lh-footer-cols-contain ">
-                        <div class="lh-footer-heading">
-                            <h4>Contact Information</h4>
-                        </div>
-                        <div class="lh-footer-contact-infoemation">
                             <ul>
-                                <li class="lh-information">
-                                    <h5 class="heading">Location</h5>
-                                    <span>5 Green st.Huntington stati on, Ny 11746, Libero voluptatem soluta
-                                        Bharat.</span>
+                                <li>
+                                    <code>*</code>
+                                    <a href="index.html">Home</a>
                                 </li>
-                                <li class="lh-information">
-                                    <h5 class="heading">Email</h5>
-                                    <span>example@lh-email.com</span>
+                                <li>
+                                    <code>*</code>
+                                    <a href="about.html">About</a>
                                 </li>
-                                <li class="lh-information">
-                                    <h5 class="heading">Phone No</h5>
-                                    <span>+91(1234)(567)(890)</span>
+                                <li>
+                                    <code>*</code>
+                                    <a href="room-details.html">Rooms & suites</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="spa.html">spa & Wellness</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="restaurant.html">Restaurant</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="gallery.html">Gallery</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="contact.html">Contact</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
+                    <div class="col-lg-6 rs-pb-24 order-lg-2 order-md-1 order-1">
+                        <div class="lh-social-media">
+                            <div class="footer-logos">
+                                <img src="assets/img/logo/logo.png" alt="logo">
+                            </div>
+                            <div class="lh-footer-social">
+                                <p>This is the dolor sit amet consectetur adipisicing elit. Libero voluptatem soluta
+                                    eaque
+                                    ullam accusantium animi!</p>
+                                <form class="lh-control-footer" role="search">
+                                    <div class="lh-control-inner-icons">
+                                        <i class="ri-send-plane-line"></i>
+                                    </div>
+                                    <input class="form-control shadow-none me-4" type="search"
+                                        placeholder="Subscribe..." aria-label="Search">
+                                </form>
+                            </div>
+                            <div class="lh-follow-social">
+                                <h4 class="heading">Follow On Social</h4>
+                                <div class="footer-logo-image">
+                                    <a href="#"><img src="assets/img/logo/facebook.png" alt="facebook"></a>
+                                    <a href="#"><img src="assets/img/logo/twitter.png" alt="twitter"></a>
+                                    <a href="#"><img src="assets/img/logo/instagram.png" alt="instagram"></a>
+                                    <a href="#"><img src="assets/img/logo/linkedin.png" alt="linkedin"></a>
+                                    <a href="#"><img src="assets/img/logo/dribbble.png" alt="dribbble"></a>
+                                    <a href="#"><img src="assets/img/logo/pinterest.png" alt="pinterest"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 rs-pb-24 order-lg-3 order-md-3 order-3">
+                        <div class="lh-footer-cols-contain ">
+                            <div class="lh-footer-heading">
+                                <h4>Contact Information</h4>
+                            </div>
+                            <div class="lh-footer-contact-infoemation">
+                                <ul>
+                                    <li class="lh-information">
+                                        <h5 class="heading">Location</h5>
+                                        <span>5 Green st.Huntington stati on, Ny 11746, Libero voluptatem soluta
+                                            Bharat.</span>
+                                    </li>
+                                    <li class="lh-information">
+                                        <h5 class="heading">Email</h5>
+                                        <span>example@lh-email.com</span>
+                                    </li>
+                                    <li class="lh-information">
+                                        <h5 class="heading">Phone No</h5>
+                                        <span>+91(1234)(567)(890)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
             <div class="footer-bottom-copy">
-                <span>Copyright @ <span id="copyright_year"></span> <a href="index.html">Luxurious</a> All Rights Reserved</span>
+                <span>Copyright @ <span id="copyright_year"></span> <a href="index.html">Luxurious</a> All Rights
+                    Reserved</span>
             </div>
         </div>
     </footer>
@@ -730,6 +690,7 @@
     </div>
 
     <!-- Plugins JS -->
+
     <script src="assets/js/vendor/jquery.min.js"></script>
     <script src="assets/js/vendor/swiper-bundle.min.js"></script>
     <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
@@ -737,12 +698,15 @@
     <script src="assets/js/vendor/aos.js"></script>
     <script src="assets/js/vendor/semantic.min.js"></script>
     <script src="assets/js/vendor/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.js"></script>
 
     <!-- Main-js -->
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/custom_checkout.js"></script>
 
 </body>
 
 
 <!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/luxurious-html/checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:11:53 GMT -->
+
 </html>

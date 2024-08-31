@@ -1,13 +1,17 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "room")
 public class RoomEntity {
 
@@ -23,6 +27,6 @@ public class RoomEntity {
     private RoomTypeEntity roomType;
 
     @OneToMany(mappedBy = "room")
-    private Set<RoomBookingEntity> roomBookings;
+    private List<RoomBookingEntity> roomBookings;
 
 }

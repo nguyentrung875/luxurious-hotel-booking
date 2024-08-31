@@ -1,7 +1,9 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -9,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "users")
 public class UserEntity {
     @Id
@@ -42,13 +46,16 @@ public class UserEntity {
     @Column(name = "summary")
     private String summary;
 
+    @Column(name = "image")
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "id_role")
     private RoleEntity role;
 
     @OneToMany(mappedBy = "guest")
-    private Set<ReservationEntity> reservations;
+    private List<ReservationEntity> reservations;
 
     @OneToMany(mappedBy = "guest")
-    private Set<BookingEntity> bookings;
+    private List<BookingEntity> bookings;
 }

@@ -1,12 +1,18 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "booking")
 public class BookingEntity {
     @Id
@@ -50,10 +56,10 @@ public class BookingEntity {
     @Column(name = "total")
     private double total;
 
-    @Column(name = "create_date")
+    @Column(name = "create_date", updatable = false)
     private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "booking")
-    private Set<RoomBookingEntity> roomBookings;
+    private List<RoomBookingEntity> roomBookings;
 
 }
