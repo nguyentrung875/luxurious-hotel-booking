@@ -15,14 +15,14 @@ import java.nio.file.AccessDeniedException;
 @RestControllerAdvice
 public class GlobalException {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> handleException(Exception e) {
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setStatusCode(500);
-        baseResponse.setMessage(e.getMessage() + " class: " + e.getClass()
-        );
-        return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<?> handleException(Exception e) {
+//        BaseResponse baseResponse = new BaseResponse();
+//        baseResponse.setStatusCode(500);
+//        baseResponse.setMessage(e.getMessage() + " class: " + e.getClass()
+//        );
+//        return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
 
 //    //Bắt các lỗi về chứng thực
