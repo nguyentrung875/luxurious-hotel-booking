@@ -22,13 +22,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Integer>
     List<Object[]> findByGuest_Id(@Param("userId") int userId);
 //    List<Object[]> findByGuest_Id(int userId);
 
-    List<BookingEntity> findByCheckOutAfterAndCheckInBefore(LocalDateTime inDate, LocalDateTime outDate);
+//    List<BookingEntity> findByCheckOutAfterAndCheckInBefore(LocalDateTime inDate, LocalDateTime outDate);
 //    List<BookingEntity> findByUser_Id(int userId);
 
-<<<<<<< HEAD
-    @Query("SELECT b FROM booking b " +
-            "WHERE :selectDate BETWEEN b.checkIn AND b.checkOut")
-    List<BookingEntity> findBookingsBySelectedDate(@Param("selectDate") LocalDateTime selectDate);
-=======
->>>>>>> ea3213ae195b4eaf4d5aa5660ce7a17ba4b9f0fd
 }

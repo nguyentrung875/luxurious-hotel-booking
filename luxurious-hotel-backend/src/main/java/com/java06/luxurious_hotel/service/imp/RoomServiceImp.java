@@ -33,7 +33,6 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
 
         //Những booking có trong select date
         List<RoomBookingEntity> roomBookingEntityList = roomBookingRepository.findRoomBookingsBySelectedDate(selectDate);
-        List<BookingEntity> bookingEntityList = bookingRepository.findBookingsBySelectedDate(selectDate);
 
         //Lấy tất cả các Room Type của khách sạn
         return roomTypeRepository.findAll().stream().map(roomTypeEntity -> {
