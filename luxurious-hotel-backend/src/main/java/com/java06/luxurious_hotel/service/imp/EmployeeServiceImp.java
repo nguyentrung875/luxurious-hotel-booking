@@ -82,4 +82,17 @@ public class EmployeeServiceImp implements EmployeeService {
         }
         return isSuccess;
     }
+
+    @Override
+    public Boolean deleteEmployee(int employeeId) {
+        Boolean isSuccess = false;
+        Optional<UserEntity> usercheck = employeeReposiory.findById(employeeId);
+        if (usercheck.isPresent()) {
+            employeeReposiory.deleteById(employeeId);
+            isSuccess = true;
+        }
+        return isSuccess;
+    }
+
+
 }
