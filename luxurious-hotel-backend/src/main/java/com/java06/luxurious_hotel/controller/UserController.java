@@ -1,6 +1,9 @@
 package com.java06.luxurious_hotel.controller;
 
+import com.java06.luxurious_hotel.dto.BookingGuestDTO;
 import com.java06.luxurious_hotel.dto.GuestDTO;
+import com.java06.luxurious_hotel.entity.BookingEntity;
+import com.java06.luxurious_hotel.service.BookingService;
 import com.java06.luxurious_hotel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BookingService bookingService;
+
     @GetMapping()
     public ResponseEntity<?> getAll(){
         return new ResponseEntity<>("Hello user luxurious", HttpStatus.OK);
@@ -26,5 +32,14 @@ public class UserController {
         List<GuestDTO> listGuest = userService.getListGuest("ROLE_GUEST");
         System.out.println("test = " + listGuest);
         return new ResponseEntity<>(listGuest , HttpStatus.OK);
+    }
+
+    @PostMapping("/allbookingguest")
+    public ResponseEntity<?> getBookingGuest(@RequestParam int idGuest){
+        List<BookingGuestDTO> guestDTOS = bookingService.getListBooking(idGuest);
+        System.out.println("test = " + guestDTOS);
+        System.out.println("test = " + guestDTOS);
+
+        return new ResponseEntity<>(guestDTOS, HttpStatus.OK);
     }
 }

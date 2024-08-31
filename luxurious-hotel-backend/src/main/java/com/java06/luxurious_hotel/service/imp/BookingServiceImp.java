@@ -1,6 +1,12 @@
 package com.java06.luxurious_hotel.service.imp;
 
+
+import com.java06.luxurious_hotel.dto.BookingGuestDTO;
+import com.java06.luxurious_hotel.dto.GuestDTO;
+import com.java06.luxurious_hotel.dto.coverdto.RoomTypeDTO;
+
 import com.java06.luxurious_hotel.dto.BookingDTO;
+
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
 import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
@@ -220,6 +226,62 @@ public class BookingServiceImp implements BookingService {
         }
     }
 
+
+    @Override
+    public List<BookingGuestDTO> getListBooking(int idGuest) {
+
+        List<Object[]> results  = bookingRepository.findByGuest_Id(idGuest);
+
+        List<BookingGuestDTO> bookingGuestDTOS = new ArrayList<>();
+
+        for (Object[] result : results ) {
+            BookingEntity booking = (BookingEntity) result[0];
+            BookingGuestDTO bookingGuestDTO = new BookingGuestDTO();
+
+
+            // Add phần tử UserEntity vào BookingGuestDTO
+            GuestDTO guestDTO = new GuestDTO();
+
+            guestDTO.setId(booking.getGuest().getId());
+
+            guestDTO.setFullName(booking.getGuest().getFirstName() + " " + booking.getGuest().getLastName());
+            guestDTO.setEmail(booking.getGuest().getEmail());
+            guestDTO.setPhone(booking.getGuest().getPhone());
+            guestDTO.setAddress(booking.getGuest().getAddress());
+            guestDTO.setSummary(booking.getGuest().getSummary());
+
+            bookingGuestDTO.setGuestDTO(guestDTO);
+
+            // Add các phần tử khác vào BookingGuestDTO
+            bookingGuestDTO.setIdBooking(booking.getId());
+            bookingGuestDTO.setCheckIn(booking.getCheckIn());
+            bookingGuestDTO.setCheckOut(booking.getCheckOut());
+            bookingGuestDTO.setPaymentStatus(booking.getPaymentStatus().getName());
+            bookingGuestDTO.setPaymentMethod(booking.getPaymentMethod().getName());
+            bookingGuestDTO.setMember(booking.getAdultNumber() + booking.getChildrenNumber());
+            bookingGuestDTO.setQuantilyRoom(booking.getRoomNumber());
+
+            // add phần tử roomTypeDTO
+            Map<String, List<String>> roomTypeMap = new HashMap<>();
+
+            booking.getRoomBookings().forEach(roomBookingEntity -> {
+                String roomType = roomBookingEntity.getRoom().getRoomType().getName();
+                String roomName = roomBookingEntity.getRoom().getName();
+
+                roomTypeMap.computeIfAbsent(roomType, k -> new ArrayList<>()).add(roomName);
+            });
+
+            roomTypeMap.forEach((roomType,roomNames) -> {
+                RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
+                roomTypeDTO.setNameRoomType(roomType);
+                roomTypeDTO.setRoomNumber(roomNames);
+                bookingGuestDTO.getRoomTypeDTO().add(roomTypeDTO);
+            });
+            bookingGuestDTOS.add(bookingGuestDTO);
+        }
+        return bookingGuestDTOS;
+    }
+
     private List<String> checkAvailableRoom(LocalDateTime inDate, LocalDateTime outDate, List<Integer> bookRoomId){
 
 //        var booked = bookingRepository.findByCheckOutAfterAndCheckInBefore(inDate, outDate);
@@ -268,4 +330,5 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setRoomNo((HashMap<String, List<String>>) roomMap);
         return bookingDTO;
     };
+
 }
