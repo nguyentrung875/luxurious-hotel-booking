@@ -212,7 +212,7 @@ VALUES ('Single Bed'),
 
 INSERT INTO room_type (name, overview, price, area, capacity, id_bed_type, image)
 VALUES ('Standard Room', '', 200, 40, 2, 3,''),
-('Superior Roomm', '', 300, 50, 2, 4,''),
+('Superior Room', '', 300, 50, 2, 4,''),
 ('Deluxe Room', '', 500, 60, 2, 5,''),
 ('Suite Room', '', 1000, 300, 4, 5,''),
 ('Family Room', '', 900, 200, 6, 8,'')
@@ -531,11 +531,19 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 -- Phần thêm/sửa/xóa dữ liệu nếu cần:
 -- TRUNG
 -- Tìm id room đã được book trong khoảng thời gian
-SELECT rb.id_room
+SELECT rb.id_room , rb.id_booking , b.id_status 
 FROM booking b 
 JOIN room_booking rb ON rb.id_booking = b.id 
-WHERE check_out > "2024-02-21" AND check_in < "2024-02-24"; 
+WHERE check_out > "2024-02-21" AND check_in < "2024-02-24" AND b.id_status <> 5; 
 
+SELECT r.name , b.id , b.check_in , b.check_out ,u.first_name ,bs.name  
+FROM room r 
+JOIN room_booking rb ON rb.id_room = r.id 
+JOIN booking b ON b.id = rb.id_booking 
+JOIN users u ON b.id_guest = u.id 
+JOIN booking_status bs ON bs.id = b.id_status 
+HAVING "2025-03-15" BETWEEN b.check_in AND b.check_out
+;
 -- HẬU
 -- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
 RENAME TABLE user TO users;

@@ -18,4 +18,7 @@ public class RoomTypeDTO {
     private String bedName;
     private List<String> image;
     private String amenity;
+
+    private List<String> roomNo; //Trung dùng
+
 }
