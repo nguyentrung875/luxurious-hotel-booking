@@ -3,7 +3,7 @@ package com.java06.luxurious_hotel.exception;
 
 import com.java06.luxurious_hotel.exception.roomType.AmentityNotFoundException;
 import com.java06.luxurious_hotel.exception.roomType.RoomTypeNotFoundException;
-import com.java06.luxurious_hotel.payload.response.APIResponse;
+
 
 import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
 import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
@@ -61,6 +61,12 @@ public class GlobalException {
 
     @ExceptionHandler(RoomTypeNotFoundException.class)
     public ResponseEntity<?> handleRoomTypeNotFoundException(RoomTypeNotFoundException e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage(e.getMessage());
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
 
     @ExceptionHandler(RoomNotFoundException.class)
     public ResponseEntity<?> handleRoomNotAvailableException(RoomNotFoundException e) {
@@ -75,6 +81,11 @@ public class GlobalException {
 
     @ExceptionHandler(AmentityNotFoundException.class)
     public ResponseEntity<?> handleAmentityNotFoundException(AmentityNotFoundException e) {
+        BaseResponse baseResponse = new BaseResponse();
+            baseResponse.setStatusCode(200);
+            baseResponse.setMessage(e.getMessage());
+            return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        }
 
     @ExceptionHandler(BookingNotFoundException.class)
     public ResponseEntity<?> handleBookingNotFoundException(BookingNotFoundException e) {
