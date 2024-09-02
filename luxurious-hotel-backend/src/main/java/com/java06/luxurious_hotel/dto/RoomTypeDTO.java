@@ -16,6 +16,7 @@ public class RoomTypeDTO {
     private double area;
     private int capacity;
     private String bedName;
+    private List<String> roomName;
     private List<String> image;
     private String amenity;
 

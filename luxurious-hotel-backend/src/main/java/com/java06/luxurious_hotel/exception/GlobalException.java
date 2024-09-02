@@ -6,6 +6,15 @@ import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
 import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
 import com.java06.luxurious_hotel.exception.user.IncorrectPasswordException;
 import com.java06.luxurious_hotel.exception.user.UserNotFoundException;
+
+import com.java06.luxurious_hotel.exception.roomType.AmentityNotFoundException;
+import com.java06.luxurious_hotel.exception.roomType.RoomTypeNotFoundException;
+
+
+import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
+import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
+import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
+
 import com.java06.luxurious_hotel.response.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,8 +72,19 @@ public class GlobalException {
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
+
+    @ExceptionHandler(RoomTypeNotFoundException.class)
+    public ResponseEntity<?> handleRoomTypeNotFoundException(RoomTypeNotFoundException e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage(e.getMessage());
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
     @ExceptionHandler(RoomNotFoundException.class)
-    public ResponseEntity<?> handleRoomNotAvailableException(Exception e) {
+
+    public ResponseEntity<?> handleRoomNotAvailableException(RoomNotFoundException e) {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setStatusCode(200);
         baseResponse.setMessage(e.getMessage());
@@ -79,6 +99,7 @@ public class GlobalException {
         baseResponse.setMessage(e.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
+  
 //    Handle Exception USER ------------------------------------------------------------------------
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(Exception e) {
@@ -90,10 +111,16 @@ public class GlobalException {
 
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<?> handleIncorrectPasswordException(IncorrectPasswordException e) {
+
+//    Handle Exception AMENITY ------------------------------------------------------------------------
+
+    @ExceptionHandler(AmentityNotFoundException.class)
+    public ResponseEntity<?> handleAmentityNotFoundException(AmentityNotFoundException e) {
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setStatusCode(200);
-        baseResponse.setMessage(e.getMessage());
-        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
-    }
+            baseResponse.setStatusCode(200);
+            baseResponse.setMessage(e.getMessage());
+            return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        }
+
 
 }
