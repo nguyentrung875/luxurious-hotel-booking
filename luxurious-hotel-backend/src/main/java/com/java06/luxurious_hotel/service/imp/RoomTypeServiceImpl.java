@@ -10,6 +10,7 @@ import com.java06.luxurious_hotel.repository.RoomRepository;
 import com.java06.luxurious_hotel.repository.RoomTypeRepository;
 import com.java06.luxurious_hotel.request.AddRoomtypeRequest;
 import com.java06.luxurious_hotel.request.UpdateRoomtypeRequest;
+import com.java06.luxurious_hotel.service.FilesStorageService;
 import com.java06.luxurious_hotel.service.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,9 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Autowired
     private RoomAmenityRepository roomAmenityRepository;
+
+    @Autowired
+    private FilesStorageService filesStorageService;
 
     @Transactional
     @Override
@@ -64,6 +68,10 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
 
         RoomTypeEntity roomType = roomTypeRepository.save(roomTypeEntity);
+
+        for (MultipartFile multipartFile : listMFiles) {
+            filesStorageService.save(multipartFile);
+        }
 
         addAmenitiesToRoomType(roomType.getId(), addRoomtypeRequest.idAmenity());
 
@@ -136,7 +144,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             String imagesString = roomTypeEntity.getImage();
             if (imagesString != null && !imagesString.isEmpty()) {
                 List<String> imagesList = Arrays.stream(imagesString.split(","))
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()).stream().map(item -> ("http://localhost:9999/roomType/file/"+item)).toList();
                 roomTypeDTO.setImage(imagesList);
             }
 

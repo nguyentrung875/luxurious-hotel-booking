@@ -5,9 +5,12 @@ import com.java06.luxurious_hotel.dto.RoomTypeDTO;
 import com.java06.luxurious_hotel.request.AddRoomtypeRequest;
 import com.java06.luxurious_hotel.request.UpdateRoomtypeRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
+import com.java06.luxurious_hotel.service.FilesStorageService;
 import com.java06.luxurious_hotel.service.RoomTypeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,9 @@ public class RoomTypeController {
 
     @Autowired
     private RoomTypeService roomTypeService;
+
+    @Autowired
+    private FilesStorageService filesStorageService;
 
     @PostMapping
     public ResponseEntity<?> addRoomType(@Valid AddRoomtypeRequest addRoomtypeRequest){
@@ -94,5 +100,14 @@ public class RoomTypeController {
         }
         baseResponse.setData(data);
         return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/file/{filename:.+}")
+    public ResponseEntity<?> getRoomType(@PathVariable String filename){
+
+        Resource resource = filesStorageService.load(filename);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(resource);
     }
 }
