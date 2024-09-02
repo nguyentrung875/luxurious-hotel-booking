@@ -29,6 +29,7 @@ public class RoomsController {
 
 
         List<RoomVailableDTO> roomVailableDTOList = roomService.getAvailableRooms(searchRoomRequest);
+        System.out.println("so luọng là : " + roomVailableDTOList.size());
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setData(roomVailableDTOList);
 
