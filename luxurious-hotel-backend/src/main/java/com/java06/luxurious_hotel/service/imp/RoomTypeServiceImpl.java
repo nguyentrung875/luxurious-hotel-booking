@@ -4,7 +4,6 @@ package com.java06.luxurious_hotel.service.imp;
 import com.java06.luxurious_hotel.dto.RoomTypeDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.entity.keys.RoomAmenityKey;
-import com.java06.luxurious_hotel.exception.roomType.RoomTypeNotFoundException;
 import com.java06.luxurious_hotel.repository.AmenityRepository;
 import com.java06.luxurious_hotel.repository.RoomAmenityRepository;
 import com.java06.luxurious_hotel.repository.RoomRepository;
