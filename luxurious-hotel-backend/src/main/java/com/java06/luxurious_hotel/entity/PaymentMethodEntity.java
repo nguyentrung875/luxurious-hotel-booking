@@ -1,11 +1,16 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "payment_method")
 public class PaymentMethodEntity {
 
@@ -17,6 +22,6 @@ public class PaymentMethodEntity {
     private String name;
 
     @OneToMany(mappedBy = "paymentMethod")
-    private Set<BookingEntity> bookings;
+    private List<BookingEntity> bookings;
     
 }

@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="assets/css/vendor/swiper-bundle.min.css">
     <link rel="stylesheet" href="assets/css/vendor/semantic.min.css">
     <link rel="stylesheet" href="assets/css/vendor/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>  
+
 
     <!-- Main Style -->
     <link rel="stylesheet" href="assets/css/style.css">
@@ -421,14 +423,28 @@
                                         <i class="ri-calendar-line"></i>
                                     </div>
                                 </div>
-                                <div class="lh-side-reservation-from">
-                                    <label>Room</label>
-                                    <div class="custom-select reservation-form-control">
-                                        <select>
-                                            <option value="option1">1</option>
-                                            <option value="option2">2</option>
-                                            <option value="option3">3</option>
-                                            <option value="option4">4</option>
+                                <div class="lh-side-reservation-from trung__select">
+                                    <label>Rooms</label>
+                                    <div>
+                                        <select class="form-control chosen-select" multiple>
+                                            <optgroup label="Standard Room">
+                                                <option value="option1">101</option>
+                                                <option value="option2">202</option>
+                                                <option value="option3">301</option>
+                                                <option value="option4">401</option>
+                                            </optgroup>
+                                            <optgroup label="VIP Room">
+                                                <option value="option1">101</option>
+                                                <option value="option2">202</option>
+                                                <option value="option3">301</option>
+                                                <option value="option4">401</option>
+                                            </optgroup>
+                                            <optgroup label="Family Room">
+                                                <option value="option1">101</option>
+                                                <option value="option2">202</option>
+                                                <option value="option3">301</option>
+                                                <option value="option4">401</option>
+                                            </optgroup>
                                         </select>
                                     </div>
                                 </div>
@@ -458,40 +474,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="lh-side-reservation-from ex-service">
-                                    <h4>Extra Services</h4>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault1">
-                                        <label class="form-check-label" for="flexcheckboxDefault1">
-                                            Air Conditioner
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault2" checked>
-                                        <label class="form-check-label" for="flexcheckboxDefault2">
-                                            Free Internet
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault3" checked>
-                                        <label class="form-check-label" for="flexcheckboxDefault3">
-                                            LCD Television
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="flexcheckboxDefault"
-                                            id="flexcheckboxDefault4" checked>
-                                        <label class="form-check-label" for="flexcheckboxDefault4">
-                                            Microwave
-                                        </label>
-                                    </div>
-                                </div>
+
                                 <div class="lh-side-reservation-from">
-                                    <h4>Your Price</h4>
-                                    <span>$210 / per room</span>
+                                    <h4>Total</h4>
+                                    <p>$500</p>
                                 </div>
                                 <div class="lh-side-reservation-from">
                                     <div class="lh-side-reservation-from-buttons d-flex">
@@ -710,6 +696,8 @@
     <script src="assets/js/vendor/aos.js"></script>
     <script src="assets/js/vendor/semantic.min.js"></script>
     <script src="assets/js/vendor/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.js"></script>
+
 
     <!-- Main-js -->
     <script src="assets/js/main.js"></script>

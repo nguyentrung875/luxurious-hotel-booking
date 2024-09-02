@@ -556,7 +556,11 @@ INSERT INTO users (username , password, first_name, last_name, dob, phone, email
 ('johndoe', 123, 'John', 'Doe', '1990-01-01', '123-456-7890', 'johndoe@example.com', '123 Main St, City, Country', 'A short bio about John Doe.', 2),
 ('janedoe', 123, 'Jane', 'Doe', '1992-02-02', '234-567-8901', 'janedoe@example.com', '456 Elm St, City, Country', 'A short bio about Jane Doe.', 2),
 ('bobsmith', 123, 'Bob', 'Smith', '1985-03-03', '345-678-9012', 'bobsmith@example.com', '789 Oak St, City, Country', 'A short bio about Bob Smith.', 2);
+<<<<<<< HEAD
 INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUES
+=======
+INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUE
+>>>>>>> de4921b8ec1d7dfe930150a998363e770aec5a19
 (2,1,1,'2024-08-01 00:00:00','2024-08-01 00:00:00');
 INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,children_number,id_payment_status,id_payment,id_status,paid_amount,total,create_date)
 VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,1000,'2024-07-01 12:00:00');
@@ -569,6 +573,7 @@ VALUES (2,2);
 
 -- THANH
 
+<<<<<<< HEAD
 
 
 
@@ -593,6 +598,8 @@ VALUES
 ('2024-08-03 00:00:00', '2024-08-07 00:00:00', 102, 5, 1, 2, 2, 2, 1, 150.00, 300.00, '2024-07-17 09:30:00'),
 ('2024-08-05 00:00:00', '2024-08-10 00:00:00', 103, 6, 3, 0, 1, 1, 3, 350.00, 400.00, '2024-07-18 11:15:00');
 
+=======
+>>>>>>> de4921b8ec1d7dfe930150a998363e770aec5a19
 -- THÁI
 ALTER TABLE users 
 ADD COLUMN image TEXT;

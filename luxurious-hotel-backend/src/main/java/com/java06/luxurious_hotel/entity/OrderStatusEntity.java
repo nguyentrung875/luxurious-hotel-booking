@@ -1,12 +1,16 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "order_status")
 public class OrderStatusEntity {
 
@@ -18,5 +22,5 @@ public class OrderStatusEntity {
     private String name;
 
     @OneToMany(mappedBy = "orderStatus")
-    private Set<OrderEntity> orders;
+    private List<OrderEntity> orders;
 }

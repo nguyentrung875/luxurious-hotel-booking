@@ -1,13 +1,17 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "room_type")
 public class RoomTypeEntity {
 
@@ -38,10 +42,10 @@ public class RoomTypeEntity {
     private String image;
 
     @OneToMany(mappedBy = "roomType")
-    private Set<RoomEntity> rooms;
+    private List<RoomEntity> rooms;
 
     @OneToMany(mappedBy = "roomType")
-    private Set<RoomAmenityEntity> roomAmenities;
+    private List<RoomAmenityEntity> roomAmenities;
 
 
 }

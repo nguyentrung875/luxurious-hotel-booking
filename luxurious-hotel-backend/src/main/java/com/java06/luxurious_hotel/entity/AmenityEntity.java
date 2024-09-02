@@ -2,12 +2,16 @@ package com.java06.luxurious_hotel.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "amenity")
 public class AmenityEntity {
     @Id
@@ -18,5 +22,5 @@ public class AmenityEntity {
     private String description;
 
     @OneToMany(mappedBy = "amenity")
-    private Set<RoomAmenityEntity> roomAmenities;
+    private List<RoomAmenityEntity> roomAmenities;
 }
