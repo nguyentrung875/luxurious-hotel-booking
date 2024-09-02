@@ -1,8 +1,8 @@
-CREATE DATABASE luxurioushotelV2;
+CREATE DATABASE luxurioushotel;
 SET TIME_ZONE="+7:00";
 SHOW VARIABLES LIKE '%time_zone%';
 
-USE luxurioushotelV2;
+USE luxurioushotel;
 
 CREATE TABLE amenity(
 	id int auto_increment,
@@ -564,11 +564,8 @@ INSERT INTO users (username , password, first_name, last_name, dob, phone, email
 ('johndoe', 123, 'John', 'Doe', '1990-01-01', '123-456-7890', 'johndoe@example.com', '123 Main St, City, Country', 'A short bio about John Doe.', 2),
 ('janedoe', 123, 'Jane', 'Doe', '1992-02-02', '234-567-8901', 'janedoe@example.com', '456 Elm St, City, Country', 'A short bio about Jane Doe.', 2),
 ('bobsmith', 123, 'Bob', 'Smith', '1985-03-03', '345-678-9012', 'bobsmith@example.com', '789 Oak St, City, Country', 'A short bio about Bob Smith.', 2);
-<<<<<<< HEAD
+
 INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUES
-=======
-INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUE
->>>>>>> de4921b8ec1d7dfe930150a998363e770aec5a19
 (2,1,1,'2024-08-01 00:00:00','2024-08-01 00:00:00');
 INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,children_number,id_payment_status,id_payment,id_status,paid_amount,total,create_date)
 VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,1000,'2024-07-01 12:00:00');
@@ -580,10 +577,6 @@ INSERT INTO room_booking (id_room,id_booking)
 VALUES (2,2);
 
 -- THANH
-
-<<<<<<< HEAD
-
-
 
 INSERT INTO users  (username, password, first_name, last_name, dob, phone, email, address, summary, id_role)
 VALUES
@@ -598,16 +591,12 @@ VALUES
 ('jamesgray', 'password567', 'James', 'Gray', '1983-06-29', '666-777-8888', 'jamesgray@example.com', '606 Ash Street, Springfield', 'Software architect.', 1),
 ('laurajohnson', 'password678', 'Laura', 'Johnson', '1991-02-14', '776-888-9999', 'laurajohnson@example.com', '707 Elm Street, Springfield', 'Data scientist.', 2);
 
-
-
 INSERT INTO booking (check_in, check_out, room_number, id_guest, adult_number, children_number, id_payment_status, id_payment, id_status, paid_amount, total, create_date)
 VALUES
 ('2024-08-01 00:00:00', '2024-08-05 00:00:00', 101, 3, 2, 1, 1, 1, 2, 200.00, 250.00, '2024-07-15 10:00:00'),
 ('2024-08-03 00:00:00', '2024-08-07 00:00:00', 102, 5, 1, 2, 2, 2, 1, 150.00, 300.00, '2024-07-17 09:30:00'),
 ('2024-08-05 00:00:00', '2024-08-10 00:00:00', 103, 6, 3, 0, 1, 1, 3, 350.00, 400.00, '2024-07-18 11:15:00');
 
-=======
->>>>>>> de4921b8ec1d7dfe930150a998363e770aec5a19
 -- THÁI
 ALTER TABLE users 
 ADD COLUMN image TEXT;
