@@ -1,13 +1,17 @@
 package com.java06.luxurious_hotel.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Set;
 
 @Data
-@Entity(name = "role")
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = "roles")
 public class RoleEntity {
 
     @Id
@@ -21,5 +25,5 @@ public class RoleEntity {
     private String description;
 
     @OneToMany(mappedBy = "role")
-    private Set<UserEntity> users;
+    private List<UserEntity> users;
 }

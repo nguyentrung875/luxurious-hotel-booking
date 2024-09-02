@@ -212,7 +212,7 @@ VALUES ('Single Bed'),
 
 INSERT INTO room_type (name, overview, price, area, capacity, id_bed_type, image)
 VALUES ('Standard Room', '', 200, 40, 2, 3,''),
-('Superior Roomm', '', 300, 50, 2, 4,''),
+('Superior Room', '', 300, 50, 2, 4,''),
 ('Deluxe Room', '', 500, 60, 2, 5,''),
 ('Suite Room', '', 1000, 300, 4, 5,''),
 ('Family Room', '', 900, 200, 6, 8,'')
@@ -530,9 +530,45 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 -- ---------------------------------------------------------------------------------------------------------------
 -- Phần thêm/sửa/xóa dữ liệu nếu cần:
 -- TRUNG
+-- Tìm id room đã được book trong khoảng thời gian
+SELECT rb.id_room , rb.id_booking , b.id_status 
+FROM booking b 
+JOIN room_booking rb ON rb.id_booking = b.id 
+WHERE check_out > "2024-02-21" AND check_in < "2024-02-24" AND b.id_status <> 5; 
 
+SELECT r.name , b.id , b.check_in , b.check_out ,u.first_name ,bs.name  
+FROM room r 
+JOIN room_booking rb ON rb.id_room = r.id 
+JOIN booking b ON b.id = rb.id_booking 
+JOIN users u ON b.id_guest = u.id 
+JOIN booking_status bs ON bs.id = b.id_status 
+HAVING "2025-03-15" BETWEEN b.check_in AND b.check_out
+;
 -- HẬU
+-- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
+RENAME TABLE user TO users;
+RENAME TABLE role TO roles;
+ALTER TABLE users DROP FOREIGN KEY fk_id_role_user;
+ALTER TABLE users ADD CONSTRAINT fk_id_role_users FOREIGN KEY(id_role) REFERENCES roles(id);
+
+-- dữ liệu test user, reservation
+INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+('johndoe', 123, 'John', 'Doe', '1990-01-01', '123-456-7890', 'johndoe@example.com', '123 Main St, City, Country', 'A short bio about John Doe.', 2),
+('janedoe', 123, 'Jane', 'Doe', '1992-02-02', '234-567-8901', 'janedoe@example.com', '456 Elm St, City, Country', 'A short bio about Jane Doe.', 2),
+('bobsmith', 123, 'Bob', 'Smith', '1985-03-03', '345-678-9012', 'bobsmith@example.com', '789 Oak St, City, Country', 'A short bio about Bob Smith.', 2);
+INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUE
+(2,1,1,'2024-08-01 00:00:00','2024-08-01 00:00:00');
+INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,children_number,id_payment_status,id_payment,id_status,paid_amount,total,create_date)
+VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,1000,'2024-07-01 12:00:00');
+INSERT INTO room_booking (id_room,id_booking)
+VALUES (1,1);
+INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,children_number,id_payment_status,id_payment,id_status,paid_amount,total,create_date)
+VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,800,'2024-07-01 12:00:00');
+INSERT INTO room_booking (id_room,id_booking)
+VALUES (2,2);
 
 -- THANH
 
 -- THÁI
+ALTER TABLE users 
+ADD COLUMN image TEXT;
