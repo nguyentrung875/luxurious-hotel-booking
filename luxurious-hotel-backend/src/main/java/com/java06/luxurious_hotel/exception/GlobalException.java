@@ -38,13 +38,13 @@ public class GlobalException {
 //        return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
 //    }
 
-    @ExceptionHandler(TokenInvalidException.class)
-    public ResponseEntity<?> handleTokenInValid(Exception e) {
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setStatusCode(500);
-        baseResponse.setMessage(e.getMessage());
-        return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
-    }
+//    @ExceptionHandler(TokenInvalidException.class)
+//    public ResponseEntity<?> handleTokenInValid(TokenInvalidException e) {
+//        BaseResponse baseResponse = new BaseResponse();
+//        baseResponse.setStatusCode(500);
+//        baseResponse.setMessage(e.getMessage());
+//        return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
+//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handeValidation(MethodArgumentNotValidException e) {
