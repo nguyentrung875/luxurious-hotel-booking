@@ -1,5 +1,11 @@
 package com.java06.luxurious_hotel.exception;
 
+import com.java06.luxurious_hotel.exception.authen.TokenInvalidException;
+import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
+import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
+import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
+import com.java06.luxurious_hotel.exception.user.IncorrectPasswordException;
+import com.java06.luxurious_hotel.exception.user.UserNotFoundException;
 
 import com.java06.luxurious_hotel.exception.roomType.AmentityNotFoundException;
 import com.java06.luxurious_hotel.exception.roomType.RoomTypeNotFoundException;
@@ -12,23 +18,23 @@ import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.nio.file.AccessDeniedException;
-
 @RestControllerAdvice
 public class GlobalException {
 
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<?> handleException(Exception e) {
-//        BaseResponse baseResponse = new BaseResponse();
-//        baseResponse.setStatusCode(500);
-//        baseResponse.setMessage(e.getMessage() + " class: " + e.getClass()
-//        );
-//        return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(500);
+        baseResponse.setMessage(e.getMessage() + " class: " + e.getClass()
+        );
+        return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
 //    //Bắt các lỗi về chứng thực
@@ -40,7 +46,14 @@ public class GlobalException {
 //
 //        return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
 //    }
-//
+
+    @ExceptionHandler(TokenInvalidException.class)
+    public ResponseEntity<?> handleTokenInValid(Exception e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(500);
+        baseResponse.setMessage(e.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handeValidation(MethodArgumentNotValidException e) {
@@ -49,6 +62,7 @@ public class GlobalException {
         baseResponse.setMessage(e.getFieldError().getDefaultMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+//    Handle Exception ROOM ------------------------------------------------------------------------
 
     @ExceptionHandler(RoomNotAvailableException.class)
     public ResponseEntity<?> handleRoomNotAvailableException(RoomNotAvailableException e) {
@@ -69,15 +83,36 @@ public class GlobalException {
     }
 
     @ExceptionHandler(RoomNotFoundException.class)
-    public ResponseEntity<?> handleRoomNotAvailableException(RoomNotFoundException e) {
 
+    public ResponseEntity<?> handleRoomNotAvailableException(RoomNotFoundException e) {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setStatusCode(200);
         baseResponse.setMessage(e.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
+//    Handle Exception BOOKING ------------------------------------------------------------------------
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<?> handleBookingNotFoundException(Exception e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage(e.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+  
+//    Handle Exception USER ------------------------------------------------------------------------
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(Exception e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage(e.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
 
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<?> handleIncorrectPasswordException(IncorrectPasswordException e) {
+
+//    Handle Exception AMENITY ------------------------------------------------------------------------
 
     @ExceptionHandler(AmentityNotFoundException.class)
     public ResponseEntity<?> handleAmentityNotFoundException(AmentityNotFoundException e) {
@@ -87,13 +122,5 @@ public class GlobalException {
             return new ResponseEntity<>(baseResponse, HttpStatus.OK);
         }
 
-    @ExceptionHandler(BookingNotFoundException.class)
-    public ResponseEntity<?> handleBookingNotFoundException(BookingNotFoundException e) {
-
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setStatusCode(200);
-        baseResponse.setMessage(e.getMessage());
-        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
-    }
 
 }
