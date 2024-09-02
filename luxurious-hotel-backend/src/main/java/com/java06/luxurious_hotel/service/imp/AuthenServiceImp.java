@@ -26,7 +26,6 @@ public class AuthenServiceImp implements AuthenService {
 
         UsernamePasswordAuthenticationToken authenToken =
                 new UsernamePasswordAuthenticationToken(request.username(), request.password());
-        System.out.println(request.username() + " : " + request.password());
         Authentication authen = authenticationManager.authenticate(authenToken);
 
         String role =  authen.getAuthorities()

@@ -32,7 +32,6 @@ public class CustomProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        System.out.println("check provider: " + username + " " + password);
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(()-> new UserNotFoundException());
 
