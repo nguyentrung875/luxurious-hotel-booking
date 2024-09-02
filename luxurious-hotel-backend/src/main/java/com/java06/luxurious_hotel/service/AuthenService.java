@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AuthenService {
     String login(AuthenRequest request);
-
+    boolean logout(String token);
 }

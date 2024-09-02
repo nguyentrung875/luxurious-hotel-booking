@@ -44,13 +44,15 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/authen/login").permitAll()
 //                        .requestMatchers("/booking/**").hasAuthority("ROLE_ADMIN")
 //                        .anyRequest().authenticated()
                 )
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(basic-> basic.authenticationEntryPoint(authenticationEntryPoint))
                 .exceptionHandling(Customizer.withDefaults())
 
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                ;
 
         return httpSecurity.build();
     }
