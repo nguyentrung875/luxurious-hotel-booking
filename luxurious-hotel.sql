@@ -173,6 +173,13 @@ CREATE TABLE booking_status(
 	primary key(id)
 );
 
+CREATE TABLE invalid_token(
+	id int auto_increment,
+	token text,
+	exp_time timestamp,
+	primary key(id)
+);
+
 ALTER TABLE room_amenity ADD CONSTRAINT fk_id_room_type_room_amenity FOREIGN KEY(id_room_type) REFERENCES room_type(id);
 ALTER TABLE room_amenity ADD CONSTRAINT fk_id_amenity_room_amenity FOREIGN KEY(id_amenity) REFERENCES amenity(id);
 ALTER TABLE food_menu ADD CONSTRAINT fk_id_menu_food_menu FOREIGN KEY(id_menu) REFERENCES menu(id);
@@ -551,6 +558,28 @@ INSERT INTO users (username , password, first_name, last_name, dob, phone, email
 
 INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
 ('user', '$2a$12$kXpBtvYgGvRtAkvXvgv3fugdX1oxyxXY7EfI4LveoSlqVPT5xUpWq', 'user', 'luxurious', '1990-01-01', '1234567891', 'user@gmail.com', 'user', '', 1);
+
+SHOW VARIABLES LIKE 'event_scheduler';
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT IF NOT EXISTS delete_expired_token
+ON SCHEDULE EVERY 1 DAY
+STARTS NOW() 
+DO
+DELETE FROM invalid_token it 
+WHERE it.exp_time < NOW() ;
+
+
+
+SELECT *, CURRENT_TIMESTAMP(), NOW()  
+FROM invalid_token it 
+WHERE it.exp_time < NOW();
+
+SELECT NOW() ;
+
+SHOW VARIABLES LIKE 'time_zone';
+SET TIME_ZONE="+7:00";
 
 -- HẬU
 -- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
