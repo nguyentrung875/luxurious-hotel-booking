@@ -101,7 +101,7 @@ CREATE TABLE room_booking(
 	primary key(id_room, id_booking)
 );
 
-CREATE TABLE user(
+CREATE TABLE users(
 	id int auto_increment,
 	username varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
 	password varchar(100),
@@ -147,7 +147,7 @@ CREATE TABLE booking(
 	primary key(id)
 );
 
-CREATE TABLE role(
+CREATE TABLE roles(
 	id int auto_increment,
 	name varchar(50) unique,
 	description varchar(100),
@@ -536,7 +536,10 @@ FROM booking b
 JOIN room_booking rb ON rb.id_booking = b.id 
 WHERE check_out > "2024-02-21" AND check_in < "2024-02-24"; 
 
--- HẬU
+-- 			HẬU
+-- sửa not null thành null username của bảng users
+ALTER TABLE users MODIFY username varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL UNIQUE;
+
 -- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
 RENAME TABLE user TO users;
 RENAME TABLE role TO roles;

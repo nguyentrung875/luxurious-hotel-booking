@@ -12,4 +12,5 @@ import java.util.List;
 public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, RoomBookingKey> {
     List<RoomBookingEntity> findByBooking(BookingEntity booking);
     int deleteByBooking(BookingEntity bookingEntity);
+    void deleteAllByBooking_Guest_Id(int id);
 }

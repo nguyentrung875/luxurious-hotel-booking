@@ -3,7 +3,7 @@ package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.dto.BookingGuestDTO;
 import com.java06.luxurious_hotel.dto.GuestDTO;
-import com.java06.luxurious_hotel.dto.coverdto.RoomTypeDTO;
+import com.java06.luxurious_hotel.dto.coverdto.RoomsDTO;
 
 import com.java06.luxurious_hotel.dto.BookingDTO;
 
@@ -18,8 +18,6 @@ import com.java06.luxurious_hotel.repository.UserRepository;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
-import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -230,16 +228,23 @@ public class BookingServiceImp implements BookingService {
     @Override
     public List<BookingGuestDTO> getListBooking(int idGuest) {
 
+        // lấy danh sách trả về từ câu qr
         List<Object[]> results  = bookingRepository.findByGuest_Id(idGuest);
 
+        // tạo list DTO trả ra
         List<BookingGuestDTO> bookingGuestDTOS = new ArrayList<>();
 
+        // chạy vòng for qua tất cả các luồng Objects được trả ra từ câu qr
         for (Object[] result : results ) {
+
+            // khởi tạo BookingEntity để nhận dữ liệu trả ra từ Object
             BookingEntity booking = (BookingEntity) result[0];
+
+            // khởi tạo đối tượng DTO để nhận giá trị
             BookingGuestDTO bookingGuestDTO = new BookingGuestDTO();
 
 
-            // Add phần tử UserEntity vào BookingGuestDTO
+            // Add phần tử UserEntity vào đối tượng GuestDTO của BookingGuestDTO
             GuestDTO guestDTO = new GuestDTO();
 
             guestDTO.setId(booking.getGuest().getId());
@@ -261,22 +266,34 @@ public class BookingServiceImp implements BookingService {
             bookingGuestDTO.setMember(booking.getAdultNumber() + booking.getChildrenNumber());
             bookingGuestDTO.setQuantilyRoom(booking.getRoomNumber());
 
-            // add phần tử roomTypeDTO
-            Map<String, List<String>> roomTypeMap = new HashMap<>();
+            // add dữ liệu cho đối tượng RoomDTO của BookingGuestDTO
 
-            booking.getRoomBookings().forEach(roomBookingEntity -> {
-                String roomType = roomBookingEntity.getRoom().getRoomType().getName();
-                String roomName = roomBookingEntity.getRoom().getName();
+            // khởi tạo 1 map để nhóm các phòng theo loại phòng
+            Map<String, RoomsDTO> roomTypeMap = new HashMap<>();
 
-                roomTypeMap.computeIfAbsent(roomType, k -> new ArrayList<>()).add(roomName);
-            });
+            // Lặp qua các RoomBookingEntity để nhóm phòng lại theo loại phòng
+            for (RoomBookingEntity roomBooking : booking.getRoomBookings()) {
 
-            roomTypeMap.forEach((roomType,roomNames) -> {
-                RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
-                roomTypeDTO.setNameRoomType(roomType);
-                roomTypeDTO.setRoomNumber(roomNames);
-                bookingGuestDTO.getRoomTypeDTO().add(roomTypeDTO);
-            });
+                // nhận name của roomtype
+                String roomTypeName = roomBooking.getRoom().getRoomType().getName();
+
+                // tìm roomsDTO theo name roomtype được lấy ở trên
+                RoomsDTO roomsDTO = roomTypeMap.get(roomTypeName);
+
+                // kiểm tra giá trị roomsDTO có tồn tại hay không nếu null thì khởi tạo
+                if (roomsDTO == null) {
+                    roomsDTO = new RoomsDTO();
+                    roomsDTO.setNameRoomType(roomTypeName);
+                    roomsDTO.setRoomNumber(new ArrayList<>());
+                    roomTypeMap.put(roomTypeName, roomsDTO);
+                }
+
+                roomsDTO.getRoomNumber().add(roomBooking.getRoom().getName());
+            }
+
+            bookingGuestDTO.setRoomsDTO(new ArrayList<>(roomTypeMap.values()));
+
+
             bookingGuestDTOS.add(bookingGuestDTO);
         }
         return bookingGuestDTOS;
