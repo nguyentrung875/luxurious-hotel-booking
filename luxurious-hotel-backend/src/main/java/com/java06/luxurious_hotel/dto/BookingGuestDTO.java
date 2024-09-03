@@ -1,10 +1,8 @@
 package com.java06.luxurious_hotel.dto;
 
-import com.java06.luxurious_hotel.dto.coverdto.RoomTypeDTO;
-import com.java06.luxurious_hotel.entity.UserEntity;
+import com.java06.luxurious_hotel.dto.coverdto.RoomsDTO;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,7 @@ public class BookingGuestDTO {
     private LocalDateTime checkOut;
     private String paymentStatus;
     private String paymentMethod;
-    private List<RoomTypeDTO> roomTypeDTO;
+    private List<RoomsDTO> roomsDTO = new ArrayList<>();
     private int member;
     private int quantilyRoom;
 }
