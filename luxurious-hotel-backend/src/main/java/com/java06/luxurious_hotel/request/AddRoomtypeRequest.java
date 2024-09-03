@@ -1,5 +1,6 @@
 package com.java06.luxurious_hotel.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,24 +16,27 @@ public record AddRoomtypeRequest(
         String overview,
 
         @NotNull(message = "price not null")
-        @NotBlank(message = "price not blank")
+
         double price,
 
         @NotNull(message = "area not null")
-        @NotBlank(message = "area not blank")
+
         double area,
 
         @NotNull(message = "capacity not null")
-        @NotBlank(message = "capacity not blank")
+
         int capacity,
 
         @NotNull(message = "iDBedType not null")
-        @NotBlank(message = "iDBedType not blank")
+
         int iDBedType,
 
         @NotNull(message = "images not null")
-        @NotBlank(message = "images not blank")
+
         List<MultipartFile> images,
-        List<Integer> idAmenity
+        @NotNull(message = "idAmenity not null")
+        @Valid
+        List<@Min(value = 1, message = "idAmenity must be greater than 0")
+        @Max(value = 20, message = "idAmenity must be less than or equal to 20")  Integer> idAmenity
         ) {
 }
