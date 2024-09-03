@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    showBooking()
+
+
+});
+
+var showBooking = () => {
     $.ajax({
         type: "GET",
         contentType: "application/json; charset=utf-8",
@@ -52,9 +58,7 @@ $(document).ready(function () {
         }
     });
 
-
-
-});
+}
 
 var convertRoomCol = (roomType) => {
     let roomNo = ''
@@ -87,6 +91,9 @@ var getClassOfStatus = (status) => {
             break;
         case 'Cancelled':
             className = 'cancelled'
+            break;
+        case 'Pending':
+            className = 'pending'
             break;
         case 'Completed':
             className = 'completed'
