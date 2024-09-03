@@ -28,4 +28,5 @@ public class BookingDTO {
     private String bookingStatus;
     private double paidAmount;
     private double total;
+    private List<RoomTypeDTO> roomType;
 }

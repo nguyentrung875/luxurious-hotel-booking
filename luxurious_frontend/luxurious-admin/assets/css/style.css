@@ -4009,6 +4009,42 @@ table.dataTable td.pending {
   color: #ffa75b;
   font-weight: 500;
 }
+table.dataTable td.confirmed {
+  color: #25c6ef;
+  font-weight: 500;
+}
+table.dataTable td.checked_in {
+  color: #38cb38;
+  font-weight: 500;
+}
+table.dataTable td.checked_out {
+  color: #777;
+  font-weight: 500;
+}
+table.dataTable td.cancelled {
+  color: #f50404;
+  font-weight: 500;
+}
+table.dataTable td.completed {
+  color: #38cb38;
+  font-weight: 500;
+}
+table.dataTable td.failed{
+  color: #ff0022;
+  font-weight: 500;
+}
+table.dataTable td.refunded {
+  color: #0088ff;
+  font-weight: 500;
+}
+table.dataTable td.partially_paid {
+  color: #26fbc6;
+  font-weight: 500;
+}
+table.dataTable td.awaiting_confirmation {
+  color: #bec48a;
+  font-weight: 500;
+}
 table.dataTable td.success, table.dataTable td.paid {
   color: #38cb38;
   font-weight: 500;

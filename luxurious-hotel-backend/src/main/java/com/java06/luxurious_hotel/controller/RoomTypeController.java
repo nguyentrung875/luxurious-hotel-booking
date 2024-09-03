@@ -4,8 +4,13 @@ package com.java06.luxurious_hotel.controller;
 import com.java06.luxurious_hotel.dto.RoomTypeDTO;
 import com.java06.luxurious_hotel.request.AddRoomtypeRequest;
 import com.java06.luxurious_hotel.request.UpdateRoomtypeRequest;
+import com.java06.luxurious_hotel.response.BaseResponse;
+import com.java06.luxurious_hotel.service.FilesStorageService;
 import com.java06.luxurious_hotel.service.RoomTypeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,54 +25,89 @@ public class RoomTypeController {
     @Autowired
     private RoomTypeService roomTypeService;
 
+    @Autowired
+    private FilesStorageService filesStorageService;
+
     @PostMapping
-    public ResponseEntity<?> addRoomType(AddRoomtypeRequest addRoomtypeRequest){
+    public ResponseEntity<?> addRoomType(@Valid AddRoomtypeRequest addRoomtypeRequest){
         roomTypeService.addRoomType(addRoomtypeRequest);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData("New RoomType added successfully");
 
 
-        return new ResponseEntity<>("addroom type ne ne", HttpStatus.OK);
+
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<?> getListRoomType(){
 
         List<RoomTypeDTO> roomTypeDTOList= roomTypeService.allRoomTypes();
-        return new ResponseEntity<>(roomTypeDTOList, HttpStatus.OK);
+
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(roomTypeDTOList);
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getRoomType(@PathVariable int id){
+    public ResponseEntity<?> getRoomTypeDetail(@PathVariable int id){
 
         RoomTypeDTO roomTypeDTO = roomTypeService.findRoomTypeById(id);
 
-        return new ResponseEntity<>(roomTypeDTO, HttpStatus.OK);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(roomTypeDTO);
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRoomType(@PathVariable int id){
 
+        BaseResponse baseResponse = new BaseResponse();
+        String data = "";
         boolean isSuccess = roomTypeService.deleteRoomTypeById(id);
         if (isSuccess) {
-            // Xóa thành công, trả về 204 No Content
-            return new ResponseEntity<>("Delete room type success", HttpStatus.OK);
+
+            data ="Delete Roomtype successfully";
         } else {
-            // Xóa thất bại, trả về 404 Not Found
-            return new ResponseEntity<>("Delete room type fail, room type not found", HttpStatus.NOT_FOUND);
+
+            data ="Delete Roomtype fail";
         }
+        baseResponse.setData(data);
+
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
     }
 
 
     @PutMapping
-    public ResponseEntity<?> updateRoomType(UpdateRoomtypeRequest updateRoomtypeRequest){
+    public ResponseEntity<?> updateRoomType(@Valid UpdateRoomtypeRequest updateRoomtypeRequest){
 
+        BaseResponse baseResponse = new BaseResponse();
+        String data = "";
         boolean isSuccess = roomTypeService.updateRoomType(updateRoomtypeRequest);
 
 
         if (isSuccess) {
-            return new ResponseEntity<>("Update room type success", HttpStatus.OK);
+            data ="Update Roomtype successfully";
         }else {
-            return new ResponseEntity<>("Update room type fail, room type not found", HttpStatus.NOT_FOUND);
+
+            data ="Update room type fail, room type not found";
+
         }
+        baseResponse.setData(data);
+        return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/file/{filename:.+}")
+    public ResponseEntity<?> getRoomType(@PathVariable String filename){
+
+        Resource resource = filesStorageService.load(filename);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(resource);
     }
 }

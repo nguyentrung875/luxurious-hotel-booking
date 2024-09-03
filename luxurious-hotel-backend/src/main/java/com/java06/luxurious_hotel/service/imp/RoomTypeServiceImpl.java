@@ -2,16 +2,15 @@ package com.java06.luxurious_hotel.service.imp;
 
 
 import com.java06.luxurious_hotel.dto.RoomTypeDTO;
-import com.java06.luxurious_hotel.entity.AmenityEntity;
-import com.java06.luxurious_hotel.entity.BedTypeEntity;
-import com.java06.luxurious_hotel.entity.RoomAmenityEntity;
-import com.java06.luxurious_hotel.entity.RoomTypeEntity;
+import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.entity.keys.RoomAmenityKey;
 import com.java06.luxurious_hotel.repository.AmenityRepository;
 import com.java06.luxurious_hotel.repository.RoomAmenityRepository;
+import com.java06.luxurious_hotel.repository.RoomRepository;
 import com.java06.luxurious_hotel.repository.RoomTypeRepository;
 import com.java06.luxurious_hotel.request.AddRoomtypeRequest;
 import com.java06.luxurious_hotel.request.UpdateRoomtypeRequest;
+import com.java06.luxurious_hotel.service.FilesStorageService;
 import com.java06.luxurious_hotel.service.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,9 @@ import java.util.stream.Collectors;
 public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
     private RoomTypeRepository roomTypeRepository;
 
     @Autowired
@@ -35,6 +37,9 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Autowired
     private RoomAmenityRepository roomAmenityRepository;
+
+    @Autowired
+    private FilesStorageService filesStorageService;
 
     @Transactional
     @Override
@@ -64,6 +69,10 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
         RoomTypeEntity roomType = roomTypeRepository.save(roomTypeEntity);
 
+        for (MultipartFile multipartFile : listMFiles) {
+            filesStorageService.save(multipartFile);
+        }
+
         addAmenitiesToRoomType(roomType.getId(), addRoomtypeRequest.idAmenity());
 
 
@@ -76,6 +85,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         boolean result = false;
 
         Optional<RoomTypeEntity> roomTypeEntityCheck = roomTypeRepository.findById(updateRoomtypeRequest.id());
+
         if (roomTypeEntityCheck.isPresent()) {
             RoomTypeEntity roomTypeEntity = new RoomTypeEntity();
             roomTypeEntity.setId(updateRoomtypeRequest.id());
@@ -126,10 +136,15 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             roomTypeDTO.setArea(roomTypeEntity.getArea());
             roomTypeDTO.setCapacity(roomTypeEntity.getCapacity());
             roomTypeDTO.setBedName(roomTypeEntity.getBedType().getName());
+
+            List<RoomEntity> roomEntityList = roomRepository.findRoomEntityByRoomType(roomTypeEntity);
+            List<String> roomNameList = roomEntityList.stream().map(RoomEntity::getName).collect(Collectors.toList());
+            roomTypeDTO.setRoomName(roomNameList);
+
             String imagesString = roomTypeEntity.getImage();
             if (imagesString != null && !imagesString.isEmpty()) {
                 List<String> imagesList = Arrays.stream(imagesString.split(","))
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()).stream().map(item -> ("http://localhost:9999/roomType/file/"+item)).toList();
                 roomTypeDTO.setImage(imagesList);
             }
 
@@ -162,6 +177,11 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         roomTypeDTO.setArea(roomTypeEntity.getArea());
         roomTypeDTO.setCapacity(roomTypeEntity.getCapacity());
         roomTypeDTO.setBedName(roomTypeEntity.getBedType().getName());
+
+        List<RoomEntity> roomEntityList = roomRepository.findRoomEntityByRoomType(roomTypeEntity);
+        List<String> roomNameList = roomEntityList.stream().map(RoomEntity::getName).collect(Collectors.toList());
+        roomTypeDTO.setRoomName(roomNameList);
+
         String imagesString = roomTypeEntity.getImage();
 
         if (imagesString != null && !imagesString.isEmpty()) {

@@ -301,15 +301,9 @@ public class BookingServiceImp implements BookingService {
 
     private List<String> checkAvailableRoom(LocalDateTime inDate, LocalDateTime outDate, List<Integer> bookRoomId){
 
-//        var booked = bookingRepository.findByCheckOutAfterAndCheckInBefore(inDate, outDate);
-//        List<Integer> listBookedRoomId = new ArrayList<>();
-//        booked.forEach(item -> {
-//            var s = roomBookingRepository.findByBooking(item);
-//            s.forEach(item2 -> listBookedRoomId.add(item2.getRoomBookingKey().getIdRoom()));
-//        });
-
         List<String> notAvalableRooms = new ArrayList<>();
-        
+
+        //Lấy ra những room đã được booking trong khoảng tgian khách chọn
         List<RoomEntity> bookedRooms = roomRepository.findBookedRoomsByDateRange(inDate, outDate);
         for (RoomEntity bookedRoom: bookedRooms){
             if (bookRoomId.contains(bookedRoom.getId())){
@@ -336,6 +330,7 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setTotal(booking.getTotal());
         bookingDTO.setAdultNo(booking.getAdultNumber());
         bookingDTO.setChildrenNo(booking.getChildrenNumber());
+
 
         List<RoomEntity> rooms = roomBookingRepository.findByBooking(booking).stream().map(roomBooking -> roomBooking.getRoom()).toList();
 

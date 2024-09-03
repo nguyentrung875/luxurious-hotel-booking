@@ -173,6 +173,13 @@ CREATE TABLE booking_status(
 	primary key(id)
 );
 
+CREATE TABLE invalid_token(
+	id int auto_increment,
+	token text,
+	exp_time timestamp,
+	primary key(id)
+);
+
 ALTER TABLE room_amenity ADD CONSTRAINT fk_id_room_type_room_amenity FOREIGN KEY(id_room_type) REFERENCES room_type(id);
 ALTER TABLE room_amenity ADD CONSTRAINT fk_id_amenity_room_amenity FOREIGN KEY(id_amenity) REFERENCES amenity(id);
 ALTER TABLE food_menu ADD CONSTRAINT fk_id_menu_food_menu FOREIGN KEY(id_menu) REFERENCES menu(id);
@@ -212,7 +219,7 @@ VALUES ('Single Bed'),
 
 INSERT INTO room_type (name, overview, price, area, capacity, id_bed_type, image)
 VALUES ('Standard Room', '', 200, 40, 2, 3,''),
-('Superior Roomm', '', 300, 50, 2, 4,''),
+('Superior Room', '', 300, 50, 2, 4,''),
 ('Deluxe Room', '', 500, 60, 2, 5,''),
 ('Suite Room', '', 1000, 300, 4, 5,''),
 ('Family Room', '', 900, 200, 6, 8,'')
@@ -531,10 +538,48 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 -- Phần thêm/sửa/xóa dữ liệu nếu cần:
 -- TRUNG
 -- Tìm id room đã được book trong khoảng thời gian
-SELECT rb.id_room
+SELECT rb.id_room , rb.id_booking , b.id_status 
 FROM booking b 
 JOIN room_booking rb ON rb.id_booking = b.id 
-WHERE check_out > "2024-02-21" AND check_in < "2024-02-24"; 
+WHERE check_out > "2024-02-21" AND check_in < "2024-02-24" AND b.id_status <> 5; 
+
+SELECT r.name , b.id , b.check_in , b.check_out ,u.first_name ,bs.name  
+FROM room r 
+JOIN room_booking rb ON rb.id_room = r.id 
+JOIN booking b ON b.id = rb.id_booking 
+JOIN users u ON b.id_guest = u.id 
+JOIN booking_status bs ON bs.id = b.id_status 
+HAVING "2025-03-15" BETWEEN b.check_in AND b.check_out
+;
+
+
+INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+('admin', '$2a$12$bsO6yLnL4.7nsn9DOvLqqeY6oolhWIrpFEwKHzvGnywyT/rZWNJim', 'admin', 'luxurious', '1990-01-01', '1234567890', 'admin@gmail.com', 'admin', '', 2);
+
+INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+('user', '$2a$12$kXpBtvYgGvRtAkvXvgv3fugdX1oxyxXY7EfI4LveoSlqVPT5xUpWq', 'user', 'luxurious', '1990-01-01', '1234567891', 'user@gmail.com', 'user', '', 1);
+
+SHOW VARIABLES LIKE 'event_scheduler';
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT IF NOT EXISTS delete_expired_token
+ON SCHEDULE EVERY 1 DAY
+STARTS NOW() 
+DO
+DELETE FROM invalid_token it 
+WHERE it.exp_time < NOW() ;
+
+
+
+SELECT *, CURRENT_TIMESTAMP(), NOW()  
+FROM invalid_token it 
+WHERE it.exp_time < NOW();
+
+SELECT NOW() ;
+
+SHOW VARIABLES LIKE 'time_zone';
+SET TIME_ZONE="+7:00";
 
 -- 			HẬU
 -- sửa not null thành null username của bảng users
@@ -551,7 +596,8 @@ INSERT INTO users (username , password, first_name, last_name, dob, phone, email
 ('johndoe', 123, 'John', 'Doe', '1990-01-01', '123-456-7890', 'johndoe@example.com', '123 Main St, City, Country', 'A short bio about John Doe.', 2),
 ('janedoe', 123, 'Jane', 'Doe', '1992-02-02', '234-567-8901', 'janedoe@example.com', '456 Elm St, City, Country', 'A short bio about Jane Doe.', 2),
 ('bobsmith', 123, 'Bob', 'Smith', '1985-03-03', '345-678-9012', 'bobsmith@example.com', '789 Oak St, City, Country', 'A short bio about Bob Smith.', 2);
-INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUE
+
+INSERT INTO reservation (id_guest,id_table,guest_number,reservation_time,create_date) VALUES
 (2,1,1,'2024-08-01 00:00:00','2024-08-01 00:00:00');
 INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,children_number,id_payment_status,id_payment,id_status,paid_amount,total,create_date)
 VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,1000,'2024-07-01 12:00:00');
@@ -563,6 +609,25 @@ INSERT INTO room_booking (id_room,id_booking)
 VALUES (2,2);
 
 -- THANH
+
+INSERT INTO users  (username, password, first_name, last_name, dob, phone, email, address, summary, id_role)
+VALUES
+('johndoe', 'password123', 'John', 'Doe', '1990-01-01', '123-456-7890', 'johndoe@example.com', '123 Elm Street, Springfield', 'Experienced software developer.', 1),
+('janedoe', 'password456', 'Jane', 'Doe', '1985-05-15', '987-654-3210', 'janedoe@example.com', '456 Oak Street, Springfield', 'Project manager with 10 years of experience.', 2),
+('bobsmith', 'password789', 'Bob', 'Smith', '1992-11-25', '555-123-4567', 'bobsmith@example.com', '789 Maple Street, Springfield', 'Marketing specialist.', 3),
+('alicejones', 'password321', 'Alice', 'Jones', '1988-03-10', '555-987-6543', 'alicejones@example.com', '101 Pine Street, Springfield', 'Experienced analyst.', 4),
+('michaelbrown', 'password654', 'Michael', 'Brown', '1980-07-20', '666-555-4444', 'michaelbrown@example.com', '202 Birch Street, Springfield', 'Senior developer with 15 years of experience.', 1),
+('emilywhite', 'password987', 'Emily', 'White', '1995-12-05', '777-888-9999', 'emilywhite@example.com', '303 Cedar Street, Springfield', 'Junior designer.', 2),
+('davidblack', 'password234', 'David', 'Black', '1987-09-17', '444-333-2222', 'davidblack@example.com', '404 Spruce Street, Springfield', 'Experienced consultant.', 3),
+('sarahgreen', 'password345', 'Sarah', 'Green', '1992-04-11', '555-444-3333', 'sarahgreen@example.com', '505 Willow Street, Springfield', 'HR manager.', 4),
+('jamesgray', 'password567', 'James', 'Gray', '1983-06-29', '666-777-8888', 'jamesgray@example.com', '606 Ash Street, Springfield', 'Software architect.', 1),
+('laurajohnson', 'password678', 'Laura', 'Johnson', '1991-02-14', '776-888-9999', 'laurajohnson@example.com', '707 Elm Street, Springfield', 'Data scientist.', 2);
+
+INSERT INTO booking (check_in, check_out, room_number, id_guest, adult_number, children_number, id_payment_status, id_payment, id_status, paid_amount, total, create_date)
+VALUES
+('2024-08-01 00:00:00', '2024-08-05 00:00:00', 101, 3, 2, 1, 1, 1, 2, 200.00, 250.00, '2024-07-15 10:00:00'),
+('2024-08-03 00:00:00', '2024-08-07 00:00:00', 102, 5, 1, 2, 2, 2, 1, 150.00, 300.00, '2024-07-17 09:30:00'),
+('2024-08-05 00:00:00', '2024-08-10 00:00:00', 103, 6, 3, 0, 1, 1, 3, 350.00, 400.00, '2024-07-18 11:15:00');
 
 -- THÁI
 ALTER TABLE users 
