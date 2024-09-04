@@ -1,10 +1,10 @@
 package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.dto.*;
-import com.java06.luxurious_hotel.entity.BookingEntity;
-import com.java06.luxurious_hotel.entity.RoomAmenityEntity;
-import com.java06.luxurious_hotel.entity.RoomBookingEntity;
-import com.java06.luxurious_hotel.entity.UserEntity;
+import com.java06.luxurious_hotel.dto.searchAvaiRoom.BedTypeDTO;
+import com.java06.luxurious_hotel.dto.searchAvaiRoom.RoomAvailableDTO;
+import com.java06.luxurious_hotel.dto.searchAvaiRoom.RoomTypeAvailableDTO;
+import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.repository.*;
 import com.java06.luxurious_hotel.request.SearchRoomRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,46 +104,55 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
 
     public LocalDateTime parseDate(String date) {
         String data = date.trim() + "T00:00:00";
-
-
         return LocalDateTime.parse(data);
 
     }
 
+
     @Override
-    public List<RoomVailableDTO> getAvailableRooms(SearchRoomRequest searchRoomRequest) {
+    public List<RoomTypeAvailableDTO> getAvailableRooms(SearchRoomRequest searchRoomRequest) {
+        List<RoomAvailableInfo> roomAvailableInfoList = roomRepository.findAvailableRoom(
+                parseDate(searchRoomRequest.checkIn()), parseDate(searchRoomRequest.checkOut()));
 
+        Map<String, RoomTypeAvailableDTO> roomTypeMap = new HashMap<>();
 
-        List<RoomAvailableInfo> roomAvailableInfoList = roomRepository.findAvailableRoom(parseDate(searchRoomRequest.checkIn()), parseDate(searchRoomRequest.checkOut()));
-        List<RoomVailableDTO> roomVailableDTOList = new ArrayList<>();
-        for (RoomAvailableInfo item : roomAvailableInfoList) {
-            RoomVailableDTO roomVailableDTO = new RoomVailableDTO();
-            roomVailableDTO.setRoomNumber(item.getRoomEntity().getName());
-            roomVailableDTO.setRoomTypeName(item.getRoomTypeEntity().getName());
-            roomVailableDTO.setArea(item.getRoomTypeEntity().getArea());
-            roomVailableDTO.setPrice(item.getRoomTypeEntity().getPrice());
-            roomVailableDTO.setOverview(item.getRoomTypeEntity().getOverview());
-            //String bedName = bedTypeRepository.findById(item.getRoomTypeEntity().getBedType().getName());
-            roomVailableDTO.setBedName(item.getRoomTypeEntity().getBedType().getName());
-            roomVailableDTO.setQltGuest(item.getRoomTypeEntity().getCapacity());
-            String imagesString = item.getRoomTypeEntity().getImage();
-            if (imagesString != null && !imagesString.isEmpty()) {
-                List<String> imagesList = Arrays.stream(imagesString.split(","))
-                        .collect(Collectors.toList());
-                roomVailableDTO.setImage(imagesList);
+        for (RoomAvailableInfo roomAvailableInfo : roomAvailableInfoList) {
+            String roomTypeName = roomAvailableInfo.getRoomEntity().getRoomType().getName();
+
+            //Mục đích: chỉ Khởi tạo RoomTypeAvailableDTO 1 lần thôi
+            if (!roomTypeMap.containsKey(roomTypeName)) {
+                RoomTypeAvailableDTO roomTypeAvailableDTO = new RoomTypeAvailableDTO();
+                roomTypeAvailableDTO.setRoomTypeName(roomTypeName);
+                roomTypeAvailableDTO.setPrice(roomAvailableInfo.getRoomEntity().getRoomType().getPrice());
+                roomTypeAvailableDTO.setCapacity(roomAvailableInfo.getRoomEntity().getRoomType().getCapacity());
+                roomTypeAvailableDTO.setRoomAvailableDTOList(new ArrayList<>());
+
+                // Create BedTypeDTO
+                BedTypeDTO bedTypeDTO = new BedTypeDTO();
+                bedTypeDTO.setId(roomAvailableInfo.getRoomEntity().getRoomType().getBedType().getId());
+                bedTypeDTO.setName(roomAvailableInfo.getRoomEntity().getRoomType().getBedType().getName());
+                roomTypeAvailableDTO.setBedType(bedTypeDTO);
+
+                roomTypeMap.put(roomTypeName, roomTypeAvailableDTO);
             }
-            List<RoomAmenityEntity> list = roomAmenityRepository.findByRoomTypeId(item.getRoomTypeEntity().getId());
-            String amenityStr = list.stream().
-                    map(roomAmenityEntity -> roomAmenityEntity.getAmenity().getDescription()).
-                    collect(Collectors.joining(", "));
 
-            roomVailableDTO.setAmanity(amenityStr);
+            // Add available room to the corresponding room type
+            RoomAvailableDTO roomAvailableDTO = new RoomAvailableDTO();
+            roomAvailableDTO.setRoomId(roomAvailableInfo.getRoomEntity().getId());
+            roomAvailableDTO.setRoomName(roomAvailableInfo.getRoomEntity().getName());
 
-
-            roomVailableDTOList.add(roomVailableDTO);
+            roomTypeMap.get(roomTypeName).getRoomAvailableDTOList().add(roomAvailableDTO);
         }
 
-        System.out.println("oke");
-        return roomVailableDTOList;
+
+        return new ArrayList<>(roomTypeMap.values());
     }
+
+
+
+
+
+
 }
+
+

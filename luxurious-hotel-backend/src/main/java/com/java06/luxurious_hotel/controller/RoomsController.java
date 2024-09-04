@@ -2,6 +2,7 @@ package com.java06.luxurious_hotel.controller;
 
 import com.java06.luxurious_hotel.dto.RoomTypeDTO;
 import com.java06.luxurious_hotel.dto.RoomVailableDTO;
+import com.java06.luxurious_hotel.dto.searchAvaiRoom.RoomTypeAvailableDTO;
 import com.java06.luxurious_hotel.request.SearchRoomRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import com.java06.luxurious_hotel.service.RoomService;
@@ -28,7 +29,7 @@ public class RoomsController {
     public ResponseEntity<?> getAvailableRoom(@Valid SearchRoomRequest searchRoomRequest) {
 
 
-        List<RoomVailableDTO> roomVailableDTOList = roomService.getAvailableRooms(searchRoomRequest);
+        List<RoomTypeAvailableDTO> roomVailableDTOList = roomService.getAvailableRooms(searchRoomRequest);
         System.out.println("so luọng là : " + roomVailableDTOList.size());
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setData(roomVailableDTOList);
