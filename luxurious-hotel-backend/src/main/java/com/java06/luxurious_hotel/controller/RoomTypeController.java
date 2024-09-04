@@ -79,7 +79,7 @@ public class RoomTypeController {
         baseResponse.setData(data);
 
 
-        return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
 

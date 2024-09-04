@@ -109,7 +109,17 @@ public class RoomTypeServiceImpl implements RoomTypeService {
                 roomTypeEntity.setImage(imagesString);
             }
 
+
+
+
             RoomTypeEntity roomType = roomTypeRepository.save(roomTypeEntity);
+
+
+            for (MultipartFile multipartFile : listMFiles) {
+                filesStorageService.save(multipartFile);
+            }
+
+
             roomAmenityRepository.deleteByRoomTypeId(updateRoomtypeRequest.id());
             addAmenitiesToRoomType(roomType.getId(), updateRoomtypeRequest.idAmenity());
 
@@ -177,6 +187,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         roomTypeDTO.setArea(roomTypeEntity.getArea());
         roomTypeDTO.setCapacity(roomTypeEntity.getCapacity());
         roomTypeDTO.setBedName(roomTypeEntity.getBedType().getName());
+        roomTypeDTO.setBedNum(roomTypeEntity.getBedType().getId());
 
         List<RoomEntity> roomEntityList = roomRepository.findRoomEntityByRoomType(roomTypeEntity);
         List<String> roomNameList = roomEntityList.stream().map(RoomEntity::getName).collect(Collectors.toList());
@@ -186,7 +197,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
         if (imagesString != null && !imagesString.isEmpty()) {
             List<String> imagesList = Arrays.stream(imagesString.split(","))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()).stream().map(item -> ("http://localhost:9999/roomType/file/"+item)).toList();
             roomTypeDTO.setImage(imagesList);
         }
 
@@ -197,6 +208,10 @@ public class RoomTypeServiceImpl implements RoomTypeService {
                 collect(Collectors.joining(", "));
 
         roomTypeDTO.setAmenity(amenityStr);
+
+//        String amentityNum = list.stream().
+//                map(roomAmenityEntity -> roomAmenityEntity.getAmenity().getDescription()).
+//                collect(Collectors.joining(", "));
         return roomTypeDTO;
     }
 
