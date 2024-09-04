@@ -19,4 +19,6 @@ public class BookingGuestDTO {
     private List<RoomsDTO> roomsDTO = new ArrayList<>();
     private int member;
     private int quantilyRoom;
+
+
 }

@@ -8,40 +8,29 @@ import java.util.List;
 
 public record UpdateRoomtypeRequest(
         @NotNull(message = "id not null")
-
         int id,
 
         @NotNull(message = "name not null")
         @NotBlank(message = "name not blank")
         String name,
 
-
         @NotNull(message = "overview not null")
         @NotBlank(message = "overview not blank")
         String overview,
 
-
         @NotNull(message = "price not null")
-
         double price,
 
-
         @NotNull(message = "area not null")
-
         double area,
 
-
         @NotNull(message = "capacity not null")
-
         int capacity,
 
-
         @NotNull(message = "iDBedType not null")
-
         int iDBedType,
 
         @NotNull(message = "image not null")
-
         List<MultipartFile> images,
 
         @NotNull(message = "idAmenity not null")
