@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import java.util.List;
+
 public record UpdateBookingRequest(
         @NotNull(message = "Booking Id not null")
         int idBooking,
@@ -19,8 +21,7 @@ public record UpdateBookingRequest(
         int roomNumber,
 
         @NotNull(message = "Rooms not null")
-        @NotBlank(message = "Rooms not null")
-        String rooms,
+        List<String> rooms,
 
         @NotNull(message = "adultNumber not null")
         int adultNumber,

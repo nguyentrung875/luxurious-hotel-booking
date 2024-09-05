@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record AddBookingRequest (
         @NotNull(message = "First name not null")
@@ -21,28 +22,39 @@ public record AddBookingRequest (
         @Email(message = "Incorrect email format")
         String email,
 
+        String address,
+
+        @NotNull(message = "checkInDate not null")
         @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Incorrect date format yyyy-MM-dd")
         String checkInDate,
 
+        @NotNull(message = "checkOutDate not null")
         @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Incorrect date format yyyy-MM-dd")
         String checkOutDate,
+
         int roomNumber,
 
         @NotNull(message = "Rooms not null")
-        @NotBlank(message = "Rooms not null")
-        String rooms,
+        List<String> rooms,
 
         @NotNull(message = "adultNumber not null")
         int adultNumber,
 
+        @NotNull(message = "childrenNumber not null")
         int childrenNumber,
 
+        @NotNull(message = "idPaymentStatus not null")
         int idPaymentStatus,
 
+        @NotNull(message = "idPayment not null")
         int idPayment,
 
+        int idBookingStatus,
+
+        @NotNull(message = "paidAmount not null")
         double paidAmount,
 
+        @NotNull(message = "total not null")
         double total
 ){
 }

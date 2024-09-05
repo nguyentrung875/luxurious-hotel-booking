@@ -5959,6 +5959,12 @@ select{
   width: 100%;/* Only for example */
 }
 
+select.form-control + .chosen-container .chosen-drop .disabled-result{
+  color: #ff00184d;
+}
+
+
+
 select.form-control + .chosen-container.chosen-container-single .chosen-single {
   display: block;
   width: 100%;

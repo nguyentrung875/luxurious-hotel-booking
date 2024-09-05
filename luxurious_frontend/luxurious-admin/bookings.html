@@ -538,16 +538,19 @@
 												</div>
 											</div>
 											<div class="form-group p-b-15">
-												<input type="text" class="form-control" placeholder="Enter name">
+												<input id="input_first_name" type="text" class="form-control" placeholder="Enter first name">
 											</div>
 											<div class="form-group p-b-15">
-												<input type="text" class="form-control" placeholder="Enter Phone No">
+												<input id="input_last_name" type="text" class="form-control" placeholder="Enter last name">
 											</div>
 											<div class="form-group p-b-15">
-												<input type="text" class="form-control" placeholder="Enter Email">
+												<input id="input_phone" type="text" class="form-control" placeholder="Enter Phone No">
+											</div>
+											<div class="form-group p-b-15">
+												<input id="input_email" type="text" class="form-control" placeholder="Enter Email">
 											</div>
 											<div class="form-group">
-												<textarea type="text" class="form-control"
+												<textarea id="input_address" type="text" class="form-control"
 													placeholder="Enter Address"></textarea>
 											</div>
 										</div>
@@ -570,14 +573,14 @@
 									<div class="col-md-6 col-sm-12">
 										<div class="lh-user-detail">
 											<ul>
-												<li><strong>CheckIn : </strong>
+												<li><strong>Check In : </strong>
 													<div class="form-group">
-														<input type="date" name="dateofbirth">
+														<input id="input_checkin" type="date" name="checkin">
 													</div>
 												</li>
-												<li><strong>CheckOut : </strong>
+												<li><strong>Check Out : </strong>
 													<div class="form-group">
-														<input type="date" name="dateofbirth">
+														<input id="input_checkout" type="date" name="checkout">
 													</div>
 												</li>
 											</ul>
@@ -587,23 +590,19 @@
 
 										<div class="lh-user-detail">
 											<ul>
-												<li><strong>Payment : </strong>
+												<li><strong>Payment Method : </strong>
 													<div class="form-group">
 														<div class="form-group">
-															<select name="select" id="select">
-																<option value="option-1">Junior Suit</option>
-																<option value="option-2">Delux</option>
-																<option value="option-2">VIP</option>
+															<select name="select" id="input_payment_method">
+
 															</select>
 														</div>
 													</div>
 												</li>
 												<li><strong>Payment Status : </strong>
 													<div class="form-group">
-														<select name="select" id="select">
-															<option value="option-1">Junior Suit</option>
-															<option value="option-2">Delux</option>
-															<option value="option-2">VIP</option>
+														<select name="select" id="input_payment_status">
+
 														</select>
 													</div>
 												</li>
@@ -615,13 +614,13 @@
 											<ul>
 												<li><strong>Adult : </strong>
 													<div class="form-group">
-														<input type="number" class="form-control"
+														<input type="number" class="form-control" id="input_adult"
 															placeholder="Enter the number of adults">
 													</div>
 												</li>
 												<li><strong>Children : </strong>
 													<div class="form-group">
-														<input type="number" class="form-control"
+														<input type="number" class="form-control" id="input_children"
 															placeholder="Enter the number of children">
 													</div>
 												</li>
@@ -633,18 +632,16 @@
 											<ul>
 												<li><strong>Booking Status :</strong>
 													<div class="form-group">
-														<select name="select" id="select">
-															<option value="option-1">Junior Suit</option>
-															<option value="option-2">Delux</option>
-															<option value="option-2">VIP</option>
+														<select name="select" id="input_booking_status">
+
 														</select>
+
 													</div>
 												</li>
-												<li><strong>Note : </strong>
+												<li><strong>Paid Amount : </strong>
 													<div class="form-group">
-														<input type="text" class="form-control"
-															placeholder="Note">
-													</div>
+														<input id="input_paid_amount" type="number" class="form-control"
+														placeholder="Paid Amount">													</div>
 												</li>
 											</ul>
 										</div>
@@ -652,27 +649,26 @@
 									<div class="col-md-6 col-sm-12">
 										<div class="lh-user-detail">
 											<ul>
-												<li><strong>Rooms : </strong>
-													<div class="form-group">
-														<select class="form-control chosen-select" multiple>
-															<optgroup label="Standard Room (200$/night)">
-																<option value="option1">101</option>
-																<option value="option2">202</option>
-																<option value="option3">301</option>
-																<option value="option4">401</option>
-															</optgroup>
-															<optgroup label="VIP Room (500$/night)">
-																<option value="option1">101</option>
-																<option value="option2">202</option>
-																<option value="option3">301</option>
-																<option value="option4">401</option>
-															</optgroup>
-															<optgroup label="Family Room (200$/night)">
-																<option value="option1">101</option>
-																<option value="option2">202</option>
-																<option value="option3">301</option>
-																<option value="option4">401</option>
-															</optgroup>
+												<li>
+													<div
+														style="display: flex; justify-content: space-between; align-items: center;">
+														<strong>Rooms :</strong>
+														<small
+															style="margin-left: auto; color: rgb(110, 110, 113); cursor: pointer;">
+															<a>Update</a> |
+															<a>Load available rooms</a>
+														</small>
+													</div>
+													<div class="form-group input-group mb-3">
+														<select id="input_rooms" class="form-control chosen-select"
+															multiple>
+															<!-- <optgroup label="Standard Room (200$/night)">
+																<option value="1">101</option>
+																<option value="2">202</option>
+																<option disabled="disabled" value="3">301</option>
+																<option disabled="disabled" value="4">401</option>
+															</optgroup> -->
+														
 														</select>
 													</div>
 												</li>
@@ -683,8 +679,8 @@
 											<ul>
 												<li><strong>Total : </strong>
 													<div class="form-group">
-														<input type="number" class="form-control"
-														placeholder="Total">
+														<input id="input_total" type="number" class="form-control"
+															placeholder="Total">
 													</div>
 												</li>
 											</ul>
@@ -694,7 +690,8 @@
 										<div class="lh-user-detail">
 											<ul>
 												<li>
-													<button type="submit" class="lh-btn-primary">Submit</button>
+													<button id="submit_booking" type="submit"
+														class="lh-btn-primary">Submit</button>
 												</li>
 											</ul>
 										</div>
@@ -704,6 +701,19 @@
 						</div>
 					</div>
 				</div>
+				<div class="toast-container position-fixed bottom-0 end-0 p-3">
+					<div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+					  <div class="toast-header">
+						<img src="..." class="rounded me-2" alt="...">
+						<strong class="me-auto">Bootstrap</strong>
+						<small>11 mins ago</small>
+						<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+					  </div>
+					  <div class="toast-body">
+						Hello, world! This is a toast message.
+					  </div>
+					</div>
+				  </div>
 				<div class="row">
 					<div class="col-xl-12 col-md-12">
 						<div class="lh-card" id="bookingtbl">
@@ -725,8 +735,8 @@
 												<tr>
 													<th>ID</th>
 													<th>Guest</th>
-													<th>CheckIn</th>
-													<th>CheckOut</th>
+													<th>Check In</th>
+													<th>Check Out</th>
 													<th>Status</th>
 													<th>Payment Status</th>
 													<th>Paid Amount</th>

@@ -60,7 +60,7 @@ public class AuthenServiceImp implements AuthenService {
         InvalidTokenEntity invalidTokenEntity = new InvalidTokenEntity();
         invalidTokenEntity.setToken(token);
         invalidTokenEntity.setExpTime(claims.getPayload().getExpiration().toInstant()
-                .atZone(ZoneId.systemDefault())
+                .atZone(ZoneId.of("UTC"))
                 .toLocalDateTime());
 
         invalidTokenRepository.save(invalidTokenEntity);

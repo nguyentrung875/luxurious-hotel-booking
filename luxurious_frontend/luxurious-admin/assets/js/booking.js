@@ -1,10 +1,119 @@
 $(document).ready(function () {
     showBooking()
+    showStatus()
+    showRooms()
+    
+    $('#submit_booking').click(function (e) { 
+        $('#liveToast').show();
 
+        var inputAddBooking = {
+            "firstName": "Thanh",
+            "lastName": "Nguyễn",
+            "phone": "0931789386",
+            "email": "nguyenkiem12@gmail.com",
+            "address": "123 Cao Thắng, P5, Q3, TPHCM",
+            "checkInDate": "2025-03-20",
+            "checkOutDate": "2025-03-25",
+            "roomNumber": 4,
+            "rooms": "20",
+            "adultNumber": 8,
+            "childrenNumber": 1,
+            "idBookingStatus" : 2,
+            "idPaymentStatus": 1,
+            "idPayment": 1,
+            "paidAmount": 20.5,
+            "total": 50.0
+        }
 
+        inputAddBooking.firstName = $('#input_first_name').val();
+        inputAddBooking.lastName = $('#input_last_name').val();
+        inputAddBooking.phone = $('#input_phone').val();
+        inputAddBooking.email = $('#input_email').val();
+        inputAddBooking.checkInDate = $('#input_checkin').val();
+        inputAddBooking.checkOutDate = $('#input_checkout').val();
+        inputAddBooking.rooms = $('#input_rooms').val();
+        inputAddBooking.adultNumber = $('#input_adult').val();
+        inputAddBooking.childrenNumber = $('#input_children').val();
+        inputAddBooking.idBookingStatus = $('#input_booking_status').val();
+        inputAddBooking.idPaymentStatus = $('#input_payment_status').val();
+        inputAddBooking.idPayment = $('#input_payment_method').val();
+        inputAddBooking.paidAmount = $('#input_paid_amount').val();
+        inputAddBooking.total = $('#input_total').val();
+        
+        console.log(inputAddBooking)
+
+        addBooking(inputAddBooking)
+    });
 });
 
-var showBooking = () => {
+
+
+var addBooking = (inputAddBooking) => {
+    console.log(inputAddBooking)
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "http://localhost:9999/booking",
+        data: JSON.stringify(inputAddBooking),
+        success: function (response) {
+            console.log(response)
+        },
+        error: function(response){
+            console.log('error ajax',response.responseJSON)
+        }
+    });
+
+}
+
+function showRooms() {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: "http://localhost:9999/roomType",
+        success: function (response) {
+            html = ''
+            for (let i = 0; i < response.data.length; i++) {
+                let itemRoomType = response.data[i]
+                html += `<optgroup label="${itemRoomType.name} (${itemRoomType.price}$/night)">`
+                for (let j = 0; j < itemRoomType.roomName.length; j++) {
+                    let roomName = itemRoomType.roomName[j]
+                    html += `<option disable="disable" value="${roomName}">${roomName}</option>`
+                }
+                html += `</optgroup>`
+            }
+
+            $('#input_rooms').append(html);
+            $('#input_rooms').trigger("chosen:updated");
+
+        }
+    });
+}
+
+function showStatus() {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: "http://localhost:9999/status",
+        success: function (response) {
+            
+
+            response.data.listPaymentStatus.forEach(item => {
+                $("#input_payment_status").append(`<option value="${item.id}">${item.name}</option>`);
+            });
+
+            response.data.listPaymentMethod.forEach(item => {
+                $("#input_payment_method").append(`<option value="${item.id}">${item.name}</option>`);
+            });
+
+            response.data.listBookingStatus.forEach(item => {
+                $("#input_booking_status").append(`<option value="${item.id}">${item.name}</option>`);
+            });
+        }
+    });
+}
+
+function showBooking(params) {
     $.ajax({
         type: "GET",
         contentType: "application/json; charset=utf-8",
@@ -57,10 +166,9 @@ var showBooking = () => {
             $('#booking_table').DataTable();
         }
     });
-
 }
 
-var convertRoomCol = (roomType) => {
+function convertRoomCol(roomType) {
     let roomNo = ''
     let roomsString = ''
 
@@ -74,7 +182,8 @@ var convertRoomCol = (roomType) => {
     return roomNo.substring(roomNo, roomNo.length - 2)
 }
 
-var getClassOfStatus = (status) => {
+
+function getClassOfStatus(status) {
     let className = ''
     switch (status) {
         case 'Pending Confirmation':

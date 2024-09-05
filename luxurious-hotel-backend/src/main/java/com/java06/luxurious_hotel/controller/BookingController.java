@@ -35,7 +35,7 @@ public class BookingController {
     public ResponseEntity<?> addBooking(@Valid @RequestBody AddBookingRequest request){
         bookingService.addNewBooking(request);
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setMessage("New booking added successfully");
+        baseResponse.setMessage("New booking added successfully!");
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
