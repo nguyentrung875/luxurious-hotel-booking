@@ -1,5 +1,5 @@
 CREATE DATABASE luxurioushotel;
-SET TIME_ZONE="+7:00";
+SET TIME_ZONE="+0:00";
 SHOW VARIABLES LIKE '%time_zone%';
 
 USE luxurioushotel;
@@ -101,7 +101,7 @@ CREATE TABLE room_booking(
 	primary key(id_room, id_booking)
 );
 
-CREATE TABLE users(
+CREATE TABLE user(
 	id int auto_increment,
 	username varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
 	password varchar(100),
@@ -147,7 +147,7 @@ CREATE TABLE booking(
 	primary key(id)
 );
 
-CREATE TABLE roles(
+CREATE TABLE role(
 	id int auto_increment,
 	name varchar(50) unique,
 	description varchar(100),
@@ -541,15 +541,15 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 SELECT rb.id_room , rb.id_booking , b.id_status 
 FROM booking b 
 JOIN room_booking rb ON rb.id_booking = b.id 
-WHERE check_out > "2024-02-21" AND check_in < "2024-02-24" AND b.id_status <> 5; 
+WHERE check_out > "2024-02-21" AND check_in < "2024-02-24"  AND b.id_status NOT IN (1,5); 
 
-SELECT r.name , b.id , b.check_in , b.check_out ,u.first_name ,bs.name  
+SELECT r.name , b.id , b.check_in , b.check_out ,u.first_name ,bs.name, b.id_status 
 FROM room r 
 JOIN room_booking rb ON rb.id_room = r.id 
 JOIN booking b ON b.id = rb.id_booking 
 JOIN users u ON b.id_guest = u.id 
 JOIN booking_status bs ON bs.id = b.id_status 
-HAVING "2025-03-15" BETWEEN b.check_in AND b.check_out
+WHERE "2025-03-15" BETWEEN b.check_in AND b.check_out
 ;
 
 
@@ -563,6 +563,7 @@ SHOW VARIABLES LIKE 'event_scheduler';
 
 SET GLOBAL event_scheduler = ON;
 
+-- Lên lịch xóa logout token đã hết hạn
 CREATE EVENT IF NOT EXISTS delete_expired_token
 ON SCHEDULE EVERY 1 DAY
 STARTS NOW() 
@@ -572,19 +573,18 @@ WHERE it.exp_time < NOW() ;
 
 
 
-SELECT *, CURRENT_TIMESTAMP(), NOW()  
-FROM invalid_token it 
-WHERE it.exp_time < NOW();
+SELECT *, NOW()
+FROM invalid_token it
 
 SELECT NOW() ;
+
+SELECT *, NOW() 
+FROM booking b 
 
 SHOW VARIABLES LIKE 'time_zone';
 SET TIME_ZONE="+7:00";
 
--- 			HẬU
--- sửa not null thành null username của bảng users
-ALTER TABLE users MODIFY username varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL UNIQUE;
-
+-- HẬU
 -- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
 RENAME TABLE user TO users;
 RENAME TABLE role TO roles;

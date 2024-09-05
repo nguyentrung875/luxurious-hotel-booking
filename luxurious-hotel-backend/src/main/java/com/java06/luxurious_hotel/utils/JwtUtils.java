@@ -34,7 +34,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .subject(authorityDTO.getUsername())
                 .issuedAt(new Date())
-                .expiration(new Date(now.getTime() + 10000L))
+                .expiration(new Date(now.getTime() + EXPIRATION_TIME))
                 .claim("role", authorityDTO.getRole())
                 .signWith(secretKey)
                 .compact();

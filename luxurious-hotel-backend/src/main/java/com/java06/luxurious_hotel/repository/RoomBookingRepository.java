@@ -15,9 +15,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-
-
-
 @Repository
 public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, RoomBookingKey> {
     List<RoomBookingEntity> findByBooking(BookingEntity booking);
@@ -29,7 +26,8 @@ public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, 
 
     @Query("SELECT rb FROM room_booking rb " +
             "JOIN booking b " +
-            "WHERE :selectDate BETWEEN b.checkIn AND b.checkOut")
+            "WHERE :selectDate BETWEEN b.checkIn AND b.checkOut " +
+            "AND b.bookingStatus.id IN (2,3,4)")
     List<RoomBookingEntity> findRoomBookingsBySelectedDate(@Param("selectDate") LocalDateTime selectDate);
 
 

@@ -44,16 +44,13 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public List<BookingDTO> getAllBooking() {
-        return bookingRepository.findAll().stream().map(booking -> {
-            return this.bookingEntityToBookingDTO(booking);
-        }).toList();
+        return bookingRepository.findAll().stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
     }
 
     @Override
     public BookingDTO getDetailBooking(int idBooking) {
-        return bookingRepository.findById(idBooking).stream().map(booking -> {
-            return this.bookingEntityToBookingDTO(booking);
-        }).findFirst().orElseThrow(()->new BookingNotFoundException());
+        return bookingRepository.findById(idBooking).stream().map(booking -> this.bookingEntityToBookingDTO(booking))
+                .findFirst().orElseThrow(BookingNotFoundException::new);
     }
 
     @Transactional
@@ -68,14 +65,12 @@ public class BookingServiceImp implements BookingService {
      * */
 
         //KIỂM TRA PHÒNG CÓ AVAILABLE
-        String[] roomIds = request.rooms().split(",");
-        List<Integer> lisRoomId = Arrays.stream(roomIds).map(item -> Integer.parseInt(item)).toList();
         LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
         LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
 
-        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, lisRoomId);
+        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
         if (notAvailableRoom.size() > 0) {
-            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom.toString());
+            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
         }
 
         //THÊM KHÁCH HÀNG VÀO TABLE USER
@@ -92,7 +87,7 @@ public class BookingServiceImp implements BookingService {
         userEntity.setLastName(request.lastName());
         userEntity.setPhone(request.phone());
         userEntity.setEmail(request.email());
-
+        userEntity.setAddress(request.address());
         RoleEntity role = new RoleEntity();
         role.setId(1);
         userEntity.setRole(role);
@@ -102,8 +97,8 @@ public class BookingServiceImp implements BookingService {
         //2. Thêm MỚI BOOKING
         BookingEntity newBooking = new BookingEntity();
 
-        newBooking.setCheckIn(inDate);
-        newBooking.setCheckOut(outDate);
+        newBooking.setCheckIn(LocalDate.parse(request.checkInDate()).atStartOfDay());
+        newBooking.setCheckOut(LocalDate.parse(request.checkOutDate()).atStartOfDay());
         newBooking.setRoomNumber(request.roomNumber());
 
         newBooking.setGuest(newGuest);
@@ -119,7 +114,12 @@ public class BookingServiceImp implements BookingService {
         newBooking.setPaymentStatus(paymentStatus);
 
         BookingStatusEntity bookingStatus = new BookingStatusEntity();
-        bookingStatus.setId(1);
+        if (request.idBookingStatus()==0){
+            bookingStatus.setId(1);
+        } else {
+            bookingStatus.setId(request.idBookingStatus());
+        }
+
         newBooking.setBookingStatus(bookingStatus);
 
         newBooking.setCreateDate(LocalDateTime.now());
@@ -138,22 +138,19 @@ public class BookingServiceImp implements BookingService {
     public void updateBooking(UpdateBookingRequest request) {
 
         BookingEntity updateBooking = bookingRepository.findById(request.idBooking())
-                .orElseThrow(()-> new BookingNotFoundException());
+                .orElseThrow(BookingNotFoundException::new);
 
         //CẬP NHẬT BẢNG ROOM_BOOKING
         //1. Xóa các dòng có id_booking == updateBooking
         roomBookingRepository.deleteByBooking(updateBooking);
 
-
-        //KIỂM TRA PHÒNG CÓ AVAILABLE
-        String[] roomIds = request.rooms().split(",");
-        List<Integer> lisRoomId = Arrays.stream(roomIds).map(item -> Integer.parseInt(item)).toList();
+        //KIỂM TRA PHÒNG CÓ ĐANG AVAILABLE
         LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
         LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
 
-        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, lisRoomId);
+        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
         if (notAvailableRoom.size() > 0) {
-            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom.toString());
+            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
         }
 
         //Update lại các phòng mới
@@ -203,13 +200,11 @@ public class BookingServiceImp implements BookingService {
 
     }
 
-    private void insertRoomBooking(String strRooms, BookingEntity booking) {
+    private void insertRoomBooking(List<String> strRooms, BookingEntity booking) {
         //Lấy danh sách room từ chuỗi roomId
-        String[] listRoomId = strRooms.split(",");
-        List<RoomBookingEntity> rooms = Arrays.stream(listRoomId).map(item -> {
-            int roomId = Integer.parseInt(item);
+        List<RoomBookingEntity> rooms = strRooms.stream().map(item -> {
             RoomEntity roomEntity = new RoomEntity();
-            roomEntity.setId(roomId);
+            roomEntity.setId(Integer.parseInt(item));
 
             RoomBookingEntity roomBooking = new RoomBookingEntity();
             roomBooking.setRoom(roomEntity);
@@ -299,14 +294,14 @@ public class BookingServiceImp implements BookingService {
         return bookingGuestDTOS;
     }
 
-    private List<String> checkAvailableRoom(LocalDateTime inDate, LocalDateTime outDate, List<Integer> bookRoomId){
+    private List<String> checkAvailableRoom(LocalDateTime inDate, LocalDateTime outDate, List<String> bookRoomId){
 
         List<String> notAvalableRooms = new ArrayList<>();
 
         //Lấy ra những room đã được booking trong khoảng tgian khách chọn
         List<RoomEntity> bookedRooms = roomRepository.findBookedRoomsByDateRange(inDate, outDate);
         for (RoomEntity bookedRoom: bookedRooms){
-            if (bookRoomId.contains(bookedRoom.getId())){
+            if (bookRoomId.contains(""+bookedRoom.getId())){
                 notAvalableRooms.add(bookedRoom.getName());
             }
         }
@@ -332,7 +327,7 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setChildrenNo(booking.getChildrenNumber());
 
 
-        List<RoomEntity> rooms = roomBookingRepository.findByBooking(booking).stream().map(roomBooking -> roomBooking.getRoom()).toList();
+        List<RoomEntity> rooms = roomBookingRepository.findByBooking(booking).stream().map(RoomBookingEntity::getRoom).toList();
 
         Map<String, List<String>> roomMap = rooms.stream().collect(Collectors.groupingBy(
                 room -> room.getRoomType().getName()
@@ -341,6 +336,6 @@ public class BookingServiceImp implements BookingService {
 
         bookingDTO.setRoomNo((HashMap<String, List<String>>) roomMap);
         return bookingDTO;
-    };
+    }
 
 }
