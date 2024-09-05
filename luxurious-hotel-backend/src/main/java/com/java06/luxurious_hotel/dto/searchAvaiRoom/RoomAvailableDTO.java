@@ -1,6 +1,9 @@
 package com.java06.luxurious_hotel.dto.searchAvaiRoom;
 
+import lombok.Data;
+
+@Data
 public class RoomAvailableDTO {
-    private String roomId;
+    private int roomId;
     private String roomName;
 }
