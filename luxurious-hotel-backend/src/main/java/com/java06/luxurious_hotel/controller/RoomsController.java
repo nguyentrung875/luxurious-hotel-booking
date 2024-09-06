@@ -26,7 +26,7 @@ public class RoomsController {
 
 
     @GetMapping("/checkRoom")
-    public ResponseEntity<?> getAvailableRoom(@Valid SearchRoomRequest searchRoomRequest) {
+    public ResponseEntity<?> getAvailableRoom(@Valid @RequestBody SearchRoomRequest searchRoomRequest) {
 
 
         List<RoomTypeAvailableDTO> roomVailableDTOList = roomService.getAvailableRooms(searchRoomRequest);
