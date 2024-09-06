@@ -34,7 +34,8 @@ public record AddBookingRequest (
 
         int roomNumber,
 
-        @NotNull(message = "Rooms not null")
+        @NotNull(message = "Rooms not null!")
+        @NotEmpty(message = "rooms not empty!")
         List<String> rooms,
 
         @NotNull(message = "adultNumber not null")

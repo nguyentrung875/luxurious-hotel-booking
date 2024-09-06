@@ -538,16 +538,20 @@
 												</div>
 											</div>
 											<div class="form-group p-b-15">
-												<input id="input_first_name" type="text" class="form-control" placeholder="Enter first name">
+												<input id="input_first_name" type="text" class="form-control"
+													placeholder="Enter first name">
 											</div>
 											<div class="form-group p-b-15">
-												<input id="input_last_name" type="text" class="form-control" placeholder="Enter last name">
+												<input id="input_last_name" type="text" class="form-control"
+													placeholder="Enter last name">
 											</div>
 											<div class="form-group p-b-15">
-												<input id="input_phone" type="text" class="form-control" placeholder="Enter Phone No">
+												<input id="input_phone" type="text" class="form-control"
+													placeholder="Enter Phone No">
 											</div>
 											<div class="form-group p-b-15">
-												<input id="input_email" type="text" class="form-control" placeholder="Enter Email">
+												<input id="input_email" type="text" class="form-control"
+													placeholder="Enter Email">
 											</div>
 											<div class="form-group">
 												<textarea id="input_address" type="text" class="form-control"
@@ -561,7 +565,7 @@
 					</div>
 					<div class="col-xxl-9 col-xl-8 col-md-12">
 						<div class="lh-card" id="bookingtbl">
-							<div class="lh-card-header">
+							<div id="booking_details" idBooking="" class="lh-card-header">
 								<h4 class="lh-card-title">Booking Details</h4>
 								<div class="header-tools">
 									<a href="javascript:void(0)" class="lh-full-card"><i class="ri-fullscreen-line"
@@ -641,7 +645,8 @@
 												<li><strong>Paid Amount : </strong>
 													<div class="form-group">
 														<input id="input_paid_amount" type="number" class="form-control"
-														placeholder="Paid Amount">													</div>
+															placeholder="Paid Amount">
+													</div>
 												</li>
 											</ul>
 										</div>
@@ -668,7 +673,7 @@
 																<option disabled="disabled" value="3">301</option>
 																<option disabled="disabled" value="4">401</option>
 															</optgroup> -->
-														
+
 														</select>
 													</div>
 												</li>
@@ -690,8 +695,10 @@
 										<div class="lh-user-detail">
 											<ul>
 												<li>
-													<button id="submit_booking" type="submit"
-														class="lh-btn-primary">Submit</button>
+													<div style="display: flex; gap: 10px;">
+														<button id="submit_booking" type="submit" class="lh-btn-primary">Submit</button>
+														<button id="clear_booking" type="button" class="lh-btn-secondary">Clear</button>
+													</div>
 												</li>
 											</ul>
 										</div>
@@ -701,19 +708,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="toast-container position-fixed bottom-0 end-0 p-3">
-					<div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
-					  <div class="toast-header">
-						<img src="..." class="rounded me-2" alt="...">
-						<strong class="me-auto">Bootstrap</strong>
-						<small>11 mins ago</small>
-						<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-					  </div>
-					  <div class="toast-body">
-						Hello, world! This is a toast message.
-					  </div>
-					</div>
-				  </div>
 				<div class="row">
 					<div class="col-xl-12 col-md-12">
 						<div class="lh-card" id="bookingtbl">

@@ -27,17 +27,14 @@ public class StatusServiceImp implements StatusService {
     public StatusDTO getAllStatus() {
 
         StatusDTO statusDTO = new StatusDTO();
-        statusDTO.setListBookingStatus(bookingStatusRepository.findAll().stream().map(bookingStatus -> {
-            return new BookingStatusDTO(bookingStatus.getId(), bookingStatus.getName());
-        }).toList());
+        statusDTO.setListBookingStatus(bookingStatusRepository.findAll().stream().map(bookingStatus ->
+                new BookingStatusDTO(bookingStatus.getId(), bookingStatus.getName())).toList());
 
-        statusDTO.setListPaymentStatus(paymentStatusRepository.findAll().stream().map(paymentStatus -> {
-            return new PaymentStatusDTO(paymentStatus.getId(), paymentStatus.getName());
-        }).toList());
+        statusDTO.setListPaymentStatus(paymentStatusRepository.findAll().stream().map(paymentStatus ->
+                new PaymentStatusDTO(paymentStatus.getId(), paymentStatus.getName())).toList());
 
-        statusDTO.setListPaymentMethod(paymentMethodRepository.findAll().stream().map(paymentMethod -> {
-            return new PaymentMethodDTO(paymentMethod.getId(), paymentMethod.getName());
-        }).toList());
+        statusDTO.setListPaymentMethod(paymentMethodRepository.findAll().stream().map(paymentMethod ->
+                new PaymentMethodDTO(paymentMethod.getId(), paymentMethod.getName())).toList());
 
         return statusDTO;
     }
