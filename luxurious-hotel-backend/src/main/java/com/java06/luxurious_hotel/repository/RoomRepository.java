@@ -28,7 +28,7 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Integer> {
     @Query("SELECT new com.java06.luxurious_hotel.dto.RoomAvailableInfo(r) " +
             "FROM room r join r.roomType rt " +
             "WHERE r.id NOT IN (SELECT rb.room.id FROM booking b " +
-            "JOIN b.roomBookings rb WHERE b.checkOut > :checkin AND b.checkIn < :checkout AND b.bookingStatus.id <> 5 or b.bookingStatus.id <> 1) ")
+            "JOIN b.roomBookings rb WHERE b.checkOut >= :checkin AND b.checkIn <= :checkout AND b.bookingStatus.id IN (2,3)) ")
     List<RoomAvailableInfo> findAvailableRoom(@Param("checkin") LocalDateTime checkin, @Param("checkout") LocalDateTime checkout);
 
     RoomEntity findRoomEntityById(int roomId);
