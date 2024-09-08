@@ -114,17 +114,36 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
         List<RoomAvailableInfo> roomAvailableInfoList = roomRepository.findAvailableRoom(
                 parseDate(searchRoomRequest.checkIn()), parseDate(searchRoomRequest.checkOut()));
 
+
+        // sắp xếp theo tên roomType
+        roomAvailableInfoList.sort(Comparator.comparing(roomAvailableInfo -> roomAvailableInfo.getRoomEntity().getRoomType().getName()));
+
+        // tạo 1 map để để chứ các room type:
         Map<String, RoomTypeAvailableDTO> roomTypeMap = new HashMap<>();
 
+        int num =1;
+        boolean checkIn = false;
         for (RoomAvailableInfo roomAvailableInfo : roomAvailableInfoList) {
             String roomTypeName = roomAvailableInfo.getRoomEntity().getRoomType().getName();
 
+
             //Mục đích: chỉ Khởi tạo RoomTypeAvailableDTO 1 lần thôi
             if (!roomTypeMap.containsKey(roomTypeName)) {
+                checkIn = true;
+
                 RoomTypeAvailableDTO roomTypeAvailableDTO = new RoomTypeAvailableDTO();
                 roomTypeAvailableDTO.setRoomTypeName(roomTypeName);
                 roomTypeAvailableDTO.setPrice(roomAvailableInfo.getRoomEntity().getRoomType().getPrice());
                 roomTypeAvailableDTO.setCapacity(roomAvailableInfo.getRoomEntity().getRoomType().getCapacity());
+
+                String imagesRoomType = roomAvailableInfo.getRoomEntity().getRoomType().getImage();
+                if (imagesRoomType != null && !imagesRoomType.isEmpty()) {
+                    List<String> images = Arrays.stream(imagesRoomType.split(","))//
+                            .collect(Collectors.toList()).stream()
+                            .map(item -> ("http://localhost:9999/roomType/file/"+item)).toList();
+                    roomTypeAvailableDTO.setImage(images);
+                }
+
                 roomTypeAvailableDTO.setRoomAvailableDTOList(new ArrayList<>());
 
                 // Create BedTypeDTO
@@ -133,8 +152,21 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
                 bedTypeDTO.setName(roomAvailableInfo.getRoomEntity().getRoomType().getBedType().getName());
                 roomTypeAvailableDTO.setBedType(bedTypeDTO);
 
+
                 roomTypeMap.put(roomTypeName, roomTypeAvailableDTO);
+
             }
+            if (checkIn==false){
+                num++;
+                roomTypeMap.get(roomTypeName).setNumberAvailable(num);
+            }
+            if (checkIn==true){
+
+                num = 1;
+                checkIn = false;
+            }
+
+            System.out.println("number is "+ num);
 
             // Add available room to the corresponding room type
             RoomAvailableDTO roomAvailableDTO = new RoomAvailableDTO();

@@ -20,16 +20,10 @@ import java.util.List;
 @RequestMapping("/room")
 public class RoomController {
 
+
     @Autowired
     private RoomService roomService;
 
-    @GetMapping("/{selectDate}")
-    public ResponseEntity<?> getAllRoomInfo(@PathVariable String selectDate){
-        BaseResponse baseResponse = new BaseResponse();
-        var s = roomService.getRoomInfoByDate(selectDate);
-        baseResponse.setData(roomService.getRoomInfoByDate(selectDate));
-        return new ResponseEntity(baseResponse, HttpStatus.OK);
-    }
 
     @GetMapping
     public ResponseEntity<?> getAvailableRoom(@Valid SearchRoomRequest searchRoomRequest) {
@@ -41,4 +35,16 @@ public class RoomController {
 
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
+
+
+
+    @GetMapping("/{selectDate}")
+    public ResponseEntity<?> getAllRoomInfo(@PathVariable String selectDate){
+        BaseResponse baseResponse = new BaseResponse();
+        var s = roomService.getRoomInfoByDate(selectDate);
+        baseResponse.setData(roomService.getRoomInfoByDate(selectDate));
+        return new ResponseEntity(baseResponse, HttpStatus.OK);
+    }
+
+
 }

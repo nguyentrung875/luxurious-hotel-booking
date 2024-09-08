@@ -9,8 +9,10 @@ public class RoomTypeAvailableDTO {
     private String roomTypeName;
     private double price;
     private int capacity;
+    private  List<String> image;
     private BedTypeDTO bedType;
     private List<RoomAvailableDTO> roomAvailableDTOList;
+    private int numberAvailable;
 
 
 }
