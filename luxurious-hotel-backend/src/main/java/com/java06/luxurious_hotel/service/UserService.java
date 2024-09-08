@@ -9,11 +9,17 @@ import java.util.List;
 
 public interface UserService {
 
-    List<GuestDTO> getListGuest(String roleName);
+    List<GuestDTO> getListGuest();
 
     Boolean addGuest(AddGuestRequest addGuestRequest);
 
     Boolean deleteUser(int idUser);
 
     Boolean updateUser(UpdateGuestRequest updateGuestRequest);
+
+    Boolean checkEmail(String email);
+
+    Boolean checkPhone(String phone);
+
+    GuestDTO getUser(int idUser);
 }

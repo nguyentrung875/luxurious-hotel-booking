@@ -1015,11 +1015,11 @@
 
 
 
-    //KHỞI TẠO CHOSEN
-    $('.chosen-select').chosen({
-        no_results_text: "Oops, nothing found!", // Message displayed when no results match
-        placeholder_text_multiple: "Select some options" // Placeholder text for multiple selects
-    });
+    // //KHỞI TẠO CHOSEN
+    // $('.chosen-select').chosen({
+    //     no_results_text: "Oops, nothing found!", // Message displayed when no results match
+    //     placeholder_text_multiple: "Select some options" // Placeholder text for multiple selects
+    // });
 
 
 })(jQuery);
