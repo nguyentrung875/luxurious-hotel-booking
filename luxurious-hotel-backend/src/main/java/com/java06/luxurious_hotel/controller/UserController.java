@@ -2,7 +2,6 @@ package com.java06.luxurious_hotel.controller;
 
 import com.java06.luxurious_hotel.dto.BookingGuestDTO;
 import com.java06.luxurious_hotel.dto.GuestDTO;
-import com.java06.luxurious_hotel.entity.BookingEntity;
 import com.java06.luxurious_hotel.request.AddGuestRequest;
 import com.java06.luxurious_hotel.request.UpdateGuestRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
@@ -32,9 +31,12 @@ public class UserController {
 
     @PostMapping("/guests")
     public ResponseEntity<?> getAllGuest(){
-        List<GuestDTO> listGuest = userService.getListGuest("ROLE_GUEST");
-        System.out.println("test = " + listGuest);
-        return new ResponseEntity<>(listGuest , HttpStatus.OK);
+
+        List<GuestDTO> listGuest = userService.getListGuest();
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(listGuest);
+
+        return new ResponseEntity<>(baseResponse , HttpStatus.OK);
     }
 
     @PostMapping("/allbookingguest")
@@ -47,8 +49,9 @@ public class UserController {
     }
 
     @PostMapping("/addguest")
-    public ResponseEntity<?> addGuest(AddGuestRequest addGuestRequest){
+    public ResponseEntity<?> addGuest(@RequestBody AddGuestRequest addGuestRequest){
         Boolean check = userService.addGuest(addGuestRequest);
+        System.out.println("rsssss");
         BaseResponse response = new BaseResponse();
         response.setData(check);
 
@@ -64,10 +67,37 @@ public class UserController {
     }
 
     @PostMapping("/updateguest")
-    public ResponseEntity<?> updateGuest(UpdateGuestRequest updateGuestRequest){
+    public ResponseEntity<?> updateGuest(@RequestBody UpdateGuestRequest updateGuestRequest){
 
         BaseResponse response = new BaseResponse();
         response.setData(userService.updateUser(updateGuestRequest));
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PostMapping("/getvalueuserbyid/{idUser}")
+    public ResponseEntity<?> getValueUserById(@PathVariable int idUser){
+
+        BaseResponse response = new BaseResponse();
+        response.setData(userService.getUser(idUser));
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PostMapping("/checkemail")
+    public ResponseEntity<?> checkEmail(@RequestParam String email){
+
+        BaseResponse response = new BaseResponse();
+        response.setData(userService.checkEmail(email));
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PostMapping("/checkphone")
+    public ResponseEntity<?> checkPhone(@RequestParam String phone){
+
+        BaseResponse response = new BaseResponse();
+        response.setData(userService.checkPhone(phone));
 
         return new ResponseEntity<>(response,HttpStatus.OK);
     }

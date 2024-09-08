@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -49,13 +50,16 @@ public class UserEntity {
     @Column(name = "image")
     private String image;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "id_role")
     private RoleEntity role;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "guest")
     private List<ReservationEntity> reservations;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "guest")
     private List<BookingEntity> bookings;
 }

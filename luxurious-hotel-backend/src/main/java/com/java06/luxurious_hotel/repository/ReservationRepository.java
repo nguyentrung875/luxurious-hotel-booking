@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity,Integer> {
     void deleteAllByGuestId(int guestId);
+    boolean existsByGuestId(int guestId);
 }

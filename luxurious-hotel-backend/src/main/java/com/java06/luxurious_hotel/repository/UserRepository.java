@@ -2,6 +2,7 @@ package com.java06.luxurious_hotel.repository;
 
 import com.java06.luxurious_hotel.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
@@ -17,7 +18,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findById(int id);
 
     Optional<UserEntity> findByUsername(String username);
-    Optional<UserEntity> findByEmail(String email);
+
+    UserEntity findUserEntityByEmail(String email);
+
+    UserEntity findByPhone(String phone);
 
 
 }
