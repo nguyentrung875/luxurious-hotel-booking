@@ -18,14 +18,17 @@ public class BookingDTO {
     private int id;
     private String firstName;
     private String lastName;
+    private String phone;
+    private String email;
+    private String address;
     private LocalDate checkIn;
     private LocalDate checkOut;
-    private String paymentMethod;
-    private String paymentStatus;
+    private PaymentMethodDTO paymentMethod;
+    private PaymentStatusDTO paymentStatus;
     private int adultNo;
     private int childrenNo;
     private HashMap<String, List<String>> roomNo; //Định dạng: RoomType:  101, 102, ...
-    private String bookingStatus;
+    private BookingStatusDTO bookingStatus;
     private double paidAmount;
     private double total;
     private List<RoomTypeDTO> roomType;

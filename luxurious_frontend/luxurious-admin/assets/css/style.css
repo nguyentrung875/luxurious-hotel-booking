@@ -208,6 +208,7 @@ input:focus, input:active, select:focus, select:active,
   border: 1px solid #eee;
   color: #777;
 }
+
 input::-webkit-input-placeholder, select::-webkit-input-placeholder, .form-control::-webkit-input-placeholder {
   color: #999;
 }
