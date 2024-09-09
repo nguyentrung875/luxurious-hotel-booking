@@ -1,16 +1,12 @@
 $(document).ready(function () {
     showBooking()
     showStatus()
-    showRooms()
+    // showAllRooms();
 
     $('#submit_booking').click(function (e) {
         var inputBooking = {}
 
-        inputBooking.firstName = $('#input_first_name').val();
-        inputBooking.lastName = $('#input_last_name').val();
-        inputBooking.phone = $('#input_phone').val();
-        inputBooking.email = $('#input_email').val();
-        inputBooking.address = $('#input_address').val();
+
         inputBooking.checkInDate = $('#input_checkin').val();
         inputBooking.checkOutDate = $('#input_checkout').val();
         inputBooking.rooms = $('#input_rooms').val();
@@ -24,11 +20,27 @@ $(document).ready(function () {
 
         var idBooking = $('#booking_details').attr('idBooking')
         if (idBooking == "") {
+            inputBooking.firstName = $('#input_first_name').val();
+            inputBooking.lastName = $('#input_last_name').val();
+            inputBooking.phone = $('#input_phone').val();
+            inputBooking.email = $('#input_email').val();
+            inputBooking.address = $('#input_address').val();
             addBooking(inputBooking)
         } else {
+            inputBooking.idGuest = $('.guest-profile').attr('id_guest');
             inputBooking.idBooking = idBooking
             updateBooking(inputBooking)
         }
+    });
+
+    $('#load_rooms').click(function (e) {
+        e.preventDefault();
+        var inputDateRange = {}
+        inputDateRange.checkIn = $('#input_checkin').val();
+        inputDateRange.checkOut = $('#input_checkout').val();
+        inputDateRange.adultNumber = $('#input_adult').val();
+        inputDateRange.childrenNumber = $('#input_children').val();
+        loadAvailableRooms(inputDateRange)
     });
 
     $('#clear_booking').click(function (e) {
@@ -38,9 +50,9 @@ $(document).ready(function () {
 
     $('body').on('click', '.update_booking', function (e) {
         e.preventDefault();
-        var idBooking = $(this).attr("idBooking");
-        showDetailBooking(idBooking)
-        $('#booking_details').attr('idBooking', idBooking)
+        var booking = JSON.parse($(this).closest('tr').attr('booking_data'));
+        showDetailBooking(booking)
+        $('#booking_details').attr('idBooking', booking.id)
     });
 
     $('body').on('click', '.delete_booking', function (e) {
@@ -53,7 +65,41 @@ $(document).ready(function () {
         }
     });
 
+    $('#reload_booking').click(function (e) {
+        $('#booking_table').DataTable().clear()
+        e.preventDefault();
+        showBooking()
+    });
+
+    $('#input_rooms').on('change', function () {
+        calculateTotal()
+    });
+
+    $('#input_checkin').on('change', function () {
+        calculateTotal()
+    });
+
+
+    $('#input_checkout').on('change', function () {
+        calculateTotal()
+    });
+
+
+
 });
+
+function calculateTotal() {
+    const checkInDate = new Date(document.getElementById("input_checkin").value);
+    const checkOutDate = new Date(document.getElementById("input_checkout").value);
+    var nights = (checkOutDate - checkInDate) / (1000 * 3600 * 24)
+    var listPrice = $('#input_rooms').find('option:selected').map(function () {
+        return parseFloat($(this).attr('price'));
+    }).get()
+    var total = listPrice.reduce(function (total, price) {
+        return total + (price * nights)
+    }, 0);
+    $('#input_total').val(total);
+}
 
 function deleteBooking(id) {
     $.ajax({
@@ -70,71 +116,67 @@ function deleteBooking(id) {
 }
 
 function updateBooking(inputEditBooking) {
+    console.log(inputEditBooking)
     $.ajax({
         type: "PUT",
         contentType: "application/json; charset=utf-8",
         url: "http://localhost:9999/booking",
         data: JSON.stringify(inputEditBooking),
         success: function (response) {
-            console.log(response)
             if (response.statusCode == 200) {
-                return response.data
+                alert(response.message)
+                clearAll()
             }
         },
         error: function (response) {
             console.log(response)
-
             alert(response.responseJSON.message)
         }
     });
 }
 
-function showDetailBooking(id) {
-    $.ajax({
-        type: "GET",
-        contentType: "application/json; charset=utf-8",
-        url: `http://localhost:9999/booking/${id}`,
-        success: function (response) {
-            if (response.statusCode == 200) {
-                var booking = response.data
-                $('#input_first_name').val(booking.firstName);
-                $('#input_last_name').val(booking.lastName);
-                $('#input_phone').val(booking.phone);
-                $('#input_email').val(booking.email);
-                $('#input_address').val(booking.address);
-                $('#input_checkin').val(booking.checkIn);
-                $('#input_checkout').val(booking.checkOut);
-                $('#input_adult').val(booking.adultNo);
-                $('#input_children').val(booking.childrenNo);
-                $('#input_booking_status').val(booking.bookingStatus.id);
-                $('#input_payment_status').val(booking.paymentStatus.id);
-                $('#input_payment_method').val(booking.paymentMethod.id);
-                $('#input_paid_amount').val(booking.paidAmount);
-                $('#input_total').val(booking.total);
+function showDetailBooking(booking) {
 
-                var roomArr = []
-                for (const key in booking.roomNo) {
-                    roomArr = roomArr.concat(booking.roomNo[key])
-                }
+    $('#input_first_name').val(booking.firstName);
+    $('#input_last_name').val(booking.lastName);
+    $('#input_phone').val(booking.phone);
+    $('#input_email').val(booking.email);
+    $('#input_address').val(booking.address);
+    $('#input_checkin').val(booking.checkIn);
+    $('#input_checkout').val(booking.checkOut);
+    $('#input_adult').val(booking.adultNo);
+    $('#input_children').val(booking.childrenNo);
+    $('#input_booking_status').val(booking.bookingStatus.id);
+    $('#input_payment_status').val(booking.paymentStatus.id);
+    $('#input_payment_method').val(booking.paymentMethod.id);
+    $('#input_paid_amount').val(booking.paidAmount);
+    $('#input_total').val(booking.total);
+    $('.guest-profile').attr('id_guest', booking.idGuest);
+    $('#input_rooms').find('option').attr('disabled', 'true')
 
+    var listRoomId = []
+    for (const key in booking.roomTypes) {
+        booking.roomTypes[key].forEach(room => {
+            $("#input_rooms").find(`option:contains(${room.name})`).removeAttr('disabled')
+            listRoomId.push(room.id)
+        })
+    }
 
-                $('#input_rooms').val(roomArr);
-                $('#input_rooms').trigger("chosen:updated");
+    $('#input_rooms').val(listRoomId);
 
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('#input_rooms').trigger('chosen:updated')
 
-        }
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
 }
 
 function clearAll() {
     $('input').val('');
     $('textarea').val('');
-    $('#input_rooms').val('').trigger('chosen:updated');
-
     $('#booking_details').attr('idBooking', '')
-
+    $('#input_rooms').val('');
+    $('#input_rooms').find('option').attr('disabled', 'true')
+    $('#input_rooms').trigger('chosen:updated')
 }
 
 function addBooking(inputAddBooking) {
@@ -145,7 +187,8 @@ function addBooking(inputAddBooking) {
         data: JSON.stringify(inputAddBooking),
         success: function (response) {
             if (response.statusCode == 200) {
-                return response.data
+                alert(response.message)
+                clearAll()
             }
         },
         error: function (response) {
@@ -153,8 +196,48 @@ function addBooking(inputAddBooking) {
         }
     });
 }
+function loadAvailableRooms(inputDateRange) {
 
-function showRooms() {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "http://localhost:9999/room",
+        data: JSON.stringify(inputDateRange),
+        success: function (response) {
+            // $('#input_rooms').empty();  
+
+            // html = ''
+            // for (let i = 0; i < response.data.length; i++) {
+            //     let itemRoomType = response.data[i]
+            //     html += `<optgroup label="${itemRoomType.roomTypeName} (${itemRoomType.price}$/night)">`
+            //     for (let j = 0; j < itemRoomType.roomAvailableDTOList.length; j++) {
+            //         let room = itemRoomType.roomAvailableDTOList[j]
+            //         html += `<option disabled="disable" value="${room.roomName}">${room.roomName}</option>`
+            //     }
+            //     html += `</optgroup>`
+            // }
+
+            // $('#input_rooms').append(html).trigger("chosen:updated");
+            $('#input_rooms').find('option').attr('disabled', 'true')
+            $("#input_rooms").find(`option:selected`).removeAttr('disabled')
+
+            for (let i = 0; i < response.data.length; i++) {
+                let itemRoomType = response.data[i]
+                for (let j = 0; j < itemRoomType.roomAvailableDTOList.length; j++) {
+                    let room = itemRoomType.roomAvailableDTOList[j]
+                    $("#input_rooms").find(`option:contains(${room.roomName})`).removeAttr('disabled')
+                }
+            }
+            $('#input_rooms').trigger("chosen:updated");
+
+        },
+        error: function (response) {
+            alert(response.responseJSON.message)
+        }
+    });
+}
+
+function showAllRooms() {
     $.ajax({
         type: "GET",
         contentType: "application/json; charset=utf-8",
@@ -166,14 +249,12 @@ function showRooms() {
                 html += `<optgroup label="${itemRoomType.name} (${itemRoomType.price}$/night)">`
                 for (let j = 0; j < itemRoomType.roomName.length; j++) {
                     let roomName = itemRoomType.roomName[j]
-                    html += `<option disable="disable" value="${roomName}">${roomName}</option>`
+                    html += `<option disabled="true" value="${roomName}">${roomName}</option>`
                 }
                 html += `</optgroup>`
             }
 
-            $('#input_rooms').append(html);
-            $('#input_rooms').trigger("chosen:updated");
-
+            $('#input_rooms').append(html).trigger("chosen:updated");
         }
     });
 }
@@ -197,11 +278,25 @@ function showStatus() {
             response.data.listBookingStatus.forEach(item => {
                 $("#input_booking_status").append(`<option value="${item.id}">${item.name}</option>`);
             });
+
+            // show all rooms
+            html = ''
+            for (let i = 0; i < response.data.listRoomType.length; i++) {
+                let itemRoomType = response.data.listRoomType[i]
+                html += `<optgroup label="${itemRoomType.name} (${itemRoomType.price}$/night)">`
+                for (let j = 0; j < itemRoomType.rooms.length; j++) {
+                    let room = itemRoomType.rooms[j]
+                    html += `<option disabled="true" price="${itemRoomType.price}" value="${room.id}">${room.name}</option>`
+                }
+                html += `</optgroup>`
+            }
+
+            $('#input_rooms').append(html).trigger("chosen:updated");
         }
     });
 }
 
-function showBooking(params) {
+function showBooking() {
     $.ajax({
         type: "GET",
         contentType: "application/json; charset=utf-8",
@@ -214,7 +309,7 @@ function showBooking(params) {
             for (let i = 0; i < response.data.length; i++) {
                 var item = response.data[i]
                 var htmlRow =
-                    `<tr>
+                    `<tr booking_data='${JSON.stringify(item)}'>
                     <td class="token">${item.id}</td>
                     <td><span class="name">${item.firstName} ${item.lastName}</span>
                     </td>
@@ -224,7 +319,7 @@ function showBooking(params) {
                     <td class="${getClassOfStatus(item.paymentStatus.name)}">${item.paymentStatus.name}</td>
                     <td>$${item.paidAmount}</td>
                     <td><b>$${item.total}</b></td>
-                    <td class="type">${convertRoomCol(item.roomNo)}</td>
+                    <td class="type">${convertRoomCol(item.roomTypes)}</td>
                     <td class="rooms">
                         <span class="mem">${item.adultNo} Adult</span> /
                         <span class="room">${item.childrenNo} Children</span>
@@ -256,14 +351,14 @@ function showBooking(params) {
     });
 }
 
-function convertRoomCol(roomType) {
+function convertRoomCol(roomTypes) {
     let roomNo = ''
 
-    for (const key in roomType) {
+    for (const key in roomTypes) {
 
         let roomsString = ''
-        roomType[key].forEach(item => {
-            roomsString += item + ', '
+        roomTypes[key].forEach(room => {
+            roomsString += room.name + ', '
         });
         roomNo += `<span>${key} : </span>${roomsString}`
     }

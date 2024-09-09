@@ -39,6 +39,7 @@ public record AddBookingRequest (
         List<String> rooms,
 
         @NotNull(message = "adultNumber not null")
+        @Min(value = 1,message = "The number of adults must be at least 1")
         int adultNumber,
 
         @NotNull(message = "childrenNumber not null")

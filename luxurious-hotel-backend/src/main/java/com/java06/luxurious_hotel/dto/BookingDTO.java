@@ -10,12 +10,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDTO {
 
     private int id;
+    private int idGuest;
     private String firstName;
     private String lastName;
     private String phone;
@@ -28,6 +30,7 @@ public class BookingDTO {
     private int adultNo;
     private int childrenNo;
     private HashMap<String, List<String>> roomNo; //Định dạng: RoomType:  101, 102, ...
+    private Map<String, List<RoomDTO>> roomTypes;
     private BookingStatusDTO bookingStatus;
     private double paidAmount;
     private double total;

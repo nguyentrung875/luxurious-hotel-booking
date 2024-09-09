@@ -22,6 +22,6 @@ public class RoomTypeDTO {
     private String amenity;
     private String amenityNum;
 
-    private List<String> roomNo; //Trung dùng
+    private List<RoomDTO> rooms;//Trung dùng
 
 }
