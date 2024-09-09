@@ -8,8 +8,10 @@ import com.java06.luxurious_hotel.repository.RoleRepository;
 import com.java06.luxurious_hotel.request.AddEmployeeRequest;
 import com.java06.luxurious_hotel.request.UpdateEmployeeRequest;
 import com.java06.luxurious_hotel.service.EmployeeService;
+import com.java06.luxurious_hotel.service.FilesStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -23,6 +25,9 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private FilesStorageService filesStorageService;
 
     @Override
     public void addEmployee(AddEmployeeRequest addEmployeeRequest) {
@@ -39,8 +44,8 @@ public class EmployeeServiceImp implements EmployeeService {
         RoleEntity Role = roleRepository.findRoleEntitiesById(addEmployeeRequest.Idrole());
         Employee.setRole(Role);
         Employee.setImage(addEmployeeRequest.image().getOriginalFilename());
-
-
+        MultipartFile file = addEmployeeRequest.image();
+        filesStorageService.save(file);
         employeeReposiory.save(Employee);
     }
 
