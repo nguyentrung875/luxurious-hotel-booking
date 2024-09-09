@@ -538,10 +538,12 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 -- Phần thêm/sửa/xóa dữ liệu nếu cần:
 -- TRUNG
 -- Tìm id room đã được book trong khoảng thời gian
-SELECT rb.id_room , rb.id_booking , b.id_status 
+SELECT rb.id_room, r.name  , rb.id_booking , b.id_status 
 FROM booking b 
-JOIN room_booking rb ON rb.id_booking = b.id 
-WHERE check_out > "2024-02-21" AND check_in < "2024-02-24"  AND b.id_status NOT IN (1,5); 
+JOIN room_booking rb ON rb.id_booking = b.id
+JOIN room r ON r.id = rb.id_room 
+WHERE check_out > "2024-08-01" AND check_in < "2024-09-01" AND b.id_status IN (2,3)
+ORDER BY id_room
 
 SELECT r.name , b.id , b.check_in , b.check_out ,u.first_name ,bs.name, b.id_status 
 FROM room r 

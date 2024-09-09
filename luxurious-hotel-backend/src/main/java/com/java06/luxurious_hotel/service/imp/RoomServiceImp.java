@@ -114,7 +114,7 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
         List<RoomAvailableInfo> roomAvailableInfoList = roomRepository.findAvailableRoom(
                 parseDate(searchRoomRequest.checkIn()), parseDate(searchRoomRequest.checkOut()));
 
-        Map<String, RoomTypeAvailableDTO> roomTypeMap = new HashMap<>();
+        Map<String, RoomTypeAvailableDTO> roomTypeMap = new LinkedHashMap<>();
 
         for (RoomAvailableInfo roomAvailableInfo : roomAvailableInfoList) {
             String roomTypeName = roomAvailableInfo.getRoomEntity().getRoomType().getName();
