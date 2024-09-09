@@ -9,10 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
 @Service
@@ -26,11 +23,15 @@ public class FilesStorageServiceImpl implements FilesStorageService {
                 Files.createDirectories(root);
             }
 
-            Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+            //Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+
+            // thực hiện ghi đè nêu hình đã tồn tại ở sever, tranh throw exception(A file of that name already exists.)
+            Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+
         } catch (Exception e) {
-            if (e instanceof FileAlreadyExistsException) {
-                throw new RuntimeException("A file of that name already exists.");
-            }
+//            if (e instanceof FileAlreadyExistsException) {
+//                throw new RuntimeException("A file of that name already exists.");
+//            }
 
             throw new RuntimeException(e.getMessage());
         }

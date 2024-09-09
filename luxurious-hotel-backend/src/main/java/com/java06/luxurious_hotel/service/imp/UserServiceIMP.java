@@ -1,6 +1,5 @@
 package com.java06.luxurious_hotel.service.imp;
 
-import com.java06.luxurious_hotel.dto.BookingGuestDTO;
 import com.java06.luxurious_hotel.dto.GuestDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.exception.role.RoleNotFoundException;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +41,47 @@ public class UserServiceIMP implements UserService {
     @Autowired
     private OrdersRepository ordersRepository;
 
+    @Override
+    public Boolean checkEmail(String email) {
+        UserEntity userEntity = userRepository.findUserEntityByEmail(email);
+        if (userEntity  != null && userEntity.getId() > 0) {
+            return userEntity.getId() > 0;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public GuestDTO getUser(int idUser) {
+
+        UserEntity userEntity = userRepository.findById(idUser);
+        GuestDTO guestDTO = new GuestDTO();
+        if (userEntity != null) {
+            guestDTO.setFullName(userEntity.getFirstName() + " " + userEntity.getLastName());
+            guestDTO.setEmail(userEntity.getEmail());
+            guestDTO.setPhone(userEntity.getPhone());
+            guestDTO.setId(userEntity.getId());
+            guestDTO.setDob(userEntity.getDob());
+            guestDTO.setAddress(userEntity.getAddress());
+            guestDTO.setSummary(userEntity.getSummary());
+        }
+        System.out.println("GuestDTO: " + userEntity);
+        return guestDTO;
+    }
+
+
+    @Override
+    public Boolean checkPhone(String phone) {
+
+        Optional<UserEntity> userEntity = userRepository.findUserEntityByPhone(phone);
+        if (userEntity.isPresent()) {
+            UserEntity userEntity1 = userEntity.get();
+
+            return userEntity1.getId() > 0;
+        }
+
+        return false;
+    }
     @Transactional // đảm bảo phương thức được thực hiện trong 1 giao dịch
     @Override
     public Boolean updateUser(UpdateGuestRequest updateGuestRequest) {
@@ -51,11 +91,12 @@ public class UserServiceIMP implements UserService {
         userEntity.setFirstName(names[0]);
         userEntity.setLastName(names[1]);
 
-        // set ngày khởi tạo
-        userEntity.setDob(LocalDate.now());
-
+        userEntity.setDob(updateGuestRequest.dob());
         userEntity.setPhone(updateGuestRequest.phone());
         userEntity.setEmail(updateGuestRequest.email());
+        userEntity.setAddress(updateGuestRequest.address());
+        userEntity.setSummary(updateGuestRequest.summary());
+        userEntity.setRole(roleRepository.findRoleEntitiesById(2));
 
         UserEntity updatedUser = userRepository.save(userEntity);
 
@@ -71,13 +112,26 @@ public class UserServiceIMP implements UserService {
     public Boolean deleteUser(int idUser) {
         Boolean check = false;
 
-        // xóa booking và roombooking tương ứng guest
-        roomBookingRepository.deleteAllByBooking_Guest_Id(idUser);
-        bookingRepository.deleteAllByGuest_Id(idUser);
+        // Kiểm tra và xóa trong RoomBooking nếu tồn tại
+        if (roomBookingRepository.existsByBooking_Guest_Id(idUser)) {
+            // Xóa booking và room booking tương ứng với guest
+            roomBookingRepository.deleteAllByBooking_Guest_Id(idUser);
+        }
 
-        // xóa reservation và order tương ứng guest
-        ordersRepository.deleteAllByReservation_Guest_Id(idUser);
-        reservationRepository.deleteAllByGuestId(idUser);
+        // Kiểm tra và xóa trong Booking nếu tồn tại
+        if (bookingRepository.existsByGuest_Id(idUser)) {
+            bookingRepository.deleteAllByGuest_Id(idUser);
+        }
+
+        // Kiểm tra và xóa trong Orders nếu tồn tại
+        if (ordersRepository.existsByReservation_Guest_Id(idUser)) {
+            ordersRepository.deleteAllByReservation_Guest_Id(idUser);
+        }
+
+        // Kiểm tra và xóa trong Orders nếu tồn tại
+        if (reservationRepository.existsByGuestId(idUser)) {
+            reservationRepository.deleteAllByGuestId(idUser);
+        }
 
         // xóa guest
         userRepository.deleteById(idUser);
@@ -92,16 +146,18 @@ public class UserServiceIMP implements UserService {
 
 
     @Override
-    public List<GuestDTO> getListGuest(String roleName) {
-        List<UserEntity> listGuest = userRepository.findByRole_Name(roleName);
+    public List<GuestDTO> getListGuest() {
+
+        List<UserEntity> listGuest = userRepository.findByRole_Name("ROLE_GUEST");
         List<GuestDTO> guestDTOS = new ArrayList<>();
         for (UserEntity user : listGuest) {
             GuestDTO guestDTO = new GuestDTO();
             guestDTO.setId(user.getId());
-            guestDTO.setFullName(user.getUsername());
+            guestDTO.setFullName(user.getFirstName() + " " + user.getLastName());
             guestDTO.setPhone(user.getPhone());
             guestDTO.setEmail(user.getEmail());
             guestDTO.setAddress(user.getAddress());
+            guestDTO.setSummary(user.getSummary());
 
             guestDTOS.add(guestDTO);
         }
@@ -125,6 +181,10 @@ public class UserServiceIMP implements UserService {
         userEntity.setPhone(addGuestRequest.phone());
         userEntity.setAddress(addGuestRequest.address());
         userEntity.setSummary(addGuestRequest.summary());
+
+        // Định dạng theo kiểu ngày trong chuỗi
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        userEntity.setDob(LocalDate.parse(addGuestRequest.dob(),formatter));
 
         RoleEntity guestRole = roleRepository.findByName("ROLE_GUEST");
         if (guestRole == null){

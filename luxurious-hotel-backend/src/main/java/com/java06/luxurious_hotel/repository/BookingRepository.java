@@ -15,6 +15,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Integer>
 
     List<Object[]> findByGuest_Id(int userId);
     void deleteAllByGuest_Id(int userId);
+    boolean existsByGuest_Id(int userId);
 
 //    List<BookingEntity> findByCheckOutAfterAndCheckInBefore(LocalDateTime inDate, LocalDateTime outDate);
 //    List<BookingEntity> findByUser_Id(int userId);
