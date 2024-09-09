@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    //KHỞI TẠO CHOSEN
+    $('.chosen-select').chosen({
+        no_results_text: "Oops, nothing found!", // Message displayed when no results match
+        placeholder_text_multiple: "Select rooms" // Placeholder text for multiple selects
+    });
+
     showBooking()
     showStatus()
     // showAllRooms();
@@ -204,20 +210,7 @@ function loadAvailableRooms(inputDateRange) {
         url: "http://localhost:9999/room",
         data: JSON.stringify(inputDateRange),
         success: function (response) {
-            // $('#input_rooms').empty();  
 
-            // html = ''
-            // for (let i = 0; i < response.data.length; i++) {
-            //     let itemRoomType = response.data[i]
-            //     html += `<optgroup label="${itemRoomType.roomTypeName} (${itemRoomType.price}$/night)">`
-            //     for (let j = 0; j < itemRoomType.roomAvailableDTOList.length; j++) {
-            //         let room = itemRoomType.roomAvailableDTOList[j]
-            //         html += `<option disabled="disable" value="${room.roomName}">${room.roomName}</option>`
-            //     }
-            //     html += `</optgroup>`
-            // }
-
-            // $('#input_rooms').append(html).trigger("chosen:updated");
             $('#input_rooms').find('option').attr('disabled', 'true')
             $("#input_rooms").find(`option:selected`).removeAttr('disabled')
 
@@ -265,8 +258,6 @@ function showStatus() {
         contentType: "application/json; charset=utf-8",
         url: "http://localhost:9999/status",
         success: function (response) {
-
-
             response.data.listPaymentStatus.forEach(item => {
                 $("#input_payment_status").append(`<option value="${item.id}">${item.name}</option>`);
             });

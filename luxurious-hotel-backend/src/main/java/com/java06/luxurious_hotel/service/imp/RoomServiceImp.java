@@ -97,6 +97,7 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
         GuestByDateDTO guestDTO = new GuestByDateDTO();
         guestDTO.setIdSelectBooking(roomBookingEntity.getBooking().getId());
         guestDTO.setId(roomBookingEntity.getBooking().getGuest().getId());
+        guestDTO.setPhone(roomBookingEntity.getBooking().getGuest().getPhone());
         guestDTO.setFirstName(roomBookingEntity.getBooking().getGuest().getFirstName());
         guestDTO.setLastName(roomBookingEntity.getBooking().getGuest().getLastName());
         return guestDTO;
