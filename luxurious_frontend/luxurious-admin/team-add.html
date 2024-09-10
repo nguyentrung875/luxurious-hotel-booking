@@ -240,12 +240,6 @@
 							</a>
 						</li>
 						<li class="lh-sb-item">
-							<a href="tables.html" class="lh-page-link">
-								<i class="ri-bookmark-3-line"></i><span class="condense"><span
-										class="hover-title">Tables</span> </span>
-							</a>
-						</li>
-						<li class="lh-sb-item">
 							<a href="orders.html" class="lh-page-link">
 								<i class="ri-bookmark-3-line"></i><span class="condense"><span
 										class="hover-title">Orders</span> </span>
@@ -501,7 +495,7 @@
 						</ul>
 					</div>
 				</div>
-				<form class="lh-profile-add">
+				<form id="addEmployee" action="your-server " method="post" class="lh-profile-add">
 					<div class="row">
 						<div class="col-xxl-3 col-xl-4 col-md-12">
 							<div class="team-sticky-bar">
@@ -524,7 +518,7 @@
 														</div>
 													</div>
 													<div class="lh-settings">
-														<a href="#" class="lh-btn-primary m-r-10">Add Profile</a>
+														<a href="#" id="submitForm" class="lh-btn-primary m-r-10">Add Profile</a>
 														<div class="dropdown" title="Status">
 															<button class="btn btn-secondary dropdown-toggle"
 																type="button" data-bs-toggle="dropdown"
@@ -569,13 +563,35 @@
 										</div>
 										<div class="col-md-6 col-sm-12">
 											<div class="lh-team-detail">
+												<h6>UserName</h6>
+												<ul>
+														<div class="form-group">
+															<input type="username" class="form-control"
+																placeholder="Enter User Name">
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Password</h6>
+												<ul>
+														<div class="form-group">
+															<input type="text" class="form-control"
+																placeholder="Enter Password">
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
 												<h6>First Name</h6>
 												<ul>
 													<li>
-														<div class="form-group">
-															<input type="First_Name" class="form-control"
-																placeholder="Enter First Name">
-														</div>
+														<textarea class="form-control" id="profile_address1" rows="2"
+															placeholder="Enter First Name"></textarea>
 													</li>
 												</ul>
 											</div>
@@ -585,10 +601,8 @@
 												<h6>Last Name</h6>
 												<ul>
 													<li>
-														<div class="form-group">
-															<input type="Last_name" class="form-control"
-																placeholder="Enter Last Name">
-														</div>
+														<textarea class="form-control" id="profile_address2" rows="2"
+															placeholder="Enter Last Name"></textarea>
 													</li>
 												</ul>
 											</div>
@@ -597,10 +611,10 @@
 											<div class="lh-team-detail">
 												<h6>Date Of Birth</h6>
 												<ul>
-													<li>
-														<textarea class="form-control" id="DOB" rows="2"
-															placeholder="Enter DOB"></textarea>
-													</li>
+														<div class="form-group">
+															<input type="text" class="form-control"
+																placeholder="Enter DOB">
+														</div>
 												</ul>
 											</div>
 										</div>
@@ -608,9 +622,10 @@
 											<div class="lh-team-detail">
 												<h6>Phone Number</h6>
 												<ul>
-													<li>
-														<textarea class="form-control" id="profile_PhoneNumber" rows="2"
-															placeholder="Enter Phone Number"></textarea>
+														<div class="form-group">
+															<input type="text" class="form-control"
+																placeholder="Enter Phone Number">
+														</div>
 													</li>
 												</ul>
 											</div>
@@ -619,7 +634,6 @@
 											<div class="lh-team-detail">
 												<h6>Email</h6>
 												<ul>
-													<li>
 														<div class="form-group">
 															<input type="text" class="form-control"
 																placeholder="Enter Email">
@@ -632,7 +646,6 @@
 											<div class="lh-team-detail">
 												<h6>Address</h6>
 												<ul>
-													<li>
 														<div class="form-group">
 															<input type="text" class="form-control"
 																placeholder="Enter Address">
@@ -641,15 +654,15 @@
 												</ul>
 											</div>
 										</div>
-										<div class="col-md-6 col-sm-12">
+										<div class="col-md-6 col-sm-12"></div>
 											<div class="lh-team-detail">
 												<h6>Role</h6>
-												<select class="form-control form-control-line">
-													<option>London</option>
-													<option>India</option>
-													<option>Usa</option>
-													<option>Canada</option>
-													<option>Thailand</option>
+												<select class="form-control form-control-line" id="id_role">
+													<option value="">-- Select Role --</option>
+															<option value="1">Guest</option>
+															<option value="2">Admin</option>
+															<option value="3">Hotel Manager</option>
+															<option value="4">Res_Manager</option>
 												</select>		
 											</div>
 										</div>
@@ -812,6 +825,7 @@
 
 	<!-- Main Custom -->
 	<script src="assets/js/main.js"></script>
+	<script src="js/Employee.js"></script>
 </body>
 
 
