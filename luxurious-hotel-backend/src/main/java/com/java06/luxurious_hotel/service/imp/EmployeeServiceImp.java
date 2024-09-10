@@ -1,6 +1,7 @@
 package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.dto.EmployeeDTO;
+import com.java06.luxurious_hotel.dto.RoleDTO;
 import com.java06.luxurious_hotel.entity.RoleEntity;
 import com.java06.luxurious_hotel.entity.UserEntity;
 import com.java06.luxurious_hotel.repository.EmployeeReposiory;
@@ -14,11 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImp implements EmployeeService {
 
+
+    @Autowired
+    private FilesStorageService filesStorageService;
 
     @Autowired
     private EmployeeReposiory employeeReposiory;
@@ -73,6 +77,7 @@ public class EmployeeServiceImp implements EmployeeService {
             }
             if (updateEmployeeRequest.image() != null && updateEmployeeRequest.image().getOriginalFilename() != null) {
                 Employee.setImage(updateEmployeeRequest.image().getOriginalFilename());
+                filesStorageService.save(updateEmployeeRequest.image());
             }
             if (updateEmployeeRequest.summary() != null) {
                 Employee.setSummary(updateEmployeeRequest.summary());
@@ -97,6 +102,43 @@ public class EmployeeServiceImp implements EmployeeService {
             isSuccess = true;
         }
         return isSuccess;
+    }
+
+    @Override
+    public EmployeeDTO getEmployee(int employeeId) {
+        Optional<UserEntity> employeecheck = employeeReposiory.findById(employeeId);
+        return employeecheck.stream().map(userEntity -> {
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setId(userEntity.getId());
+            employeeDTO.setFirstname(userEntity.getFirstName());
+            employeeDTO.setLastname(userEntity.getLastName());
+            employeeDTO.setEmail(userEntity.getEmail());
+            employeeDTO.setAddress(userEntity.getAddress());
+            employeeDTO.setDob(userEntity.getDob());
+            employeeDTO.setImage(userEntity.getImage());
+            employeeDTO.setSumary(userEntity.getSummary());
+            employeeDTO.setPhone(userEntity.getPhone());
+            RoleDTO roleDTO= new RoleDTO();
+            roleDTO.setName(userEntity.getRole().getName());
+            roleDTO.setDescription(userEntity.getRole().getDescription());
+            employeeDTO.setRole(roleDTO);
+            return employeeDTO;
+        }).findFirst().orElseThrow(() -> new RuntimeException("Employee not found"));
+    }
+
+    @Override
+    public Map<RoleDTO, List<EmployeeDTO>> getAllEmployee() {
+        List<UserEntity> employee= employeeReposiory.findAll();
+        Map<RoleDTO, List<EmployeeDTO>> employeeDTOMap = new HashMap<>();
+        for (UserEntity userEntity : employee) {
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setLastname(userEntity.getLastName());
+            RoleDTO roleDTO = new RoleDTO();
+            roleDTO.setName(userEntity.getRole().getName());
+            employeeDTO.setRole(roleDTO);
+            employeeDTOMap.computeIfAbsent(roleDTO, k -> new ArrayList<>()).add(employeeDTO);
+        }
+        return employeeDTOMap;
     }
 
 

@@ -1,13 +1,11 @@
 package com.java06.luxurious_hotel.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 
 public record UpdateBookingRequest(
-        @NotNull(message = "Booking Id not null")
+        @NotNull(message = "Booking id cannot be null")
         int idBooking,
 
         int idGuest,
@@ -20,22 +18,31 @@ public record UpdateBookingRequest(
 
         int roomNumber,
 
-        @NotNull(message = "Rooms not null")
+        @NotNull(message = "Rooms cannot be null")
+        @NotEmpty(message = "Rooms cannot be empty")
         List<String> rooms,
 
-        @NotNull(message = "adultNumber not null")
+        @NotNull(message = "The number of adults cannot be null")
+        @Min(value = 1,message = "The number of adults must be at least 1")
         int adultNumber,
 
         int childrenNumber,
 
+        @Min(value = 1,message = "Booking status id must be at least 1")
         int idBookingStatus,
 
+        @Min(value = 1,message = "Payment status id must be at least 1")
         int idPaymentStatus,
 
+        @Min(value = 1,message = "Payment method id must be at least 1")
         int idPayment,
 
+        @NotNull(message = "paidAmount not null")
+        @Min(value = 0,message = "Paid amount must be at least 0")
         double paidAmount,
 
+        @NotNull(message = "total not null")
+        @Min(value = 0,message = "Total amount must be at least 0")
         double total
 ){
 }

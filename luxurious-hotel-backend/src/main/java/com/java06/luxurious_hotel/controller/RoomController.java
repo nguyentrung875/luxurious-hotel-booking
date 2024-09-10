@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,8 +17,32 @@ import java.util.List;
 @RequestMapping("/room")
 public class RoomController {
 
+
     @Autowired
     private RoomService roomService;
+
+
+    @GetMapping
+    public ResponseEntity<?> getAvailableRoom(@Valid SearchRoomRequest searchRoomRequest) {
+
+        List<RoomTypeAvailableDTO> roomVailableDTOList = roomService.getAvailableRooms(searchRoomRequest);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(roomVailableDTOList);
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> getAvailableRoomPost(@Valid @RequestBody SearchRoomRequest searchRoomRequest) {
+
+        List<RoomTypeAvailableDTO> roomVailableDTOList = roomService.getAvailableRooms(searchRoomRequest);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(roomVailableDTOList);
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/{selectDate}")
     public ResponseEntity<?> getAllRoomInfo(@PathVariable String selectDate){
@@ -31,14 +52,5 @@ public class RoomController {
         return new ResponseEntity(baseResponse, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAvailableRoom(@Valid SearchRoomRequest searchRoomRequest) {
 
-
-        List<RoomTypeAvailableDTO> roomVailableDTOList = roomService.getAvailableRooms(searchRoomRequest);
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setData(roomVailableDTOList);
-
-        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
-    }
 }

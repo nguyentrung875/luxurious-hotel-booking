@@ -2,16 +2,15 @@
 <html lang="en" dir="ltr">
 
 
-<!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/admin/rooms.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:24:38 GMT -->
-
+<!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/admin/team-add.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:24:35 GMT -->
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Best Luxurious Hotel Booking Template.">
-	<meta name="keywords"
-		content="hotel, booking, business, restaurant, spa, resort, landing, agency, corporate, start up, site design, new business site, business template, professional template, classic, modern">
-	<meta name="author" content="ashishmaraviya">
+    <meta name="keywords"
+        content="hotel, booking, business, restaurant, spa, resort, landing, agency, corporate, start up, site design, new business site, business template, professional template, classic, modern">
+    <meta name="author" content="ashishmaraviya">
 
 	<title>Luxurious - Hotel Booking HTML Template + Admin Dashboard</title>
 
@@ -22,26 +21,33 @@
 	<link href="assets/css/vendor/materialdesignicons.min.css" rel="stylesheet">
 	<link href="assets/css/vendor/remixicon.css" rel="stylesheet">
 
-	<!-- Vendor -->
+	<!-- Vendor CSS -->
 	<link href='assets/css/vendor/datatables.bootstrap5.min.css' rel='stylesheet'>
 	<link href='assets/css/vendor/responsive.datatables.min.css' rel='stylesheet'>
 	<link href='assets/css/vendor/daterangepicker.css' rel='stylesheet'>
+	<link href="assets/css/vendor/simplebar.css" rel="stylesheet">
 	<link href="assets/css/vendor/bootstrap.min.css" rel="stylesheet">
 	<link href="assets/css/vendor/apexcharts.css" rel="stylesheet">
-	<link href="assets/css/vendor/simplebar.css" rel="stylesheet">
 	<link href="assets/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet">
 
 	<!-- Main CSS -->
 	<link id="mainCss" href="assets/css/style.css" rel="stylesheet">
+	
+
 </head>
 
 <body data-lh-mode="light">
 	<main class="wrapper sb-default">
 		<!-- Loader -->
-		<div class="lh-loader">
-			<span class="loader"></span>
+		<div id="lh-overlay">
+			<div class="lh-ellipsis">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
 		</div>
-
+		
 		<!-- Header -->
 		<header class="lh-header">
 			<div class="container-fluid">
@@ -187,7 +193,7 @@
 								<li><a href="team-list.html" class="lh-page-link drop"><i
 											class="ri-git-commit-line"></i>Team List</a></li>
 							</ul>
-						</li>
+						</li>						
 						<li class="lh-sb-item-separator"></li>
 						<li class="lh-sb-title condense">Hotel | Resort</li>
 						<li class="lh-sb-item">
@@ -198,8 +204,7 @@
 						</li>
 						<li class="lh-sb-item">
 							<a href="guest-details.html" class="lh-page-link">
-								<i class="ri-user-search-line"></i><span class="condense"><span
-										class="hover-title">Guest
+								<i class="ri-user-search-line"></i><span class="condense"><span class="hover-title">Guest
 										Details</span> </span>
 							</a>
 						</li>
@@ -231,8 +236,8 @@
 						</li>
 						<li class="lh-sb-item">
 							<a href="menu-add.html" class="lh-page-link">
-								<i class="ri-restaurant-2-line"></i><span class="condense"><span class="hover-title">Add
-										Menu</span> </span>
+								<i class="ri-restaurant-2-line"></i><span class="condense"><span
+										class="hover-title">Add Menu</span> </span>
 							</a>
 						</li>
 						<li class="lh-sb-item">
@@ -488,44 +493,145 @@
 		<div class="lh-main-content">
 			<div class="container-fluid">
 				<!-- Page title & breadcrumb -->
-				<div class="lh-page-title">
+				<div class="lh-page-title lh-page-title-2">
 					<div class="lh-breadcrumb">
-						<h5>Rooms</h5>
+						<h5>Add Members</h5>
 						<ul>
-							<li><a href="index.html">Home</a></li>
-							<li>Rooms</li>
+							<li><a href="index.html">Luxurious</a></li>
+							<li>Team Add</li>
 						</ul>
 					</div>
-					<div class="lh-tools">
-						<a href="javascript:void(0)" title="Refresh" class="refresh"><i class="ri-refresh-line"></i></a>
-						<div id="custom_single_datepicker">
-							<div class="lh-date-range" title="Date">
-								<span></span>
+				</div>
+				<form class="lh-profile-add">
+					<div class="row">
+						<div class="col-xxl-3 col-xl-4 col-md-12">
+							<div class="team-sticky-bar">
+								<div class="col-xl-12">
+									<div class="lh-card">
+										<div class="lh-card-content">
+											<div class="lh-team-block-img">
+												<div class="lh-team-block-detail">
+													<div class="profile-img">
+														<div class="avatar-preview">
+															<div class="t-img" id="imagePreview"
+																style="background-image: url(assets/img/user/thumb.jpg);">
+															</div>
+														</div>
+														<span class="tag-label online"></span>
+														<div class="avatar-edit">
+															<input type='file' id="imageUpload"
+																accept=".png, .jpg, .jpeg">
+															<label for="imageUpload"></label>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<textarea class="form-control" id="profile_detail" rows="9"
+														placeholder="Enter Details"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="filter">
-							<div class="dropdown" title="Filter">
-								<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1"
-									data-bs-toggle="dropdown" aria-expanded="false">
-									<i class="ri-sound-module-line"></i>
-								</button>
-								<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-									<li><a class="dropdown-item" href="#">Booking</a></li>
-									<li><a class="dropdown-item" href="#">Revenue</a></li>
-									<li><a class="dropdown-item" href="#">Expence</a></li>
-								</ul>
+						<div class="col-xxl-9 col-xl-8 col-md-12">
+							<div class="lh-card team-overview">
+								<div class="lh-card-content lh-card-team team-details">
+									<div class="row">
+										<div class="col-sm-12">
+											<h3>Guest Update</h3>
+											<div class="lh-team-detail">
+												<p>From your account you can easily view and track Deals. You can manage
+													and change your account information like address, contact
+													information
+													and history of deals.</p>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Full Name</h6>
+												<ul>
+													<li>
+														<div class="form-group">
+															<input id="fullname" type="First_Name" class="form-control"
+																placeholder="Enter First Name">
+															<input id="idguest" type="hidden">
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Date Of Birth</h6>
+												<ul>
+													<li>
+														<input id="dob" type="text" class="form-control" 
+																placeholder="Enter DOB" maxlength="10">
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Phone Number</h6>
+												<ul>
+													<li>
+														<textarea class="form-control" id="phone" rows="2"
+															placeholder="Enter Phone Number"></textarea>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Email</h6>
+												<ul>
+													<li>
+														<div class="form-group">
+															<input id="email" type="text" class="form-control"
+																placeholder="Enter Email">
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Address</h6>
+												<ul>
+													<li>
+														<div class="form-group">
+															<input id="address" type="text" class="form-control"
+																placeholder="Enter Address">
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Summary</h6>
+												<ul>
+													<li>
+														<div class="form-group">
+															<input id="summary" type="text" class="form-control"
+																placeholder="Enter Summary">
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<button id="guest-update-btn">Update</button>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div id="rooms_content">
-
-
-				</div>
-
-
-
-
+				</form>
 			</div>
 		</div>
 
@@ -679,10 +785,11 @@
 
 	<!-- Main Custom -->
 	<script src="assets/js/main.js"></script>
-	<script src="assets/js/rooms.js"></script>
+	<!-- <script src="js/guest-add.js"></script> -->
+	<!-- <script src="js/get-value-guest.js"></script> -->
+	<script src="js/guest-update.js"></script>
 </body>
 
 
-<!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/admin/rooms.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:24:38 GMT -->
-
+<!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/admin/team-add.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:24:36 GMT -->
 </html>

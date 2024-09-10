@@ -20,6 +20,7 @@ public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, 
     List<RoomBookingEntity> findByBooking(BookingEntity booking);
     int deleteByBooking(BookingEntity bookingEntity);
     void deleteAllByBooking_Guest_Id(int id);
+    boolean existsByBooking_Guest_Id(int id);
 
     //List<BookingEntity> findBookingByRoom(RoomEntity room);
 

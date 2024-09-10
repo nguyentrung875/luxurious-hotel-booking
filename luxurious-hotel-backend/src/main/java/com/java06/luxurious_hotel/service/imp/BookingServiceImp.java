@@ -136,6 +136,7 @@ public class BookingServiceImp implements BookingService {
     @Override
     public void updateBooking(UpdateBookingRequest request) {
 
+        System.out.println("idBooking" + request.idBooking());
         BookingEntity updateBooking = bookingRepository.findById(request.idBooking())
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -143,14 +144,14 @@ public class BookingServiceImp implements BookingService {
         //1. Xóa các dòng có id_booking == updateBooking
         roomBookingRepository.deleteByBooking(updateBooking);
 
-        //KIỂM TRA PHÒNG CÓ ĐANG AVAILABLE
-        LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
-        LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
-
-        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
-        if (notAvailableRoom.size() > 0) {
-            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
-        }
+//        //KIỂM TRA PHÒNG CÓ ĐANG AVAILABLE
+//        LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
+//        LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
+//
+//        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
+//        if (notAvailableRoom.size() > 0) {
+//            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
+//        }
 
         //Update lại các phòng mới
         this.insertRoomBooking(request.rooms(), updateBooking);
@@ -313,6 +314,7 @@ public class BookingServiceImp implements BookingService {
 
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.setId(booking.getId());
+        bookingDTO.setIdGuest(booking.getGuest().getId());
         bookingDTO.setFirstName(booking.getGuest().getFirstName());
         bookingDTO.setLastName(booking.getGuest().getLastName());
         bookingDTO.setEmail(booking.getGuest().getEmail());
@@ -320,6 +322,8 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setAddress(booking.getGuest().getAddress());
         bookingDTO.setCheckIn(booking.getCheckIn().toLocalDate());
         bookingDTO.setCheckOut(booking.getCheckOut().toLocalDate());
+
+
 
         PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
         paymentMethodDTO.setId(booking.getPaymentMethod().getId());
@@ -341,14 +345,18 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setAdultNo(booking.getAdultNumber());
         bookingDTO.setChildrenNo(booking.getChildrenNumber());
 
-        List<RoomEntity> rooms = roomBookingRepository.findByBooking(booking).stream().map(RoomBookingEntity::getRoom).toList();
+        Map<String, List<RoomTypeDTO>> roomTypeMap = new LinkedHashMap<>();
 
-        Map<String, List<String>> roomMap = rooms.stream().collect(Collectors.groupingBy(
-                room -> room.getRoomType().getName()
-                , Collectors.mapping(RoomEntity::getName, Collectors.toList())
-        ));
+        bookingDTO.setRoomTypes(booking.getRoomBookings().stream().collect(Collectors.groupingBy(
+                roomBookingEntity -> roomBookingEntity.getRoom().getRoomType().getName(),
+                Collectors.mapping(roomBookingEntity -> {
+                    RoomDTO roomDTO = new RoomDTO();
+                    roomDTO.setId(roomBookingEntity.getRoom().getId());
+                    roomDTO.setName(roomBookingEntity.getRoom().getName());
+                    return roomDTO;
+                }, Collectors.toList())
+        )));
 
-        bookingDTO.setRoomNo((HashMap<String, List<String>>) roomMap);
         return bookingDTO;
     }
 

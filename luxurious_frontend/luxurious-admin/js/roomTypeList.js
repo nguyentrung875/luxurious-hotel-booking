@@ -33,7 +33,7 @@ $(document).ready( function(){
 														<td>${item.capacity}</td>
 														<td>${item.bedName}</td>
                                                         <td>${ruoomNum}</td>
-														<td>${item.amenity}</td>
+														
 														
 														
 														<td>
@@ -60,7 +60,7 @@ $(document).ready( function(){
     });
 })
 
-
+//<td>${item.amenity}</td>
 
 
 
@@ -167,7 +167,11 @@ $(document).ready(function() {
         alert(roomId); // Kiểm tra xem roomId có đúng không
 
         
-        sessionStorage.setItem('editRoomId', roomId);
+        //sessionStorage.setItem('editRoomId', roomId);
+
+        //localStorage.setItem('roomData', JSON.stringify(response.data));
+
+        localStorage.setItem('editRoomId', roomId);
 
         
         window.location.href = "RoomTypeUpdate.html";
@@ -181,7 +185,9 @@ $(document).ready(function() {
     var existingImages = [];  
 
      
-    var roomId = sessionStorage.getItem('editRoomId');
+    //var roomId = sessionStorage.getItem('editRoomId');
+    var roomId = localStorage.getItem('editRoomId');
+
     if (roomId) {
         $.ajax({
             url: "http://localhost:9999/roomType/" + roomId,
