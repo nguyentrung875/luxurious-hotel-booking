@@ -56,6 +56,7 @@ $(document).ready(function () {
 
     $('body').on('click', '.update_booking', function (e) {
         e.preventDefault();
+
         var booking = JSON.parse($(this).closest('tr').attr('booking_data'));
         showDetailBooking(booking)
         $('#booking_details').attr('idBooking', booking.id)
@@ -63,11 +64,12 @@ $(document).ready(function () {
 
     $('body').on('click', '.delete_booking', function (e) {
         e.preventDefault();
-
+        
         var idBooking = $(this).attr("idBooking");
 
         if (confirm('Are you sure?')) {
             deleteBooking(idBooking)
+
         }
     });
 
@@ -115,6 +117,8 @@ function deleteBooking(id) {
         success: function (response) {
             if (response.statusCode == 200) {
                 alert(response.message)
+                $('#booking_table').DataTable().row($(`.delete_booking[idBooking=${id}]`).parents("tr")).remove().draw(false)
+
             }
 
         }
@@ -239,7 +243,7 @@ function showAllRooms() {
             html = ''
             for (let i = 0; i < response.data.length; i++) {
                 let itemRoomType = response.data[i]
-                html += `<optgroup label="${itemRoomType.name} (${itemRoomType.price}$/night)">`
+                html += `<optgroup label="${itemRoomType.name} (${itemRoomType.price}$/night, ${itemRoomType.capacity} person)">`
                 for (let j = 0; j < itemRoomType.roomName.length; j++) {
                     let roomName = itemRoomType.roomName[j]
                     html += `<option disabled="true" value="${roomName}">${roomName}</option>`

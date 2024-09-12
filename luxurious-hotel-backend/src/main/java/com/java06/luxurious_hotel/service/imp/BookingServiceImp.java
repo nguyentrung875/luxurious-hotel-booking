@@ -109,7 +109,11 @@ public class BookingServiceImp implements BookingService {
         newBooking.setPaymentMethod(paymentMethod);
 
         PaymentStatusEntity paymentStatus = new PaymentStatusEntity();
-        paymentStatus.setId(request.idPaymentStatus());
+        if (request.idPaymentStatus() == 0) {
+            paymentStatus.setId(1);
+        } else {
+            paymentStatus.setId(request.idPaymentStatus());
+        }
         newBooking.setPaymentStatus(paymentStatus);
 
         BookingStatusEntity bookingStatus = new BookingStatusEntity();
@@ -118,7 +122,6 @@ public class BookingServiceImp implements BookingService {
         } else {
             bookingStatus.setId(request.idBookingStatus());
         }
-
         newBooking.setBookingStatus(bookingStatus);
 
         newBooking.setCreateDate(LocalDateTime.now());
@@ -135,8 +138,6 @@ public class BookingServiceImp implements BookingService {
     @Transactional
     @Override
     public void updateBooking(UpdateBookingRequest request) {
-
-        System.out.println("idBooking" + request.idBooking());
         BookingEntity updateBooking = bookingRepository.findById(request.idBooking())
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -197,7 +198,6 @@ public class BookingServiceImp implements BookingService {
         } else {
             bookingRepository.delete(delBooking);
         }
-
     }
 
     private void insertRoomBooking(List<String> strRooms, BookingEntity booking) {
@@ -344,8 +344,6 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setTotal(booking.getTotal());
         bookingDTO.setAdultNo(booking.getAdultNumber());
         bookingDTO.setChildrenNo(booking.getChildrenNumber());
-
-        Map<String, List<RoomTypeDTO>> roomTypeMap = new LinkedHashMap<>();
 
         bookingDTO.setRoomTypes(booking.getRoomBookings().stream().collect(Collectors.groupingBy(
                 roomBookingEntity -> roomBookingEntity.getRoom().getRoomType().getName(),

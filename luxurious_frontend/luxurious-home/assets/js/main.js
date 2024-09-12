@@ -534,5 +534,6 @@
     placeholder_text_multiple: "Select some options" // Placeholder text for multiple selects
   });
 
-
+  document.getElementById("input_checkin").min = new Date().toISOString().split("T")[0];
+  document.getElementById("input_checkout").min = new Date().toISOString().split("T")[0];
 })(jQuery);
