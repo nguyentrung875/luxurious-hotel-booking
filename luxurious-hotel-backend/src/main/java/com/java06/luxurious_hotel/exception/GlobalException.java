@@ -9,11 +9,14 @@ import com.java06.luxurious_hotel.exception.roomType.RoomTypeNotFoundException;
 import com.java06.luxurious_hotel.exception.user.IncorrectPasswordException;
 import com.java06.luxurious_hotel.exception.user.UserNotFoundException;
 import com.java06.luxurious_hotel.response.BaseResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.nio.charset.StandardCharsets;
 
 @RestControllerAdvice
 public class GlobalException {
@@ -50,9 +53,21 @@ public class GlobalException {
     public ResponseEntity<?> handeValidation(MethodArgumentNotValidException e) {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setStatusCode(500);
-        baseResponse.setMessage(e.getFieldError().getDefaultMessage());
-        return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//        baseResponse.setMessage(e.getFieldError().getDefaultMessage());
+        baseResponse.setMessage(e.getAllErrors().getFirst().getDefaultMessage());
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
     }
+
+    //Bắt exception trùng dữ liệu unique
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handeValidation(DataIntegrityViolationException e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(500);
+        baseResponse.setMessage(e.getRootCause().getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
+    }
+
 //    Handle Exception ROOM ------------------------------------------------------------------------
 
     @ExceptionHandler(RoomNotAvailableException.class)
