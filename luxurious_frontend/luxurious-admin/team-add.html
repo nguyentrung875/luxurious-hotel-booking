@@ -495,7 +495,172 @@
 						</ul>
 					</div>
 				</div>
-				<form id="addEmployee" action="your-server " method="post" class="lh-profile-add">
+				<form id="addEmployee" method="post" action="/your-api-endpoint" enctype="multipart/form-data" class="lh-profile-add">
+					<div class="row">
+						<div class="col-xxl-3 col-xl-4 col-md-12">
+							<div class="team-sticky-bar">
+								<div class="col-xl-12">
+									<div class="lh-card">
+										<div class="lh-card-content">
+											<div class="lh-team-block-img">
+												<div class="lh-team-block-detail">
+													<div class="profile-img">
+														<div class="avatar-preview">
+															<div class="t-img" id="imagePreview"
+																 style="background-image: url(assets/img/user/thumb.jpg);">
+															</div>
+														</div>
+														<span class="tag-label online"></span>
+														<div class="avatar-edit">
+															<input type='file' name="image" id="imageUpload" accept=".png, .jpg, .jpeg">
+															<label for="imageUpload"></label>
+														</div>
+													</div>
+													<div class="lh-settings">
+														<div class="dropdown" title="Status">
+															<button class="btn btn-secondary dropdown-toggle" type="button"
+																	data-bs-toggle="dropdown" aria-expanded="false">
+																<i class="mdi mdi-dots-vertical"></i>
+															</button>
+															<ul class="dropdown-menu">
+																<li><a class="dropdown-item" href="#"><span class="tag-label online"></span>Online</a></li>
+																<li><a class="dropdown-item" href="#"><span class="tag-label offline"></span>Offline</a></li>
+																<li><a class="dropdown-item" href="#"><span class="tag-label busy"></span>Busy</a></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<textarea class="form-control" id="profile_detail" name="summary" rows="9"
+															  placeholder="Enter Details"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xxl-9 col-xl-8 col-md-12">
+							<div class="lh-card team-overview">
+								<div class="lh-card-content lh-card-team team-details">
+									<div class="row">
+										<div class="col-sm-12">
+											<h3>Account Details</h3>
+											<div class="lh-team-detail">
+												<p>From your account you can easily view and track Deals. You can manage and change your account information like address, contact information, and history of deals.</p>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>UserName</h6>
+												<ul>
+													<div class="form-group">
+														<input type="text" name="username" id="username" class="form-control"
+															   placeholder="Enter User Name">
+													</div>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Password</h6>
+												<ul>
+													<div class="form-group">
+														<input type="password" name="password" id="password" class="form-control"
+															   placeholder="Enter Password">
+													</div>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>First Name</h6>
+												<ul>
+													<li>
+														<textarea class="form-control" name="firstName" id="firstname" rows="2"
+																  placeholder="Enter First Name"></textarea>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Last Name</h6>
+												<ul>
+													<li>
+														<textarea class="form-control" name="lastName" id="lastname" rows="2"
+																  placeholder="Enter Last Name"></textarea>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Date Of Birth</h6>
+												<ul>
+													<div class="form-group">
+														<input type="text" name="dob" id="dob" class="form-control"
+															   placeholder="Enter DOB">
+													</div>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Phone Number</h6>
+												<ul>
+													<div class="form-group">
+														<input type="text" name="phone" id="phone" class="form-control"
+															   placeholder="Enter Phone Number">
+													</div>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Email</h6>
+												<ul>
+													<div class="form-group">
+														<input type="email" name="email" id="email" class="form-control"
+															   placeholder="Enter Email">
+													</div>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Address</h6>
+												<ul>
+													<div class="form-group">
+														<input type="text" name="address" id="address" class="form-control"
+															   placeholder="Enter Address">
+													</div>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="lh-team-detail">
+												<h6>Role</h6>
+												<select class="form-control form-control-line" name="Idrole" id="id_role">
+													<option value="">-- Select Role --</option>
+													<option value="1">Guest</option>
+													<option value="2">Admin</option>
+													<option value="3">Hotel Manager</option>
+													<option value="4">Res_Manager</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<button type="submit" id="userAdd" class="btn btn-primary">Add</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				
+				<!-- <form id="addEmployee"  method="post" class="lh-profile-add">
 					<div class="row">
 						<div class="col-xxl-3 col-xl-4 col-md-12">
 							<div class="team-sticky-bar">
@@ -518,7 +683,6 @@
 														</div>
 													</div>
 													<div class="lh-settings">
-														<a href="#" id="submitForm" class="lh-btn-primary m-r-10">Add Profile</a>
 														<div class="dropdown" title="Status">
 															<button class="btn btn-secondary dropdown-toggle"
 																type="button" data-bs-toggle="dropdown"
@@ -566,7 +730,7 @@
 												<h6>UserName</h6>
 												<ul>
 														<div class="form-group">
-															<input type="username" class="form-control"
+															<input type="username" id="username" class="form-control"
 																placeholder="Enter User Name">
 														</div>
 													</li>
@@ -578,7 +742,7 @@
 												<h6>Password</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
+															<input type="text" id="password" class="form-control"
 																placeholder="Enter Password">
 														</div>
 													</li>
@@ -590,7 +754,7 @@
 												<h6>First Name</h6>
 												<ul>
 													<li>
-														<textarea class="form-control" id="profile_address1" rows="2"
+														<textarea class="form-control" id="firstname" rows="2"
 															placeholder="Enter First Name"></textarea>
 													</li>
 												</ul>
@@ -601,7 +765,7 @@
 												<h6>Last Name</h6>
 												<ul>
 													<li>
-														<textarea class="form-control" id="profile_address2" rows="2"
+														<textarea class="form-control" id="lastname" rows="2"
 															placeholder="Enter Last Name"></textarea>
 													</li>
 												</ul>
@@ -612,7 +776,7 @@
 												<h6>Date Of Birth</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
+															<input type="text" id="dob" class="form-control"
 																placeholder="Enter DOB">
 														</div>
 												</ul>
@@ -623,7 +787,7 @@
 												<h6>Phone Number</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
+															<input type="text" id="phone" class="form-control"
 																placeholder="Enter Phone Number">
 														</div>
 													</li>
@@ -635,7 +799,7 @@
 												<h6>Email</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
+															<input type="text" id="email" class="form-control"
 																placeholder="Enter Email">
 														</div>
 													</li>
@@ -647,7 +811,7 @@
 												<h6>Address</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
+															<input type="text" id="address" class="form-control"
 																placeholder="Enter Address">
 														</div>
 													</li>
@@ -666,12 +830,15 @@
 												</select>		
 											</div>
 										</div>
+										<div class="col-md-6 col-sm-12">
+											<button id="userAdd">Add</button>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</form>
+				</form> -->
 			</div>
 		</div>
 

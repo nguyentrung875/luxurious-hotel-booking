@@ -30,8 +30,7 @@ public class EmployeeServiceImp implements EmployeeService {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private FilesStorageService filesStorageService;
+
 
     @Override
     public void addEmployee(AddEmployeeRequest addEmployeeRequest) {
