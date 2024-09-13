@@ -4,9 +4,10 @@ $(document).ready(function (e) {
     $('#input_checkout').val(searchParams.get('out'));
     $('#input_adult').val(searchParams.get('adult'));
     $('#input_children').val(searchParams.get('children'));
-    var selectRooms = searchParams.get('rooms').split(',');
-    console.log(selectRooms)
-
+    
+    if (searchParams.get('rooms')) {
+        var selectedRooms = searchParams.get('rooms').split(',')
+    }
 
     var inputDateRange = {}
     inputDateRange.checkIn = $('#input_checkin').val();
@@ -14,7 +15,7 @@ $(document).ready(function (e) {
     inputDateRange.adultNumber = $('#input_adult').val();
     inputDateRange.childrenNumber = $('#input_children').val();
 
-    showAllRooms()
+    showAllRooms(selectedRooms)
     // loadAvailableRooms(inputDateRange)
 
 
@@ -60,6 +61,33 @@ $(document).ready(function (e) {
         calculateTotal()
     });
 
+    $("#load_info").click(function (e) { 
+        e.preventDefault();
+        let phone = $('#input_return_phone').val();
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "http://localhost:9999/user/p" + phone,
+            success: function (response) {
+                if (response.statusCode == 200 && response.message) {
+                    alert(response.message)
+                } else {
+                    let data = response.data
+                    $('#input_first_name').val(data.firstName);
+                    $('#input_last_name').val(data.lastName);
+                    $('#input_phone').val(data.phone);
+                    $('#input_email').val(data.email);
+                    $('#input_address').val(data.address);
+
+                }
+            },
+            error: function (response) {
+                alert(response.responseJSON.message)
+            }
+        })        
+    });
+
 
 });
 
@@ -73,6 +101,7 @@ function addBooking(inputAddBooking) {
         success: function (response) {
             if (response.statusCode == 200) {
                 alert(response.message)
+                window.location.href = 'booking-history.html'
             }
         },
         error: function (response) {
@@ -81,7 +110,7 @@ function addBooking(inputAddBooking) {
     });
 }
 
-function showAllRooms() {
+function showAllRooms(selectedRooms) {
     $.ajax({
         type: "GET",
         contentType: "application/json; charset=utf-8",
@@ -104,10 +133,20 @@ function showAllRooms() {
                 html += `</optgroup>`
             }
 
-            $('#input_rooms').append(html).trigger("chosen:updated");
+            $('#input_rooms').append(html);
+            
+            //Nếu selected rooms có trên url params
+            if (selectedRooms) {
+                $('#input_rooms').val(selectedRooms);
+                selectedRooms.forEach(room => {
+                    $("#input_rooms").find(`option[value=${room}]`).removeAttr('disabled')
+                })
+            }
+
+            //Reload chosen select
+            $('#input_rooms').trigger('chosen:updated')
             $('#input_payment_method').trigger("chosen:updated");
 
-            // loadAvailableRooms(inputDateRange)
 
         }
     }).done(function (params) {
@@ -124,6 +163,7 @@ function loadAvailableRooms(inputDateRange) {
         data: JSON.stringify(inputDateRange),
         success: function (response) {
 
+            $('#input_rooms').val('')
             $('#input_rooms').find('option').attr('disabled', 'true')
             $("#input_rooms").find(`option:selected`).removeAttr('disabled')
 

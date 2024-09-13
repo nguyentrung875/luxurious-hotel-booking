@@ -40,8 +40,8 @@ $(document).ready(function (e) {
         calculateTotal()
     });
 
-    $('#submit_book_now').click(function (e) { 
-
+    $('.form_book_now').submit(function (e) { 
+        e.preventDefault()
         checkIn = $('#input_checkin').val();
         checkOut = $('#input_checkout').val();
         adult = $('#input_adult').val();
@@ -51,6 +51,8 @@ $(document).ready(function (e) {
         window.location.href = `checkout.html?in=${checkIn}&out=${checkOut}&rooms=${rooms}&adult=${adult}&children=${children}`
         
     });
+
+
     
 });
 
@@ -60,12 +62,6 @@ function showAllRooms() {
         contentType: "application/json; charset=utf-8",
         url: "http://localhost:9999/status",
         success: function (response) {
-            
-            response.data.listPaymentMethod.forEach(item => {
-                console.log(item)
-                $("#input_payment_method").append(`<option value="${item.id}">${item.name}</option>`);
-            });
-
             // show all rooms
             html = ''
             for (let i = 0; i < response.data.listRoomType.length; i++) {
@@ -84,9 +80,7 @@ function showAllRooms() {
             // loadAvailableRooms(inputDateRange)
 
         }
-    }).done(function (params) {
-
-    });
+    })
 }
 
 function loadAvailableRooms(inputDateRange) {
@@ -97,10 +91,10 @@ function loadAvailableRooms(inputDateRange) {
         url: "http://localhost:9999/room",
         data: JSON.stringify(inputDateRange),
         success: function (response) {
-            console.log(response);
-            
+            $('#input_rooms').val('')
             $('#input_rooms').find('option').attr('disabled', 'true')
             $("#input_rooms").find(`option:selected`).removeAttr('disabled')
+
 
             for (let i = 0; i < response.data.length; i++) {
                 let itemRoomType = response.data[i]

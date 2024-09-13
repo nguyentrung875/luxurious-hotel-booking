@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public interface BookingService {
+    List<BookingDTO> getBookingByPhone(String phone);
     List<BookingDTO> getAllBooking();
     BookingDTO getDetailBooking(int idBooking);
     void addNewBooking(AddBookingRequest request);

@@ -42,6 +42,12 @@ public class BookingServiceImp implements BookingService {
     private UserRepository userRepository;
 
     @Override
+    public List<BookingDTO> getBookingByPhone(String phone) {
+        List<BookingEntity> bookings = bookingRepository.findByGuest_Phone(phone);
+        return bookings.stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
+    }
+
+    @Override
     public List<BookingDTO> getAllBooking() {
         return bookingRepository.findAll().stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
     }
@@ -322,7 +328,7 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setAddress(booking.getGuest().getAddress());
         bookingDTO.setCheckIn(booking.getCheckIn().toLocalDate());
         bookingDTO.setCheckOut(booking.getCheckOut().toLocalDate());
-
+        bookingDTO.setCreateDate(booking.getCreateDate().toLocalDate());
 
 
         PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();

@@ -15,4 +15,6 @@ public class GuestDTO {
     private String address;
     private String summary;
     private LocalDate dob;
+    private String firstName;
+    private String lastName;
 }

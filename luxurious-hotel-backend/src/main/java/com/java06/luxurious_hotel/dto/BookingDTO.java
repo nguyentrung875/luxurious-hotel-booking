@@ -35,4 +35,5 @@ public class BookingDTO {
     private double paidAmount;
     private double total;
     private List<RoomTypeDTO> roomType;
+    private LocalDate createDate;
 }
