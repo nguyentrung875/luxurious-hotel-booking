@@ -66,6 +66,7 @@ public class StatusServiceImp implements StatusService {
                 roomTypeDTO.setId(room.getRoomType().getId());
                 roomTypeDTO.setName(room.getRoomType().getName());
                 roomTypeDTO.setPrice(room.getRoomType().getPrice());
+                roomTypeDTO.setCapacity(room.getRoomType().getCapacity());
                 roomTypeDTO.setRooms(new ArrayList<>());
 
                 roomTypeMap.put(roomTypeName, roomTypeDTO);

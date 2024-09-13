@@ -1,18 +1,23 @@
 package com.java06.luxurious_hotel.request;
 
+import com.java06.luxurious_hotel.validator.ValidDateRange;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
 
+@ValidDateRange(checkInField = "checkInDate", checkOutField = "checkOutDate")
 public record UpdateBookingRequest(
         @NotNull(message = "Booking id cannot be null")
         int idBooking,
 
+        @NotNull(message = "idGuest id cannot be null")
         int idGuest,
 
+        @NotNull(message = "checkInDate not null")
         @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Incorrect date format yyyy-MM-dd")
         String checkInDate,
 
+        @NotNull(message = "checkOutDate not null")
         @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Incorrect date format yyyy-MM-dd")
         String checkOutDate,
 

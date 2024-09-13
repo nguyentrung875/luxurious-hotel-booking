@@ -17,6 +17,13 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+    @GetMapping("/p{phone}")
+    public ResponseEntity<?> getBooking(@PathVariable String phone){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(bookingService.getBookingByPhone(phone));
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<?> getAllBooking(){
         BaseResponse baseResponse = new BaseResponse();

@@ -42,6 +42,12 @@ public class BookingServiceImp implements BookingService {
     private UserRepository userRepository;
 
     @Override
+    public List<BookingDTO> getBookingByPhone(String phone) {
+        List<BookingEntity> bookings = bookingRepository.findByGuest_Phone(phone);
+        return bookings.stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
+    }
+
+    @Override
     public List<BookingDTO> getAllBooking() {
         return bookingRepository.findAll().stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
     }
@@ -109,7 +115,11 @@ public class BookingServiceImp implements BookingService {
         newBooking.setPaymentMethod(paymentMethod);
 
         PaymentStatusEntity paymentStatus = new PaymentStatusEntity();
-        paymentStatus.setId(request.idPaymentStatus());
+        if (request.idPaymentStatus() == 0) {
+            paymentStatus.setId(1);
+        } else {
+            paymentStatus.setId(request.idPaymentStatus());
+        }
         newBooking.setPaymentStatus(paymentStatus);
 
         BookingStatusEntity bookingStatus = new BookingStatusEntity();
@@ -118,7 +128,6 @@ public class BookingServiceImp implements BookingService {
         } else {
             bookingStatus.setId(request.idBookingStatus());
         }
-
         newBooking.setBookingStatus(bookingStatus);
 
         newBooking.setCreateDate(LocalDateTime.now());
@@ -135,8 +144,6 @@ public class BookingServiceImp implements BookingService {
     @Transactional
     @Override
     public void updateBooking(UpdateBookingRequest request) {
-
-        System.out.println("idBooking" + request.idBooking());
         BookingEntity updateBooking = bookingRepository.findById(request.idBooking())
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -197,7 +204,6 @@ public class BookingServiceImp implements BookingService {
         } else {
             bookingRepository.delete(delBooking);
         }
-
     }
 
     private void insertRoomBooking(List<String> strRooms, BookingEntity booking) {
@@ -322,7 +328,7 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setAddress(booking.getGuest().getAddress());
         bookingDTO.setCheckIn(booking.getCheckIn().toLocalDate());
         bookingDTO.setCheckOut(booking.getCheckOut().toLocalDate());
-
+        bookingDTO.setCreateDate(booking.getCreateDate().toLocalDate());
 
 
         PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
@@ -344,8 +350,6 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setTotal(booking.getTotal());
         bookingDTO.setAdultNo(booking.getAdultNumber());
         bookingDTO.setChildrenNo(booking.getChildrenNumber());
-
-        Map<String, List<RoomTypeDTO>> roomTypeMap = new LinkedHashMap<>();
 
         bookingDTO.setRoomTypes(booking.getRoomBookings().stream().collect(Collectors.groupingBy(
                 roomBookingEntity -> roomBookingEntity.getRoom().getRoomType().getName(),

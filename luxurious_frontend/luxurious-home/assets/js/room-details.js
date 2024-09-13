@@ -1,13 +1,11 @@
 $(document).ready(function (e) {
+
+
     let searchParams = new URLSearchParams(window.location.search)
     $('#input_checkin').val(searchParams.get('in'));
     $('#input_checkout').val(searchParams.get('out'));
     $('#input_adult').val(searchParams.get('adult'));
     $('#input_children').val(searchParams.get('children'));
-    
-    if (searchParams.get('rooms')) {
-        var selectedRooms = searchParams.get('rooms').split(',')
-    }
 
     var inputDateRange = {}
     inputDateRange.checkIn = $('#input_checkin').val();
@@ -15,7 +13,7 @@ $(document).ready(function (e) {
     inputDateRange.adultNumber = $('#input_adult').val();
     inputDateRange.childrenNumber = $('#input_children').val();
 
-    showAllRooms(selectedRooms)
+    showAllRooms()
     // loadAvailableRooms(inputDateRange)
 
 
@@ -27,25 +25,6 @@ $(document).ready(function (e) {
         inputDateRange.adultNumber = $('#input_adult').val();
         inputDateRange.childrenNumber = $('#input_children').val();
         loadAvailableRooms(inputDateRange)
-    });
-
-    $('#submit_booking').click(function (e) {
-        e.preventDefault()
-        var inputBooking = {}
-        inputBooking.checkInDate = $('#input_checkin').val();
-        inputBooking.checkOutDate = $('#input_checkout').val();
-        inputBooking.rooms = $('#input_rooms').val();
-        inputBooking.adultNumber = $('#input_adult').val();
-        inputBooking.childrenNumber = $('#input_children').val();
-        inputBooking.idPayment = $('#input_payment_method').val();
-        inputBooking.total = $('#input_total').text().substring(1);
-
-        inputBooking.firstName = $('#input_first_name').val();
-        inputBooking.lastName = $('#input_last_name').val();
-        inputBooking.phone = $('#input_phone').val();
-        inputBooking.email = $('#input_email').val();
-        inputBooking.address = $('#input_address').val();
-        addBooking(inputBooking)
     });
 
     $('#input_rooms').on('change', function () {
@@ -61,66 +40,28 @@ $(document).ready(function (e) {
         calculateTotal()
     });
 
-    $("#load_info").click(function (e) { 
-        e.preventDefault();
-        let phone = $('#input_return_phone').val();
+    $('.form_book_now').submit(function (e) { 
+        e.preventDefault()
+        checkIn = $('#input_checkin').val();
+        checkOut = $('#input_checkout').val();
+        adult = $('#input_adult').val();
+        children = $('#input_children').val();
+        rooms = $('#input_rooms').val()
 
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: "http://localhost:9999/user/p" + phone,
-            success: function (response) {
-                if (response.statusCode == 200 && response.message) {
-                    alert(response.message)
-                } else {
-                    let data = response.data
-                    $('#input_first_name').val(data.firstName);
-                    $('#input_last_name').val(data.lastName);
-                    $('#input_phone').val(data.phone);
-                    $('#input_email').val(data.email);
-                    $('#input_address').val(data.address);
-
-                }
-            },
-            error: function (response) {
-                alert(response.responseJSON.message)
-            }
-        })        
+        window.location.href = `checkout.html?in=${checkIn}&out=${checkOut}&rooms=${rooms}&adult=${adult}&children=${children}`
+        
     });
 
 
+    
 });
 
-function addBooking(inputAddBooking) {
-    console.log(inputAddBooking)
-    $.ajax({
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        url: "http://localhost:9999/booking",
-        data: JSON.stringify(inputAddBooking),
-        success: function (response) {
-            if (response.statusCode == 200) {
-                alert(response.message)
-                window.location.href = 'booking-history.html'
-            }
-        },
-        error: function (response) {
-            alert(response.responseJSON.message)
-        }
-    });
-}
-
-function showAllRooms(selectedRooms) {
+function showAllRooms() {
     $.ajax({
         type: "GET",
         contentType: "application/json; charset=utf-8",
         url: "http://localhost:9999/status",
         success: function (response) {
-
-            response.data.listPaymentMethod.forEach(item => {
-                $("#input_payment_method").append(`<option value="${item.id}">${item.name}</option>`);
-            });
-
             // show all rooms
             html = ''
             for (let i = 0; i < response.data.listRoomType.length; i++) {
@@ -133,25 +74,13 @@ function showAllRooms(selectedRooms) {
                 html += `</optgroup>`
             }
 
-            $('#input_rooms').append(html);
-            
-            //Nếu selected rooms có trên url params
-            if (selectedRooms) {
-                $('#input_rooms').val(selectedRooms);
-                selectedRooms.forEach(room => {
-                    $("#input_rooms").find(`option[value=${room}]`).removeAttr('disabled')
-                })
-            }
-
-            //Reload chosen select
-            $('#input_rooms').trigger('chosen:updated')
+            $('#input_rooms').append(html).trigger("chosen:updated");
             $('#input_payment_method').trigger("chosen:updated");
 
+            // loadAvailableRooms(inputDateRange)
 
         }
-    }).done(function (params) {
-
-    });
+    })
 }
 
 function loadAvailableRooms(inputDateRange) {
@@ -162,10 +91,10 @@ function loadAvailableRooms(inputDateRange) {
         url: "http://localhost:9999/room",
         data: JSON.stringify(inputDateRange),
         success: function (response) {
-
             $('#input_rooms').val('')
             $('#input_rooms').find('option').attr('disabled', 'true')
             $("#input_rooms").find(`option:selected`).removeAttr('disabled')
+
 
             for (let i = 0; i < response.data.length; i++) {
                 let itemRoomType = response.data[i]
@@ -193,6 +122,10 @@ function calculateTotal() {
     var total = listPrice.reduce(function (total, price) {
         return total + (price * nights)
     }, 0);
-    $('#input_total').html('$' + total);
+    $('#input_total').html('$'+total);
+
+
+
+
 
 }
