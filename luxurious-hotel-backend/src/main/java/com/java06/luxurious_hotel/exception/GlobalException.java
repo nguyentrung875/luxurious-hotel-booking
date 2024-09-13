@@ -9,6 +9,7 @@ import com.java06.luxurious_hotel.exception.roomType.RoomTypeNotFoundException;
 import com.java06.luxurious_hotel.exception.user.IncorrectPasswordException;
 import com.java06.luxurious_hotel.exception.user.UserNotFoundException;
 import com.java06.luxurious_hotel.response.BaseResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,10 +54,18 @@ public class GlobalException {
     public ResponseEntity<?> handeValidation(MethodArgumentNotValidException e) {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setStatusCode(500);
-//        baseResponse.setMessage(e.getFieldError().getDefaultMessage());
         baseResponse.setMessage(e.getAllErrors().getFirst().getDefaultMessage());
 
-        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(500);
+        baseResponse.setMessage(e.getLocalizedMessage());
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //Bắt exception trùng dữ liệu unique

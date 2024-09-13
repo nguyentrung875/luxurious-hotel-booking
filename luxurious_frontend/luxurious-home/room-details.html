@@ -3,6 +3,7 @@
 
 
 <!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/luxurious-html/room-details.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:11:45 GMT -->
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +12,7 @@
     <meta name="keywords"
         content="hotel, booking, business, restaurant, spa, resort, landing, agency, corporate, start up, site design, new business site, business template, professional template, classic, modern">
     <title>Luxurious - Hotel Booking HTML Template</title>
-   
+
     <link rel="icon" href="assets/img/favicons/favicon.png" type="image/x-icon">
 
     <!-- Css All Plugins Files -->
@@ -23,7 +24,7 @@
     <link rel="stylesheet" href="assets/css/vendor/swiper-bundle.min.css">
     <link rel="stylesheet" href="assets/css/vendor/semantic.min.css">
     <link rel="stylesheet" href="assets/css/vendor/slick.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
 
 
     <!-- Main Style -->
@@ -408,7 +409,7 @@
                     <div class="lh-side-room">
                         <h4 class="lh-room-inner-heading">Reservation</h4>
                         <div class="lh-side-reservation">
-                            <form>
+                            <form class="form_book_now">
                                 <div class="lh-side-reservation-from">
                                     <label>Check In</label>
                                     <!-- <div class="calendar" id="date_1"> -->
@@ -421,22 +422,9 @@
                                     <label>Check Out</label>
                                     <!-- <div class="calendar" id="date_2"> -->
                                     <input id="input_checkout" type="date" class="reservation-form-control"
-                                        placeholder="Sep 09,2024">
+                                        placeholder="Sep 09,2024" required>
                                     <!-- <i class="ri-calendar-line"></i>
                                     </div> -->
-                                </div>
-                                <div class="lh-side-reservation-from trung__select" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <label>Rooms</label>
-                                    <a id="load_rooms" style="font-size: 12px; color: rgb(110, 110, 113); cursor: pointer; text-decoration: none;"
-                                    onmouseover="this.style.textDecoration='underline'; this.style.color='#007bff';"
-                                    onmouseout="this.style.textDecoration='none'; this.style.color='rgb(110, 110, 113)';">
-                                        Load available rooms
-                                    </a>
-                                </div>
-                                <div>
-                                    <select id="input_rooms" class="form-control chosen-select" multiple>
-                                        <!-- Các tùy chọn của bạn -->
-                                    </select>
                                 </div>
                                 <div class="lh-side-reservation-from">
                                     <div class="row">
@@ -449,25 +437,27 @@
                                         <div class="col-lg-6">
                                             <label>Children</label>
                                             <input class="reservation-form-control " id="input_children" type="number"
-                                                name="children" placeholder="Enter number of children"/>
+                                                name="children" placeholder="Enter number of children" />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="lh-side-reservation-from">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <label>Payment method</label>
-                                            <div>
-                                                <select id="input_payment_method" class="form-control chosen-select">
-
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="lh-side-reservation-from trung__select"
+                                    style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label>Rooms</label>
+                                    <a id="load_rooms"
+                                        style="font-size: 12px; color: rgb(110, 110, 113); cursor: pointer; text-decoration: none;"
+                                        onmouseover="this.style.textDecoration='underline'; this.style.color='#007bff';"
+                                        onmouseout="this.style.textDecoration='none'; this.style.color='rgb(110, 110, 113)';">
+                                        Load available rooms
+                                    </a>
                                 </div>
-
-
+                                <div>
+                                    <select id="input_rooms" class="form-control chosen-select" multiple>
+                                        <!-- select rooms -->
+                                    </select>
+                                </div>
+         
 
                                 <div class="lh-side-reservation-from">
                                     <h4>Total</h4>
@@ -475,7 +465,8 @@
                                 </div>
                                 <div class="lh-side-reservation-from">
                                     <div class="lh-side-reservation-from-buttons">
-                                        <button id="submit_book_now" class="lh-buttons result-placeholder" type="button">
+                                        <button id="submit_book_now" class="lh-buttons result-placeholder"
+                                            type="submit">
                                             Book Now
                                         </button>
                                     </div>
@@ -492,101 +483,103 @@
     <footer>
         <div class="container">
             <div class="footer-top-section">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 rs-pb-24 p-991 order-lg-1 order-md-2 order-2">
-                    <div class="lh-footer-cols-contain">
-                        <div class="lh-footer-heading">
-                            <h4>Explore</h4>
-                        </div>
-                        <ul>
-                            <li>
-                                <code>*</code>
-                                <a href="index.html">Home</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="about.html">About</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="room-details.html">Rooms & suites</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="spa.html">spa & Wellness</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="restaurant.html">Restaurant</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="gallery.html">Gallery</a>
-                            </li>
-                            <li>
-                                <code>*</code>
-                                <a href="contact.html">Contact</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-6 rs-pb-24 order-lg-2 order-md-1 order-1">
-                    <div class="lh-social-media">
-                        <div class="footer-logos">
-                            <img src="assets/img/logo/logo.png" alt="logo">
-                        </div>
-                        <div class="lh-footer-social">
-                            <p>This is the dolor sit amet consectetur adipisicing elit. Libero voluptatem soluta eaque
-                                ullam accusantium animi!</p>
-                            <form class="lh-control-footer" role="search">
-                                <div class="lh-control-inner-icons">
-                                    <i class="ri-send-plane-line"></i>
-                                </div>
-                                <input class="form-control shadow-none me-4" type="search" placeholder="Subscribe..."
-                                    aria-label="Search">
-                            </form>
-                        </div>
-                        <div class="lh-follow-social">
-                            <h4 class="heading">Follow On Social</h4>
-                            <div class="footer-logo-image">
-                                <a href="#"><img src="assets/img/logo/facebook.png" alt="facebook"></a>
-                                <a href="#"><img src="assets/img/logo/twitter.png" alt="twitter"></a>
-                                <a href="#"><img src="assets/img/logo/instagram.png" alt="instagram"></a>
-                                <a href="#"><img src="assets/img/logo/linkedin.png" alt="linkedin"></a>
-                                <a href="#"><img src="assets/img/logo/dribbble.png" alt="dribbble"></a>
-                                <a href="#"><img src="assets/img/logo/pinterest.png" alt="pinterest"></a>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 rs-pb-24 p-991 order-lg-1 order-md-2 order-2">
+                        <div class="lh-footer-cols-contain">
+                            <div class="lh-footer-heading">
+                                <h4>Explore</h4>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 rs-pb-24 order-lg-3 order-md-3 order-3">
-                    <div class="lh-footer-cols-contain ">
-                        <div class="lh-footer-heading">
-                            <h4>Contact Information</h4>
-                        </div>
-                        <div class="lh-footer-contact-infoemation">
                             <ul>
-                                <li class="lh-information">
-                                    <h5 class="heading">Location</h5>
-                                    <span>5 Green st.Huntington stati on, Ny 11746, Libero voluptatem soluta
-                                        Bharat.</span>
+                                <li>
+                                    <code>*</code>
+                                    <a href="index.html">Home</a>
                                 </li>
-                                <li class="lh-information">
-                                    <h5 class="heading">Email</h5>
-                                    <span>example@ec-email.com</span>
+                                <li>
+                                    <code>*</code>
+                                    <a href="about.html">About</a>
                                 </li>
-                                <li class="lh-information">
-                                    <h5 class="heading">Phone No</h5>
-                                    <span>+91(1234)(567)(890)</span>
+                                <li>
+                                    <code>*</code>
+                                    <a href="room-details.html">Rooms & suites</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="spa.html">spa & Wellness</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="restaurant.html">Restaurant</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="gallery.html">Gallery</a>
+                                </li>
+                                <li>
+                                    <code>*</code>
+                                    <a href="contact.html">Contact</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
+                    <div class="col-lg-6 rs-pb-24 order-lg-2 order-md-1 order-1">
+                        <div class="lh-social-media">
+                            <div class="footer-logos">
+                                <img src="assets/img/logo/logo.png" alt="logo">
+                            </div>
+                            <div class="lh-footer-social">
+                                <p>This is the dolor sit amet consectetur adipisicing elit. Libero voluptatem soluta
+                                    eaque
+                                    ullam accusantium animi!</p>
+                                <form class="lh-control-footer" role="search">
+                                    <div class="lh-control-inner-icons">
+                                        <i class="ri-send-plane-line"></i>
+                                    </div>
+                                    <input class="form-control shadow-none me-4" type="search"
+                                        placeholder="Subscribe..." aria-label="Search">
+                                </form>
+                            </div>
+                            <div class="lh-follow-social">
+                                <h4 class="heading">Follow On Social</h4>
+                                <div class="footer-logo-image">
+                                    <a href="#"><img src="assets/img/logo/facebook.png" alt="facebook"></a>
+                                    <a href="#"><img src="assets/img/logo/twitter.png" alt="twitter"></a>
+                                    <a href="#"><img src="assets/img/logo/instagram.png" alt="instagram"></a>
+                                    <a href="#"><img src="assets/img/logo/linkedin.png" alt="linkedin"></a>
+                                    <a href="#"><img src="assets/img/logo/dribbble.png" alt="dribbble"></a>
+                                    <a href="#"><img src="assets/img/logo/pinterest.png" alt="pinterest"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 rs-pb-24 order-lg-3 order-md-3 order-3">
+                        <div class="lh-footer-cols-contain ">
+                            <div class="lh-footer-heading">
+                                <h4>Contact Information</h4>
+                            </div>
+                            <div class="lh-footer-contact-infoemation">
+                                <ul>
+                                    <li class="lh-information">
+                                        <h5 class="heading">Location</h5>
+                                        <span>5 Green st.Huntington stati on, Ny 11746, Libero voluptatem soluta
+                                            Bharat.</span>
+                                    </li>
+                                    <li class="lh-information">
+                                        <h5 class="heading">Email</h5>
+                                        <span>example@ec-email.com</span>
+                                    </li>
+                                    <li class="lh-information">
+                                        <h5 class="heading">Phone No</h5>
+                                        <span>+91(1234)(567)(890)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
             <div class="footer-bottom-copy">
-                <span>Copyright @ <span id="copyright_year"></span> <a href="index.html">Luxurious</a> All Rights Reserved</span>
+                <span>Copyright @ <span id="copyright_year"></span> <a href="index.html">Luxurious</a> All Rights
+                    Reserved</span>
             </div>
         </div>
     </footer>
@@ -701,4 +694,5 @@
 
 
 <!-- Mirrored from maraviyainfotech.com/projects/luxurious-html-v22/luxurious-html/room-details.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Aug 2024 09:11:45 GMT -->
+
 </html>

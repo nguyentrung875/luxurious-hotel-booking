@@ -1,11 +1,11 @@
 package com.java06.luxurious_hotel.request;
 
-import com.java06.luxurious_hotel.validator.DateRangeConstraint;
+import com.java06.luxurious_hotel.validator.ValidDateRange;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
 
-@DateRangeConstraint(checkInField = "checkInDate", checkOutField = "checkOutDate")
+@ValidDateRange(checkInField = "checkInDate", checkOutField = "checkOutDate")
 public record UpdateBookingRequest(
         @NotNull(message = "Booking id cannot be null")
         int idBooking,

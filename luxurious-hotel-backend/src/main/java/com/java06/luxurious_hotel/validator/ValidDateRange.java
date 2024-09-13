@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = DateRangeValidator.class)
 @Target({ElementType.TYPE }) // Áp dụng cho class
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DateRangeConstraint {
+public @interface ValidDateRange {
     String message() default "Check-in date must be before check-out date";
 
     Class<?>[] groups() default {};
