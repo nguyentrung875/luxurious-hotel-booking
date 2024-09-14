@@ -133,6 +133,7 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
                 checkIn = true;
 
                 RoomTypeAvailableDTO roomTypeAvailableDTO = new RoomTypeAvailableDTO();
+                roomTypeAvailableDTO.setId(roomAvailableInfo.getRoomEntity().getRoomType().getId());
                 roomTypeAvailableDTO.setRoomTypeName(roomTypeName);
                 roomTypeAvailableDTO.setPrice(roomAvailableInfo.getRoomEntity().getRoomType().getPrice());
                 roomTypeAvailableDTO.setCapacity(roomAvailableInfo.getRoomEntity().getRoomType().getCapacity());

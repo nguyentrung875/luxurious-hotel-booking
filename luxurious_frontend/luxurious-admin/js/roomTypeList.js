@@ -295,7 +295,7 @@ $(document).ready(function() {
             }
         });
     } else {
-        alert("No room ID found. Please try again.");
+        //alert("No room ID found. Please try again.");
     }
 
      
@@ -328,7 +328,7 @@ $(document).ready(function() {
         for (var i = 0; i < newImages.length; i++) {
             formData.append('newImages[]', newImages[i]);
         }
-
+        
          
         $.ajax({
             url: "http://localhost:9999/roomType",  
@@ -339,6 +339,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.statusCode === 200) {
                     alert('Room type updated successfully!');
+                    
                 } else {
                     alert('Failed to update room type: ' + response.message);
                 }
@@ -347,19 +348,10 @@ $(document).ready(function() {
                 console.error("Status: " + status);
                 console.error("Error: " + error);
                 console.error("Response: " + xhr.responseText);
-                alert('There was an error submitting the form.');
+                //alert('There was an error submitting the form.');
+                localStorage.removeItem('editRoomId');
+                window.location.href = "room_type_mana.html";
             }
         });
     });
 });
-
-
-
-
-
-
-
-
-
-
-
