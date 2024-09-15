@@ -16,9 +16,11 @@ public class BookingGuestDTO {
     private LocalDateTime checkOut;
     private String paymentStatus;
     private String paymentMethod;
+    private List<String> bedType;
     private List<RoomsDTO> roomsDTO = new ArrayList<>();
     private int member;
     private int quantilyRoom;
+    private double amount;
 
 
 }

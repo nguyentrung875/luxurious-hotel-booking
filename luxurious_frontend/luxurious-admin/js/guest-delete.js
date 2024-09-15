@@ -1,11 +1,10 @@
 $(document).ready(function () {    
     
-    $(document).on('click', '.delete-btn',function(e) { 
-        console.log('tới đây ')
+    $(document).on('click', '.delete-btn',function(e) {
         e.preventDefault();
 
         // Lấy id từ href
-        var url = $(this).attr('href'); // Lấy href="#?id={item.id}"
+        var url = $(this).attr('href'); // Lấy url href="#?id={item.id}" từ code
         var id = new URLSearchParams(url.split('?')[1]).get('id'); // Lấy id từ URL
 
         if (!id) {
@@ -16,7 +15,7 @@ $(document).ready(function () {
         $.ajax({
             url: "http://localhost:9999/user/deleteguest",
             method: "POST",
-            contentType: "application/x-www-form-urlencoded",
+            contentType: "application/x-www-form-urlencoded", // RequestParam
             data: { idGuest: id },
             success: function (response) {
                 if (response.data === true) {

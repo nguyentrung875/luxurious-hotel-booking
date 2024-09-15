@@ -4,8 +4,6 @@ package com.java06.luxurious_hotel.service.imp;
 import com.java06.luxurious_hotel.dto.*;
 import com.java06.luxurious_hotel.dto.coverdto.RoomsDTO;
 
-import com.java06.luxurious_hotel.dto.searchAvaiRoom.RoomAvailableDTO;
-import com.java06.luxurious_hotel.dto.searchAvaiRoom.RoomTypeAvailableDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
 import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
@@ -229,9 +227,10 @@ public class BookingServiceImp implements BookingService {
         // tạo list DTO trả ra
         List<BookingGuestDTO> bookingGuestDTOS = new ArrayList<>();
 
+
         // chạy vòng for qua tất cả các luồng Objects được trả ra từ câu qr
         for (Object[] result : results) {
-
+            List<String> listBedType = new ArrayList<>();
             // khởi tạo BookingEntity để nhận dữ liệu trả ra từ Object
             BookingEntity booking = (BookingEntity) result[0];
 
@@ -252,6 +251,19 @@ public class BookingServiceImp implements BookingService {
 
             bookingGuestDTO.setGuestDTO(guestDTO);
 
+            booking.getRoomBookings().stream().map(roomBookingEntity -> {
+                boolean check = false;
+                for (int i = 0; i<listBedType.size(); i++) {
+                    if (listBedType.get(i).equals(roomBookingEntity.getRoom().getRoomType().getBedType().getName())) {
+                        check = true;
+                    }
+                }
+                if (check == false){
+                    listBedType.add(roomBookingEntity.getRoom().getRoomType().getBedType().getName());
+                }
+                return roomBookingEntity;
+            }).toList();
+
             // Add các phần tử khác vào BookingGuestDTO
             bookingGuestDTO.setIdBooking(booking.getId());
             bookingGuestDTO.setCheckIn(booking.getCheckIn());
@@ -260,6 +272,8 @@ public class BookingServiceImp implements BookingService {
             bookingGuestDTO.setPaymentMethod(booking.getPaymentMethod().getName());
             bookingGuestDTO.setMember(booking.getAdultNumber() + booking.getChildrenNumber());
             bookingGuestDTO.setQuantilyRoom(booking.getRoomNumber());
+            bookingGuestDTO.setBedType(listBedType);
+            bookingGuestDTO.setAmount(booking.getTotal());
 
             // add dữ liệu cho đối tượng RoomDTO của BookingGuestDTO
 
