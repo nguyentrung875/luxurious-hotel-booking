@@ -26,7 +26,24 @@ public class JwtUtils {
     @Value("${jwt.key}")
     private String secretKeyString;
 
-    private long EXPIRATION_TIME = 365L *24*60*60*1000;
+    private long EXPIRATION_TIME = 365L * 24 * 60 * 60 * 1000;
+    private long CONFIRM_EXP_TIME = 15L*60*1000;
+
+    public String generateConfirmBookingToken(int idBooking) {
+        var secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString));
+        Date now = new Date();
+        return Jwts.builder()
+                .subject(String.valueOf(idBooking))
+                .issuedAt(new Date())
+                .expiration(new Date(now.getTime() + CONFIRM_EXP_TIME))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String verifyConfirmToken(String token) {
+        Jws<Claims> claims = this.getClaims(token);
+        return claims.getPayload().getSubject();
+    }
 
     public String generateJwtToken(AuthorityDTO authorityDTO) {
         var secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString));
@@ -47,7 +64,7 @@ public class JwtUtils {
         Jws<Claims> claims = this.getClaims(token);
 
         //Kiếm tra xem token đã logout hay chưa
-        if (invalidTokenRepository.findByToken(token).isPresent()){
+        if (invalidTokenRepository.findByToken(token).isPresent()) {
             throw new TokenInvalidException();
         }
 
@@ -58,9 +75,8 @@ public class JwtUtils {
     }
 
     public Jws<Claims> getClaims(String token) {
-            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKeyString));
-            return Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKeyString));
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
     }
 
     public String getTokenFromHeader(String bearerToken) {

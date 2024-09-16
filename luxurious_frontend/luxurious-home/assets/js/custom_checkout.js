@@ -100,8 +100,8 @@ function addBooking(inputAddBooking) {
         data: JSON.stringify(inputAddBooking),
         success: function (response) {
             if (response.statusCode == 200) {
-                alert(response.message)
-                window.location.href = 'booking-history.html'
+                // alert("Please check your email to confirm booking!")
+                window.location.href = `booking-history.html?email=${inputAddBooking.email}`
             }
         },
         error: function (response) {
@@ -146,6 +146,7 @@ function showAllRooms(selectedRooms) {
             //Reload chosen select
             $('#input_rooms').trigger('chosen:updated')
             $('#input_payment_method').trigger("chosen:updated");
+            calculateTotal()
 
 
         }
@@ -186,6 +187,7 @@ function loadAvailableRooms(inputDateRange) {
 function calculateTotal() {
     const checkInDate = new Date(document.getElementById("input_checkin").value);
     const checkOutDate = new Date(document.getElementById("input_checkout").value);
+
     var nights = (checkOutDate - checkInDate) / (1000 * 3600 * 24)
     var listPrice = $('#input_rooms').find('option:selected').map(function () {
         return parseFloat($(this).attr('price'));
