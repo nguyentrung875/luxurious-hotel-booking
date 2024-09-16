@@ -1,12 +1,38 @@
 $(document).ready(function () {
     // Add search event listener
-    $('.form_searchPhone').submit( function (e) {
+    $('.form_searchPhone').submit(function (e) {
         e.preventDefault();
         searchBooking();
 
     });
 
- 
+    let params = new URLSearchParams(window.location.search)
+    if (params.get('conf')) {
+        let formData = { 'token': params.get('conf') }
+
+        $.ajax({
+            type: "POST",
+            // contentType: "application/json; charset=utf-8",
+            url: "http://localhost:9999/booking/confirm",
+            data: formData,
+            success: function (response) {
+
+                $('#bookingHistory').append("YOUR BOOKING CONFIRM! YOU CAN CHECK YOUR BOOKING INFORMATION BY PHONE NUMBER.");
+            },
+            error: function (response) {
+                if (response.responseJSON.message.includes("JWT expired")) {
+                    alert("Confirmation link expired! Please check your booking status here!")
+                } else {
+                    alert(response.responseJSON.message)
+                }
+            }
+        });
+        var url = document.location.href;
+        window.history.pushState({}, "", url.split("?")[0]);
+    } else if (params.get('email')){
+        $('#bookingHistory').append(`PLEASE CHECK YOUR EMAIL (${params.get('email')}) TO CONFIRM BOOKING WITHIN 24 HOURS!`);
+    }
+
 });
 
 function convertRoomCol(roomTypes) {
@@ -76,7 +102,7 @@ function renderBookings(bookings) {
                                                 <li class="list-group-item"><strong>Number of Children:</strong> ${booking.childrenNo}</li>
                                                 <li class="list-group-item"><strong>Payment Status:</strong> ${booking.paymentStatus.name}</li>
                                                 <li class="list-group-item"><strong>Paid Amount:</strong> $${booking.paidAmount}</li>
-                                                <li class="list-group-item"><strong>Total Amount:</strong> $${booking.totalAmount}</li>
+                                                <li class="list-group-item"><strong>Total Amount:</strong> $${booking.total}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -84,7 +110,7 @@ function renderBookings(bookings) {
                             </div>
                         </div>
                     `;
-        bookingHistory.append(bookingItem);
+        bookingHistory.prepend(bookingItem);
     });
 }
 

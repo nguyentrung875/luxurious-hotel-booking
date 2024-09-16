@@ -17,9 +17,14 @@ import com.java06.luxurious_hotel.repository.UserRepository;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
+import com.java06.luxurious_hotel.service.EmailService;
+import com.java06.luxurious_hotel.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +45,12 @@ public class BookingServiceImp implements BookingService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Override
     public List<BookingDTO> getBookingByPhone(String phone) {
@@ -138,7 +149,41 @@ public class BookingServiceImp implements BookingService {
         BookingEntity insertedBooking = bookingRepository.save(newBooking);
 
         //THÊM DỮ LIỆU VÀO BẢNG ROOM_BOOKING
-        this.insertRoomBooking(request.rooms(), insertedBooking);
+        List<RoomBookingEntity> roomBookingEntityList = this.insertRoomBooking(request.rooms(), insertedBooking);
+
+        //GỬI EMAIL CONFIRM CHO KHÁCH HÀNG NẾU BOOK Ở HOMEPAGE
+        if (request.idBookingStatus() == 0) {
+            try {
+                emailService.sendConfirmBookingEmail(roomBookingEntityList, request, insertedBooking);
+            } catch (MessagingException e) {
+                System.out.println("Error sending booking confirmation email: " + e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void confirmBooking(String token) {
+        int idBooking = Integer.parseInt(jwtUtils.verifyConfirmToken(token));
+        BookingEntity booking = bookingRepository.findById(idBooking)
+                .orElseThrow(BookingNotFoundException::new);
+
+        //Kiểm tra nếu khách hàng đã confirm rồi thì khồng cần confirm nữa
+        if (booking.getBookingStatus().getId() != 1) return;
+
+        //Kiểm tra lại trong thời gian confirm đã có khách nào đặt trùng phòng hay không
+        var inDate = booking.getCheckIn();
+        var outDate = booking.getCheckOut();
+        var rooms = booking.getRoomBookings().stream().map(roomBookingEntity -> String.valueOf(roomBookingEntity.getRoom().getId())).toList();
+        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, rooms);
+        if (notAvailableRoom.size() > 0) {
+            throw new RoomNotAvailableException("Rooms are not available: " + notAvailableRoom);
+        }
+
+        //Cập nhật booking status thành Confirmed
+        BookingStatusEntity bookingStatusEntity = new BookingStatusEntity();
+        bookingStatusEntity.setId(2);
+        booking.setBookingStatus(bookingStatusEntity);
+        bookingRepository.save(booking);
     }
 
     @Transactional
@@ -206,7 +251,7 @@ public class BookingServiceImp implements BookingService {
         }
     }
 
-    private void insertRoomBooking(List<String> strRooms, BookingEntity booking) {
+    private List<RoomBookingEntity> insertRoomBooking(List<String> strRooms, BookingEntity booking) {
         //Lấy danh sách room từ list roomId
         List<RoomBookingEntity> rooms = strRooms.stream().map(item -> {
             RoomEntity roomEntity = new RoomEntity();
@@ -219,7 +264,7 @@ public class BookingServiceImp implements BookingService {
             return roomBooking;
         }).toList();
         try {
-            roomBookingRepository.saveAll(rooms);
+            return roomBookingRepository.saveAll(rooms);
         } catch (Exception e) {
             throw new RoomNotFoundException(e.getCause().getMessage());
         }
