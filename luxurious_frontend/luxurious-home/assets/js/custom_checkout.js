@@ -101,13 +101,34 @@ function addBooking(inputAddBooking) {
         success: function (response) {
             if (response.statusCode == 200) {
                 // alert("Please check your email to confirm booking!")
-                window.location.href = `booking-history.html?email=${inputAddBooking.email}`
+                sendConfirmEmail(response.data.id)
+                alert(`Add new booking successfully! Please check email ${inputAddBooking.email} to confirm booking within 24 hours`)
+                window.location.href = `booking-history.html`
             }
         },
         error: function (response) {
             alert(response.responseJSON.message)
         }
     });
+}
+
+function sendConfirmEmail(idBooking) {
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:9999/email/confirmation?idBooking=" + idBooking,
+        success: function (response) {
+            alert(response)
+        },
+        error: function (response) {
+            console.log(response)
+            // if (response.responseJSON.message.includes("JWT expired")) {
+            //     alert("Confirmation link expired! Please check your booking status here!")
+            // } else {
+            //     alert(response.responseJSON.message)
+            // }
+        }
+    });
+    // $('#bookingHistory').append(`PLEASE CHECK YOUR EMAIL (${params.get('email')}) TO CONFIRM BOOKING WITHIN 24 HOURS!`);
 }
 
 function showAllRooms(selectedRooms) {
@@ -147,7 +168,6 @@ function showAllRooms(selectedRooms) {
             $('#input_rooms').trigger('chosen:updated')
             $('#input_payment_method').trigger("chosen:updated");
             calculateTotal()
-
 
         }
     }).done(function (params) {

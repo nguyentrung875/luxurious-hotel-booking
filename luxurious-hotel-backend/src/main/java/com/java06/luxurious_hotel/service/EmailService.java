@@ -12,5 +12,5 @@ import java.util.List;
 @Service
 public interface EmailService {
     String sendEmail(String recipients, String subject, String content, MultipartFile[] files) throws MessagingException;
-    String sendConfirmBookingEmail(List<RoomBookingEntity> rooms, AddBookingRequest request, BookingEntity booking) throws MessagingException;
+    String sendConfirmBookingEmail(int idBooking) throws MessagingException;
 }

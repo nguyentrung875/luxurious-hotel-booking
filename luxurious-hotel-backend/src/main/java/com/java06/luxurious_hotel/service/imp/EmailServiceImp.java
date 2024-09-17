@@ -2,6 +2,8 @@ package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.entity.BookingEntity;
 import com.java06.luxurious_hotel.entity.RoomBookingEntity;
+import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
+import com.java06.luxurious_hotel.repository.BookingRepository;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.service.EmailService;
 import com.java06.luxurious_hotel.utils.JwtUtils;
@@ -26,6 +28,9 @@ public class EmailServiceImp implements EmailService {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     private final JavaMailSender mailSender;
 
@@ -60,8 +65,11 @@ public class EmailServiceImp implements EmailService {
     }
 
     @Override
-    public String sendConfirmBookingEmail(List<RoomBookingEntity> bookingRooms, AddBookingRequest request, BookingEntity booking) throws MessagingException {
-        String confirmToken = jwtUtils.generateConfirmBookingToken(booking.getId());
+    public String sendConfirmBookingEmail(int idBooking) throws MessagingException {
+
+        String confirmToken = jwtUtils.generateConfirmBookingToken(idBooking);
+
+        BookingEntity booking = bookingRepository.findById(idBooking).orElseThrow(BookingNotFoundException::new);
 
         System.out.println("Email sending...");
         MimeMessage message = mailSender.createMimeMessage();
@@ -69,9 +77,9 @@ public class EmailServiceImp implements EmailService {
 
         helper.setFrom(emailFrom);
 
-        helper.setTo(request.email());
+        helper.setTo(booking.getGuest().getEmail());
 
-        String roomNo = bookingRooms.stream().map(roomBookingEntity -> roomBookingEntity.getRoom().getName())
+        String roomNo = booking.getRoomBookings().stream().map(roomBookingEntity -> roomBookingEntity.getRoom().getName())
                 .toList().stream().collect(Collectors.joining(", "));
 
         String content = "<!DOCTYPE html>\n" +
@@ -92,35 +100,35 @@ public class EmailServiceImp implements EmailService {
                 "        <h2 style=\"text-align: center; color: #333;\">Hotel Booking Confirmation</h2>\n" +
                 "\n" +
                 "        <!-- Greeting -->\n" +
-                "        <p style=\"color: #333; font-size: 16px;\">Dear <strong>"+request.firstName() + " " + request.lastName() + "</strong>,</p>\n" +
+                "        <p style=\"color: #333; font-size: 16px;\">Dear <strong>"+booking.getGuest().getFirstName() + " " + booking.getGuest().getLastName() + "</strong>,</p>\n" +
                 "        <p style=\"color: #333; font-size: 16px;\">Thank you for choosing to stay with us! Below are the details of your\n" +
                 "            booking:</p>\n" +
                 "\n" +
                 "        <!-- Additional Information -->\n" +
                 "        <p style=\"color: #333; font-size: 16px; margin-top: 20px;\">\n" +
-                "            <a href=\"http://127.0.0.1:5500/luxurious-home/booking-history.html?conf="+confirmToken+"\">Please click here confirm your booking!</a>\n" +
+                "            <a href=\"http://127.0.0.1:5500/luxurious-home/booking-history.html?conf="+confirmToken+"\">Please click here to confirm your booking!</a>\n" +
                 "        </p>\n" +
                 "        <!-- Booking Details -->\n" +
                 "        <table style=\"width: 100%; border-collapse: collapse; margin-top: 20px;\">\n" +
                 "            <tr>\n" +
                 "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #555;\">Phone number:</td>\n" +
-                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+request.phone()+"</td>\n" +
+                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+booking.getGuest().getPhone()+"</td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #555;\">Check-in Date:</td>\n" +
-                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+request.checkInDate()+"</td>\n" +
+                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+booking.getCheckIn()+"</td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #555;\">Check-out Date:</td>\n" +
-                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+request.checkOutDate()+"</td>\n" +
+                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+booking.getCheckOut()+"</td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #555;\">Number of adult</td>\n" +
-                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+request.adultNumber()+"</td>\n" +
+                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+booking.getAdultNumber()+"</td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #555;\">Number of children</td>\n" +
-                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+request.childrenNumber()+"</td>\n" +
+                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+booking.getChildrenNumber()+"</td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #555;\">Room Number:</td>\n" +
@@ -128,7 +136,7 @@ public class EmailServiceImp implements EmailService {
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #555;\">Total Amount:</td>\n" +
-                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+request.total()+"</td>\n" +
+                "                <td style=\"padding: 10px; border: 1px solid #ddd; font-size: 14px; color: #333;\">"+booking.getTotal()+"</td>\n" +
                 "            </tr>\n" +
                 "        </table>\n" +
 
@@ -154,8 +162,7 @@ public class EmailServiceImp implements EmailService {
         helper.setText(content, true);
         mailSender.send(message);
 
-        System.out.println("Email has been sent to: " + request.email());
-        return "Sent";
+        return "Confirmation email has been sent to " + booking.getGuest().getEmail();
     }
 
 

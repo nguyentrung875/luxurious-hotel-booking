@@ -24,4 +24,11 @@ public class EmailController {
         baseResponse.setMessage(emailService.sendEmail(recipients, subject, content, files));
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
+
+    @PostMapping("/confirmation")
+    public ResponseEntity<?> sendEmail(@RequestParam int idBooking) throws MessagingException {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage(emailService.sendConfirmBookingEmail(idBooking));
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
 }
