@@ -71,7 +71,7 @@ public class BookingServiceImp implements BookingService {
 
     @Transactional
     @Override
-    public void addNewBooking(AddBookingRequest request) {
+    public BookingDTO addNewBooking(AddBookingRequest request) {
             /*
         1. Kiểm tra các phòng có available trong khoảng tgian checkIn checkOut hay không
         2. Kiểm tra thông xem khách đó đã book trước đó hay chưa thông qua sdt
@@ -81,13 +81,16 @@ public class BookingServiceImp implements BookingService {
      * */
 
         //KIỂM TRA PHÒNG CÓ AVAILABLE
-        LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
-        LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
+        if (request.idBookingStatus() > 1) { //chỉ cần ktra những booking xác nhận đặt phòng
+            LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
+            LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
 
-        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
-        if (notAvailableRoom.size() > 0) {
-            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
+            var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
+            if (notAvailableRoom.size() > 0) {
+                throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
+            }
         }
+
 
         //THÊM KHÁCH HÀNG VÀO TABLE USER
         UserEntity userEntity = new UserEntity();
@@ -151,14 +154,10 @@ public class BookingServiceImp implements BookingService {
         //THÊM DỮ LIỆU VÀO BẢNG ROOM_BOOKING
         List<RoomBookingEntity> roomBookingEntityList = this.insertRoomBooking(request.rooms(), insertedBooking);
 
-        //GỬI EMAIL CONFIRM CHO KHÁCH HÀNG NẾU BOOK Ở HOMEPAGE
-        if (request.idBookingStatus() == 0) {
-            try {
-                emailService.sendConfirmBookingEmail(roomBookingEntityList, request, insertedBooking);
-            } catch (MessagingException e) {
-                System.out.println("Error sending booking confirmation email: " + e.getMessage());
-            }
-        }
+        BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.setId(insertedBooking.getId());
+
+        return bookingDTO;
     }
 
     @Override
@@ -171,9 +170,10 @@ public class BookingServiceImp implements BookingService {
         if (booking.getBookingStatus().getId() != 1) return;
 
         //Kiểm tra lại trong thời gian confirm đã có khách nào đặt trùng phòng hay không
-        var inDate = booking.getCheckIn();
-        var outDate = booking.getCheckOut();
-        var rooms = booking.getRoomBookings().stream().map(roomBookingEntity -> String.valueOf(roomBookingEntity.getRoom().getId())).toList();
+        LocalDateTime inDate = booking.getCheckIn();
+        LocalDateTime outDate = booking.getCheckOut();
+        List<String> rooms = booking.getRoomBookings().stream().map(roomBookingEntity ->
+                String.valueOf(roomBookingEntity.getRoom().getId())).toList();
         var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, rooms);
         if (notAvailableRoom.size() > 0) {
             throw new RoomNotAvailableException("Rooms are not available: " + notAvailableRoom);
@@ -235,8 +235,6 @@ public class BookingServiceImp implements BookingService {
         updateBooking.setTotal(request.total());
 
         bookingRepository.save(updateBooking);
-
-
     }
 
     @Transactional

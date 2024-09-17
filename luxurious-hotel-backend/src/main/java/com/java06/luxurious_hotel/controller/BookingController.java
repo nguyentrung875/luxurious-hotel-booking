@@ -1,5 +1,6 @@
 package com.java06.luxurious_hotel.controller;
 
+import com.java06.luxurious_hotel.dto.BookingDTO;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
@@ -50,9 +51,10 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<?> addBooking(@Valid @RequestBody AddBookingRequest request){
-        bookingService.addNewBooking(request);
+        BookingDTO bookingDTO = bookingService.addNewBooking(request);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("New booking added successfully!");
+        baseResponse.setData(bookingDTO);
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
