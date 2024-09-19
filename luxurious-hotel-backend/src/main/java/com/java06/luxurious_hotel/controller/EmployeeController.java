@@ -4,6 +4,7 @@ import com.java06.luxurious_hotel.request.AddEmployeeRequest;
 import com.java06.luxurious_hotel.request.UpdateEmployeeRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import com.java06.luxurious_hotel.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @PostMapping
-    public ResponseEntity<?> addEmployee(AddEmployeeRequest addEmployeeRequest) {
+    public ResponseEntity<?> addEmployee(@Valid AddEmployeeRequest addEmployeeRequest) {
         employeeService.addEmployee(addEmployeeRequest);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("New Employee Added");
@@ -24,13 +25,11 @@ public class EmployeeController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateEmployee(UpdateEmployeeRequest updateEmployeeRequest) {
+    public ResponseEntity<?> updateEmployee(@Valid UpdateEmployeeRequest updateEmployeeRequest) {
         boolean isSuccess = employeeService.updateEmployee(updateEmployeeRequest);
         BaseResponse baseResponse = new BaseResponse();
         if (isSuccess) {
             baseResponse.setMessage("Employee Updated Successfully");
-        }else {
-            baseResponse.setMessage("Employee Updated Failed");
         }
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
@@ -40,8 +39,6 @@ public class EmployeeController {
         BaseResponse baseResponse = new BaseResponse();
         if (isSuccess) {
             baseResponse.setMessage("Employee Deleted Successfully");
-        }else {
-            baseResponse.setMessage("Employee Deleted Failed");
         }
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }

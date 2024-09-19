@@ -4,13 +4,16 @@ import com.java06.luxurious_hotel.dto.EmployeeDTO;
 import com.java06.luxurious_hotel.dto.RoleDTO;
 import com.java06.luxurious_hotel.entity.RoleEntity;
 import com.java06.luxurious_hotel.entity.UserEntity;
+import com.java06.luxurious_hotel.exception.Employee.EmployeeNotExitsException;
 import com.java06.luxurious_hotel.repository.EmployeeReposiory;
 import com.java06.luxurious_hotel.repository.RoleRepository;
 import com.java06.luxurious_hotel.request.AddEmployeeRequest;
 import com.java06.luxurious_hotel.request.UpdateEmployeeRequest;
 import com.java06.luxurious_hotel.service.EmployeeService;
 import com.java06.luxurious_hotel.service.FilesStorageService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,8 +33,11 @@ public class EmployeeServiceImp implements EmployeeService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
+    @Transactional
     @Override
     public void addEmployee(AddEmployeeRequest addEmployeeRequest) {
         UserEntity Employee = new UserEntity();
@@ -43,7 +49,7 @@ public class EmployeeServiceImp implements EmployeeService {
         Employee.setSummary(addEmployeeRequest.summary());
         Employee.setPhone(addEmployeeRequest.phone());
         Employee.setUsername(addEmployeeRequest.username());
-        Employee.setPassword(addEmployeeRequest.password());
+        Employee.setPassword(passwordEncoder.encode(addEmployeeRequest.password()));
         RoleEntity Role = roleRepository.findRoleEntitiesById(addEmployeeRequest.Idrole());
         Employee.setRole(Role);
         Employee.setImage(addEmployeeRequest.image().getOriginalFilename());
@@ -51,7 +57,7 @@ public class EmployeeServiceImp implements EmployeeService {
         filesStorageService.save(file);
         employeeReposiory.save(Employee);
     }
-
+    @Transactional
     @Override
     public Boolean updateEmployee(UpdateEmployeeRequest updateEmployeeRequest) {
         Optional<UserEntity> usercheck = employeeReposiory.findById(updateEmployeeRequest.id());
@@ -59,46 +65,48 @@ public class EmployeeServiceImp implements EmployeeService {
         if (usercheck.isPresent()) {
             UserEntity Employee = usercheck.get();
                 Employee.setId(updateEmployeeRequest.id());
-            if (updateEmployeeRequest.firstname() != null) {
                 Employee.setFirstName(updateEmployeeRequest.firstname());
-            }
-            if (updateEmployeeRequest.lastname() != null) {
+
+
                 Employee.setLastName(updateEmployeeRequest.lastname());
-            }
-            if (updateEmployeeRequest.address() != null) {
+
+
                 Employee.setAddress(updateEmployeeRequest.address());
-            }
-            if (updateEmployeeRequest.email() != null) {
+
+
                 Employee.setEmail(updateEmployeeRequest.email());
-            }
-            if (updateEmployeeRequest.dob() != null) {
+
+
                 Employee.setDob(LocalDate.parse(updateEmployeeRequest.dob()));
-            }
-            if (updateEmployeeRequest.image() != null && updateEmployeeRequest.image().getOriginalFilename() != null) {
+
+
                 Employee.setImage(updateEmployeeRequest.image().getOriginalFilename());
                 filesStorageService.save(updateEmployeeRequest.image());
-            }
-            if (updateEmployeeRequest.summary() != null) {
+
+
                 Employee.setSummary(updateEmployeeRequest.summary());
-            }
-            if (updateEmployeeRequest.phone() != null) {
+
+
                 Employee.setPhone(updateEmployeeRequest.phone());
-            }
+
             RoleEntity role = roleRepository.findRoleEntitiesById(updateEmployeeRequest.IdRole());
             Employee.setRole(role);
             employeeReposiory.save(Employee);
             isSuccess= true;
+        }else{
+            throw  new EmployeeNotExitsException("Employee does not exist");
         }
         return isSuccess;
     }
-
+    @Transactional
     @Override
     public Boolean deleteEmployee(int employeeId) {
         Boolean isSuccess = false;
-        Optional<UserEntity> usercheck = employeeReposiory.findById(employeeId);
-        if (usercheck.isPresent()) {
+        if (employeeReposiory.existsById(employeeId)) {
             employeeReposiory.deleteById(employeeId);
             isSuccess = true;
+        }else{
+            throw  new EmployeeNotExitsException("Employee does not exist");
         }
         return isSuccess;
     }
@@ -122,7 +130,7 @@ public class EmployeeServiceImp implements EmployeeService {
             roleDTO.setDescription(userEntity.getRole().getDescription());
             employeeDTO.setRole(roleDTO);
             return employeeDTO;
-        }).findFirst().orElseThrow(() -> new RuntimeException("Employee not found"));
+        }).findFirst().orElseThrow(() -> new EmployeeNotExitsException("Employee does not exist"));
     }
 
     @Override
@@ -131,8 +139,13 @@ public class EmployeeServiceImp implements EmployeeService {
         Map<RoleDTO, List<EmployeeDTO>> employeeDTOMap = new HashMap<>();
         for (UserEntity userEntity : employee) {
             EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setId(userEntity.getId());
+            employeeDTO.setFirstname(userEntity.getFirstName());
             employeeDTO.setLastname(userEntity.getLastName());
+            employeeDTO.setImage(userEntity.getImage());
+            employeeDTO.setEmail(userEntity.getEmail());
             RoleDTO roleDTO = new RoleDTO();
+            roleDTO.setId(userEntity.getRole().getId());
             roleDTO.setName(userEntity.getRole().getName());
             employeeDTO.setRole(roleDTO);
             employeeDTOMap.computeIfAbsent(roleDTO, k -> new ArrayList<>()).add(employeeDTO);
