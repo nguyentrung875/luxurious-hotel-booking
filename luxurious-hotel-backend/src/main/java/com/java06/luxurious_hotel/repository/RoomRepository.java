@@ -37,7 +37,7 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Integer> {
             "JOIN rb.booking b " +
             "WHERE b.checkOut > :checkInDate " +
             "AND b.checkIn < :checkOutDate " +
-            "AND b.bookingStatus.id IN (2,3)")
+            "AND b.bookingStatus.id IN (2,3)") //2. Confirmed, 3. Checked in
     List<RoomEntity> findBookedRoomsByDateRange(@Param("checkInDate") LocalDateTime checkInDate,
                                           @Param("checkOutDate") LocalDateTime checkOutDate);
 

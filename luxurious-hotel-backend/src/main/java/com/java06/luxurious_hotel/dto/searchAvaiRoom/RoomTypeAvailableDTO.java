@@ -6,6 +6,8 @@ import java.util.List;
 
 @Data
 public class RoomTypeAvailableDTO {
+
+    private int id;
     private String roomTypeName;
     private double price;
     private int capacity;

@@ -17,9 +17,14 @@ import com.java06.luxurious_hotel.repository.UserRepository;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
+import com.java06.luxurious_hotel.service.EmailService;
+import com.java06.luxurious_hotel.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +46,18 @@ public class BookingServiceImp implements BookingService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @Override
+    public List<BookingDTO> getBookingByPhone(String phone) {
+        List<BookingEntity> bookings = bookingRepository.findByGuest_Phone(phone);
+        return bookings.stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
+    }
+
     @Override
     public List<BookingDTO> getAllBooking() {
         return bookingRepository.findAll().stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
@@ -54,7 +71,7 @@ public class BookingServiceImp implements BookingService {
 
     @Transactional
     @Override
-    public void addNewBooking(AddBookingRequest request) {
+    public BookingDTO addNewBooking(AddBookingRequest request) {
             /*
         1. Kiểm tra các phòng có available trong khoảng tgian checkIn checkOut hay không
         2. Kiểm tra thông xem khách đó đã book trước đó hay chưa thông qua sdt
@@ -64,13 +81,16 @@ public class BookingServiceImp implements BookingService {
      * */
 
         //KIỂM TRA PHÒNG CÓ AVAILABLE
-        LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
-        LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
+        if (request.idBookingStatus() > 1) { //chỉ cần ktra những booking xác nhận đặt phòng
+            LocalDateTime inDate = LocalDate.parse(request.checkInDate()).atStartOfDay();
+            LocalDateTime outDate = LocalDate.parse(request.checkOutDate()).atStartOfDay();
 
-        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
-        if (notAvailableRoom.size() > 0) {
-            throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
+            var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, request.rooms());
+            if (notAvailableRoom.size() > 0) {
+                throw new RoomNotAvailableException("Rooms are not available " + notAvailableRoom);
+            }
         }
+
 
         //THÊM KHÁCH HÀNG VÀO TABLE USER
         UserEntity userEntity = new UserEntity();
@@ -109,7 +129,11 @@ public class BookingServiceImp implements BookingService {
         newBooking.setPaymentMethod(paymentMethod);
 
         PaymentStatusEntity paymentStatus = new PaymentStatusEntity();
-        paymentStatus.setId(request.idPaymentStatus());
+        if (request.idPaymentStatus() == 0) {
+            paymentStatus.setId(1);
+        } else {
+            paymentStatus.setId(request.idPaymentStatus());
+        }
         newBooking.setPaymentStatus(paymentStatus);
 
         BookingStatusEntity bookingStatus = new BookingStatusEntity();
@@ -118,7 +142,6 @@ public class BookingServiceImp implements BookingService {
         } else {
             bookingStatus.setId(request.idBookingStatus());
         }
-
         newBooking.setBookingStatus(bookingStatus);
 
         newBooking.setCreateDate(LocalDateTime.now());
@@ -129,14 +152,43 @@ public class BookingServiceImp implements BookingService {
         BookingEntity insertedBooking = bookingRepository.save(newBooking);
 
         //THÊM DỮ LIỆU VÀO BẢNG ROOM_BOOKING
-        this.insertRoomBooking(request.rooms(), insertedBooking);
+        List<RoomBookingEntity> roomBookingEntityList = this.insertRoomBooking(request.rooms(), insertedBooking);
+
+        BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.setId(insertedBooking.getId());
+
+        return bookingDTO;
+    }
+
+    @Override
+    public void confirmBooking(String token) {
+        int idBooking = Integer.parseInt(jwtUtils.verifyConfirmToken(token));
+        BookingEntity booking = bookingRepository.findById(idBooking)
+                .orElseThrow(BookingNotFoundException::new);
+
+        //Kiểm tra nếu khách hàng đã confirm rồi thì khồng cần confirm nữa
+        if (booking.getBookingStatus().getId() != 1) return;
+
+        //Kiểm tra lại trong thời gian confirm đã có khách nào đặt trùng phòng hay không
+        LocalDateTime inDate = booking.getCheckIn();
+        LocalDateTime outDate = booking.getCheckOut();
+        List<String> rooms = booking.getRoomBookings().stream().map(roomBookingEntity ->
+                String.valueOf(roomBookingEntity.getRoom().getId())).toList();
+        var notAvailableRoom = this.checkAvailableRoom(inDate, outDate, rooms);
+        if (notAvailableRoom.size() > 0) {
+            throw new RoomNotAvailableException("Rooms are not available: " + notAvailableRoom);
+        }
+
+        //Cập nhật booking status thành Confirmed
+        BookingStatusEntity bookingStatusEntity = new BookingStatusEntity();
+        bookingStatusEntity.setId(2);
+        booking.setBookingStatus(bookingStatusEntity);
+        bookingRepository.save(booking);
     }
 
     @Transactional
     @Override
     public void updateBooking(UpdateBookingRequest request) {
-
-        System.out.println("idBooking" + request.idBooking());
         BookingEntity updateBooking = bookingRepository.findById(request.idBooking())
                 .orElseThrow(BookingNotFoundException::new);
 
@@ -183,8 +235,6 @@ public class BookingServiceImp implements BookingService {
         updateBooking.setTotal(request.total());
 
         bookingRepository.save(updateBooking);
-
-
     }
 
     @Transactional
@@ -197,10 +247,9 @@ public class BookingServiceImp implements BookingService {
         } else {
             bookingRepository.delete(delBooking);
         }
-
     }
 
-    private void insertRoomBooking(List<String> strRooms, BookingEntity booking) {
+    private List<RoomBookingEntity> insertRoomBooking(List<String> strRooms, BookingEntity booking) {
         //Lấy danh sách room từ list roomId
         List<RoomBookingEntity> rooms = strRooms.stream().map(item -> {
             RoomEntity roomEntity = new RoomEntity();
@@ -213,7 +262,7 @@ public class BookingServiceImp implements BookingService {
             return roomBooking;
         }).toList();
         try {
-            roomBookingRepository.saveAll(rooms);
+            return roomBookingRepository.saveAll(rooms);
         } catch (Exception e) {
             throw new RoomNotFoundException(e.getCause().getMessage());
         }
@@ -322,7 +371,7 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setAddress(booking.getGuest().getAddress());
         bookingDTO.setCheckIn(booking.getCheckIn().toLocalDate());
         bookingDTO.setCheckOut(booking.getCheckOut().toLocalDate());
-
+        bookingDTO.setCreateDate(booking.getCreateDate().toLocalDate());
 
 
         PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
@@ -344,8 +393,6 @@ public class BookingServiceImp implements BookingService {
         bookingDTO.setTotal(booking.getTotal());
         bookingDTO.setAdultNo(booking.getAdultNumber());
         bookingDTO.setChildrenNo(booking.getChildrenNumber());
-
-        Map<String, List<RoomTypeDTO>> roomTypeMap = new LinkedHashMap<>();
 
         bookingDTO.setRoomTypes(booking.getRoomBookings().stream().collect(Collectors.groupingBy(
                 roomBookingEntity -> roomBookingEntity.getRoom().getRoomType().getName(),

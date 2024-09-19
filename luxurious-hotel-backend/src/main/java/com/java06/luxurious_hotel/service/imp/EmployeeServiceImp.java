@@ -130,7 +130,7 @@ public class EmployeeServiceImp implements EmployeeService {
             roleDTO.setDescription(userEntity.getRole().getDescription());
             employeeDTO.setRole(roleDTO);
             return employeeDTO;
-        }).findFirst().orElseThrow(() -> new EmployeeNotExitsException("Employee does not exist"));
+        }).findFirst().orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
     @Override

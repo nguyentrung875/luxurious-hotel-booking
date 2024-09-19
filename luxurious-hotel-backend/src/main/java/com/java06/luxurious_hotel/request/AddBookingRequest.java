@@ -1,11 +1,11 @@
 package com.java06.luxurious_hotel.request;
 
+import com.java06.luxurious_hotel.validator.ValidDateRange;
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
+@ValidDateRange(checkInField = "checkInDate", checkOutField = "checkOutDate")
 public record AddBookingRequest (
         @NotNull(message = "First name not null")
         @NotBlank(message = "First name not blank")
@@ -17,6 +17,7 @@ public record AddBookingRequest (
 
         @NotNull(message = "Phone not null")
         @NotBlank(message = "Phone not blank")
+        @Pattern(regexp = "\\d+", message = "Phone number must contain only digits") // quy định đúng định dạng số
         String phone,
 
         @Email(message = "Incorrect email format")
@@ -25,11 +26,11 @@ public record AddBookingRequest (
         String address,
 
         @NotNull(message = "checkInDate not null")
-        @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Incorrect date format yyyy-MM-dd")
+        @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Check in: Incorrect date format yyyy-MM-dd")
         String checkInDate,
 
         @NotNull(message = "checkOutDate not null")
-        @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Incorrect date format yyyy-MM-dd")
+        @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "Check out: Incorrect date format yyyy-MM-dd")
         String checkOutDate,
 
         int roomNumber,
@@ -45,7 +46,6 @@ public record AddBookingRequest (
         @NotNull(message = "childrenNumber not null")
         int childrenNumber,
 
-        @NotNull(message = "idPaymentStatus not null")
         int idPaymentStatus,
 
         @NotNull(message = "idPayment not null")
@@ -53,7 +53,6 @@ public record AddBookingRequest (
 
         int idBookingStatus,
 
-        @NotNull(message = "paidAmount not null")
         double paidAmount,
 
         @NotNull(message = "total not null")
