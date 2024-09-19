@@ -1,6 +1,6 @@
 package com.java06.luxurious_hotel.exception;
 
-import com.java06.luxurious_hotel.exception.authen.TokenInvalidException;
+import com.java06.luxurious_hotel.exception.Employee.EmployeeNotExitsException;
 import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
 import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
 import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
@@ -141,5 +141,13 @@ public class GlobalException {
         baseResponse.setMessage(e.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
+//    Handle Exception EMPLOYEE ------------------------------------------------------------------------
+    @ExceptionHandler(EmployeeNotExitsException.class)
+    public ResponseEntity<?> EmployeeNotExitsException(Exception e) {
+         BaseResponse baseResponse = new BaseResponse();
+         baseResponse.setStatusCode(200);
+         baseResponse.setMessage(e.getMessage());
+         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+}
 }
 

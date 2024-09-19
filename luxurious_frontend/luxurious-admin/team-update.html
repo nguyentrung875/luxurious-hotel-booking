@@ -523,10 +523,6 @@
 															<label for="imageUpload"></label>
 														</div>
 													</div>
-													<div class="form-group p-b-15">
-														<input type="text" class="form-control" id="name_profile"
-															placeholder="Enter name" value="Wiley Waites">
-													</div>
 													<div class="lh-settings">
 														<a href="#" class="lh-btn-primary m-r-10">Update Profile</a>
 														<div class="dropdown" title="Status">
@@ -647,11 +643,12 @@
 												<div class="col-md-6 col-sm-12">
 													<div class="lh-team-detail">
 														<h6>Role</h6>
-														<select class="form-control form-control-line">
-															<option>Admin</option>
+														<select class="form-control form-control-line"  name="Idrole" id="id_role">
+															<option value="">-- Select Role --</option>
+															<!-- <option>Admin</option>
 															<option>restaurant manager</option>
 															<option>hotel manager</option>
-															<option>guest</option>
+															<option>guest</option> -->
 														</select>
 													</div>
 												</div>
@@ -817,6 +814,7 @@
 
 	<!-- Main Custom -->
 	<script src="assets/js/main.js"></script>
+	<script src="js/Role.js"></script>
 </body>
 
 
