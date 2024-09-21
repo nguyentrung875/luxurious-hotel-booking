@@ -18,11 +18,20 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping
-    public ResponseEntity<?> getrole() {
+    public ResponseEntity<?> getRole() {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setStatusCode(200);
         baseResponse.setMessage("Role Retrieved Successfully");
         baseResponse.setData(roleService.getRoles());
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/allrole")
+    public ResponseEntity<?> getRoleAndEmployee() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage(" Retrieved Successfully");
+        baseResponse.setData(roleService.getAllRoles());
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 }
