@@ -9,4 +9,5 @@ public class RoleDTO {
     private int id;
     private String name;
     private String description;
+    private List<EmployeeDTO> employees;
 }

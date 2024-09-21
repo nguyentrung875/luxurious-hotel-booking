@@ -133,25 +133,4 @@ public class EmployeeServiceImp implements EmployeeService {
         }).findFirst().orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
-    @Override
-    public Map<RoleDTO, List<EmployeeDTO>> getAllEmployee() {
-        List<UserEntity> employee= employeeReposiory.findAll();
-        Map<RoleDTO, List<EmployeeDTO>> employeeDTOMap = new HashMap<>();
-        for (UserEntity userEntity : employee) {
-            EmployeeDTO employeeDTO = new EmployeeDTO();
-            employeeDTO.setId(userEntity.getId());
-            employeeDTO.setFirstname(userEntity.getFirstName());
-            employeeDTO.setLastname(userEntity.getLastName());
-            employeeDTO.setImage(userEntity.getImage());
-            employeeDTO.setEmail(userEntity.getEmail());
-            RoleDTO roleDTO = new RoleDTO();
-            roleDTO.setId(userEntity.getRole().getId());
-            roleDTO.setName(userEntity.getRole().getName());
-            employeeDTO.setRole(roleDTO);
-            employeeDTOMap.computeIfAbsent(roleDTO, k -> new ArrayList<>()).add(employeeDTO);
-        }
-        return employeeDTOMap;
-    }
-
-
 }

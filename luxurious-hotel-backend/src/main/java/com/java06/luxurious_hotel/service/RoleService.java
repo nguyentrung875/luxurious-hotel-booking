@@ -9,4 +9,5 @@ import java.util.List;
 @Service
 public interface RoleService {
     List<RoleDTO> getRoles();
+    List<RoleDTO> getAllRoles();
 }

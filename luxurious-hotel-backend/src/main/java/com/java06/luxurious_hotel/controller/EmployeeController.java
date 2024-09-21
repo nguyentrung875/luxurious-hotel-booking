@@ -51,12 +51,4 @@ public class EmployeeController {
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllEmployee() {
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setStatusCode(200);
-        baseResponse.setMessage("Employee Retrieved Successfully");
-        baseResponse.setData(employeeService.getAllEmployee());
-        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
-    }
 }
