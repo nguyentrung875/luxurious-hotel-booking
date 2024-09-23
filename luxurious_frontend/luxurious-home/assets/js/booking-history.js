@@ -19,7 +19,7 @@ function confirmEmail(formData) {
         url: "http://localhost:9999/booking/confirm",
         data: formData,
         success: function (response) {
-            $('#bookingHistory').append("YOUR BOOKING CONFIRM! YOU CAN CHECK YOUR BOOKING INFORMATION BY PHONE NUMBER.");
+            $('#bookingHistory').append("YOUR BOOKING HAS BEEN CONFIRMED! YOU CAN CHECK YOUR BOOKING INFORMATION BY PHONE NUMBER.");
         },
         error: function (response) {
             if (response.responseJSON.message.includes("JWT expired")) {
