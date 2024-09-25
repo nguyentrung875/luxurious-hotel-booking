@@ -1,7 +1,6 @@
 (function ($) {
 
 
-
     "use strict";
     /*========== Loader ===========*/
     $(window).on("load", function () {
@@ -1018,3 +1017,5 @@
 
 
 })(jQuery);
+
+
