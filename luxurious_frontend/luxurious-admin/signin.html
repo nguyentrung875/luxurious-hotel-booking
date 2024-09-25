@@ -48,13 +48,13 @@
 										<!-- Login form -->
 										<form class="login-form" method="post">
 											<div class="imgcontainer">
-												<a href="index.html"><img src="assets/img/logo/full-logo.png" alt="logo" class="logo"></a>
+												<img src="assets/img/logo/full-logo.png" alt="logo" class="logo">
 											</div>
 											<div class="input-control">
-												<input type="text" placeholder="Enter Username" name="uname"
+												<input id="input_username" type="text" placeholder="Enter Username" name="uname"
 													required>
 												<span class="password-field-show">
-													<input type="password" placeholder="Enter Password"
+													<input id="input_password" type="password" placeholder="Enter Password"
 														name="password" class="password-field" value="" required>
 													<span data-toggle=".password-field"
 														class="fa fa-fw fa-eye field-icon toggle-password"></span>
@@ -66,7 +66,7 @@
 												<span class="psw"><a href="forgot.html" class="forgot-btn">Forgot
 														password?</a></span>
 												<div class="login-btns">
-													<button type="submit">Login</button>
+													<button id="submit_login" type="submit">Login</button>
 												</div>
 												<div class="division-lines">
 													<p>or login with</p>
@@ -119,6 +119,8 @@
 
 	<!-- Main Custom -->
 	<script src="assets/js/main.js"></script>
+	<script src="assets/js/signin.js"></script>
+
 </body>
 
 
