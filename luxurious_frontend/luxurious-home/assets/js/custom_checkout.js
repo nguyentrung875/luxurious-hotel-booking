@@ -35,6 +35,7 @@ $(document).ready(function (e) {
         inputBooking.checkInDate = $('#input_checkin').val();
         inputBooking.checkOutDate = $('#input_checkout').val();
         inputBooking.rooms = $('#input_rooms').val();
+        inputBooking.roomName = $('#input_rooms option:selected').toArray().map(item => item.text)
         inputBooking.adultNumber = $('#input_adult').val();
         inputBooking.childrenNumber = $('#input_children').val();
         inputBooking.idPayment = $('#input_payment_method').val();
@@ -45,6 +46,7 @@ $(document).ready(function (e) {
         inputBooking.phone = $('#input_phone').val();
         inputBooking.email = $('#input_email').val();
         inputBooking.address = $('#input_address').val();
+        
         addBooking(inputBooking)
     });
 
@@ -99,11 +101,14 @@ function addBooking(inputAddBooking) {
         url: "http://localhost:9999/booking",
         data: JSON.stringify(inputAddBooking),
         success: function (response) {
+            console.log(response);
+            
             if (response.statusCode == 200) {
                 // alert("Please check your email to confirm booking!")
-                sendConfirmEmail(response.data.id)
+                inputAddBooking.idBooking = response.data.id
+                sendConfirmEmail(inputAddBooking)
                 alert(`Add new booking successfully! Please check email ${inputAddBooking.email} to confirm booking within 24 hours`)
-                window.location.href = `booking-history.html`
+                // window.location.href = `booking-history.html`
             }
         },
         error: function (response) {
@@ -112,20 +117,18 @@ function addBooking(inputAddBooking) {
     });
 }
 
-function sendConfirmEmail(idBooking) {
+function sendConfirmEmail(inputAddBooking) {
+    console.log(inputAddBooking)
     $.ajax({
         type: "POST",
-        url: "http://localhost:9999/email/confirmation?idBooking=" + idBooking,
+        contentType: "application/json; charset=utf-8",
+        url: "http://localhost:9999/email/sendToQueue",
+        data: JSON.stringify(inputAddBooking),
         success: function (response) {
-            alert(response)
+            console.log(response);
         },
         error: function (response) {
-            console.log(response)
-            // if (response.responseJSON.message.includes("JWT expired")) {
-            //     alert("Confirmation link expired! Please check your booking status here!")
-            // } else {
-            //     alert(response.responseJSON.message)
-            // }
+            console.log(response);
         }
     });
     // $('#bookingHistory').append(`PLEASE CHECK YOUR EMAIL (${params.get('email')}) TO CONFIRM BOOKING WITHIN 24 HOURS!`);

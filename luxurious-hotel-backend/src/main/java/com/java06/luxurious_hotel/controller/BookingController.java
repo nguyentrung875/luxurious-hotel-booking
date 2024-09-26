@@ -2,6 +2,7 @@ package com.java06.luxurious_hotel.controller;
 
 import com.java06.luxurious_hotel.dto.BookingDTO;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
+import com.java06.luxurious_hotel.request.ConfirmBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import com.java06.luxurious_hotel.service.BookingService;
@@ -20,8 +21,8 @@ public class BookingController {
     private BookingService bookingService;
 
     @PostMapping("/confirm")
-    public ResponseEntity<?> confirmBooking(String token){
-        bookingService.confirmBooking(token);
+    public ResponseEntity<?> confirmBooking(@RequestBody ConfirmBookingRequest request){
+        bookingService.confirmBooking(request);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("Confirmed booking");
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
