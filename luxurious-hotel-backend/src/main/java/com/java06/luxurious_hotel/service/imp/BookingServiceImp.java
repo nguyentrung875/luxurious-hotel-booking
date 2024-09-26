@@ -1,6 +1,7 @@
 package com.java06.luxurious_hotel.service.imp;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java06.luxurious_hotel.dto.*;
 import com.java06.luxurious_hotel.dto.coverdto.RoomsDTO;
 
@@ -15,12 +16,14 @@ import com.java06.luxurious_hotel.repository.RoomBookingRepository;
 import com.java06.luxurious_hotel.repository.RoomRepository;
 import com.java06.luxurious_hotel.repository.UserRepository;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
+import com.java06.luxurious_hotel.request.ConfirmBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
 import com.java06.luxurious_hotel.service.EmailService;
 import com.java06.luxurious_hotel.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +54,9 @@ public class BookingServiceImp implements BookingService {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public List<BookingDTO> getBookingByPhone(String phone) {
@@ -161,13 +167,15 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
-    public void confirmBooking(String token) {
-        int idBooking = Integer.parseInt(jwtUtils.verifyConfirmToken(token));
-        BookingEntity booking = bookingRepository.findById(idBooking)
+    public void confirmBooking(ConfirmBookingRequest request) {
+        BookingEntity booking = bookingRepository.findById(request.id())
                 .orElseThrow(BookingNotFoundException::new);
 
         //Kiểm tra nếu khách hàng đã confirm rồi thì khồng cần confirm nữa
         if (booking.getBookingStatus().getId() != 1) return;
+
+        //Kiểm tra xem token xác nhận đã hết hạn hay chưa
+        int idBooking = Integer.parseInt(jwtUtils.verifyConfirmToken(request.token()));
 
         //Kiểm tra lại trong thời gian confirm đã có khách nào đặt trùng phòng hay không
         LocalDateTime inDate = booking.getCheckIn();

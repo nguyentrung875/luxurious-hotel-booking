@@ -8,25 +8,35 @@ $(document).ready(function () {
 
     let params = new URLSearchParams(window.location.search)
     if (params.get('conf')) {
-        let formData = { 'token': params.get('conf') }
+        var jwtJson = parseJwt(params.get('conf'))
+        console.log(jwtJson)
+
+        let formData = { 'id':jwtJson.sub, 'token': params.get('conf') }
         confirmEmail(formData)
     }
 });
 
 function confirmEmail(formData) {
+    console.log(formData)
     $.ajax({
         type: "POST",
         url: "http://localhost:9999/booking/confirm",
-        data: formData,
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(formData),
         success: function (response) {
-            $('#bookingHistory').append("YOUR BOOKING HAS BEEN CONFIRMED! YOU CAN CHECK YOUR BOOKING INFORMATION BY PHONE NUMBER.");
+            if (response.message.includes("not found")) {
+                alert(response.message)
+            } else {
+                $('#bookingHistory').append("YOUR BOOKING HAS BEEN CONFIRMED! YOU CAN CHECK YOUR BOOKING INFORMATION BY PHONE NUMBER.");
+            }
         },
         error: function (response) {
             if (response.responseJSON.message.includes("JWT expired")) {
                 alert("Confirmation link expired! Please check your booking status here!")
-            } else {
+            } 
+            else {
                 alert(response.responseJSON.message)
-            }
+            } 
         }
     });
     var url = document.location.href;
@@ -135,4 +145,14 @@ function getColorOfStatus(status) {
             break;
     }
     return color;
+}
+
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
 }

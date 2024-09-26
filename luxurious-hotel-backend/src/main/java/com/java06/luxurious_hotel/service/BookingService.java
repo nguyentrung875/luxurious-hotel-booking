@@ -7,6 +7,7 @@ import com.java06.luxurious_hotel.dto.BookingDTO;
 
 import com.java06.luxurious_hotel.entity.BookingEntity;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
+import com.java06.luxurious_hotel.request.ConfirmBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public interface BookingService {
     List<BookingDTO> getAllBooking();
     BookingDTO getDetailBooking(int idBooking);
     BookingDTO addNewBooking(AddBookingRequest request);
-    void confirmBooking(String token);
+    void confirmBooking(ConfirmBookingRequest request);
     List<BookingGuestDTO> getListBooking(int idGuest);
     void updateBooking(UpdateBookingRequest request);
     void deleteBooking(int idBooking);

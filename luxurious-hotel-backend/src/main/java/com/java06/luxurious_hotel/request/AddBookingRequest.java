@@ -39,6 +39,8 @@ public record AddBookingRequest (
         @NotEmpty(message = "rooms not empty!")
         List<String> rooms,
 
+        List<String> roomName,
+
         @NotNull(message = "adultNumber not null")
         @Min(value = 1,message = "The number of adults must be at least 1")
         int adultNumber,
@@ -56,6 +58,9 @@ public record AddBookingRequest (
         double paidAmount,
 
         @NotNull(message = "total not null")
-        double total
-){
+        double total,
+
+        int idBooking
+
+        ){
 }
