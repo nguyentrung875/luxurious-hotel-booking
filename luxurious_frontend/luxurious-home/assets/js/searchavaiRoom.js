@@ -60,10 +60,10 @@ $(document).ready(function () {
     let roomData = JSON.parse(localStorage.getItem('roomData'));
 
     // Check if roomData exists
-    if (!roomData) {
-        alert('No rooms available.');
-        return;
-    }
+    // if (!roomData) {
+    //     alert('No rooms available.');
+    //     return;
+    // }
 
     // Log the room data for debugging
     console.log(roomData);
@@ -82,8 +82,10 @@ $(document).ready(function () {
                 <div class="rooms-card">
                     <img src="${room.image[0]}" alt="room">
                     <div class="details">
+                    <a href="#" class="view-more-btn lh-buttons-2" data-room-id="${room.id}">View More <i class="ri-arrow-right-line"></i></a>
                         <h3>${room.roomTypeName}</h3>
                         <span>$${room.price} / Night</span>
+                        
                         <ul>
                             <li><i class="ri-group-line"></i> ${room.capacity} Persons</li>
                             <li><i class="ri-hotel-bed-line"></i> ${room.bedType.name}</li>
@@ -96,7 +98,7 @@ $(document).ready(function () {
                             <li><i class="mdi mdi-pool"></i> Swimming Pool</li>
                             <li><i class="ri-wifi-line"></i> Free Wifi</li>
                         </ul>
-                        <a href="#" class="view-more-btn lh-buttons-2" data-room-id="${room.id}">View More <i class="ri-arrow-right-line"></i></a>
+                        
                     </div>
                 </div>
             </div>
