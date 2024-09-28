@@ -26,6 +26,8 @@ function confirmEmail(formData) {
         success: function (response) {
             if (response.message.includes("not found")) {
                 alert(response.message)
+            } else if (response.message.includes("not available")) {
+                alert(response.message)
             } else {
                 $('#bookingHistory').append("YOUR BOOKING HAS BEEN CONFIRMED! YOU CAN CHECK YOUR BOOKING INFORMATION BY PHONE NUMBER.");
             }

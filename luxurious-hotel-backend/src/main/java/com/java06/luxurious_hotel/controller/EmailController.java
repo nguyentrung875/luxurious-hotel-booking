@@ -48,7 +48,7 @@ public class EmailController {
     public ResponseEntity<?> sendToQueue(@RequestBody AddBookingRequest request){
         try {
             String json = objectMapper.writeValueAsString(request);
-            rabbitTemplate.convertAndSend(RabbitmqConfig.CONFIRM_EMAIL_EXCHANGE,RabbitmqConfig.CONFIRM_EMAIL_ROUTING_KEY,json);
+            rabbitTemplate.convertAndSend(RabbitmqConfig.BOOKING_EMAIL_EXCHANGE,RabbitmqConfig.CONFIRM_BOOKING_EMAIL_ROUTING_KEY,json);
         } catch (Exception e) {
             throw new RuntimeException("Error parse json AddBookingRequest: " + e);
         }

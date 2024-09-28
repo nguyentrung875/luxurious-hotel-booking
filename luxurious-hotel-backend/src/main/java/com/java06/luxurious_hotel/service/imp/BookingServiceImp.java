@@ -2,6 +2,7 @@ package com.java06.luxurious_hotel.service.imp;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java06.luxurious_hotel.config.RabbitmqConfig;
 import com.java06.luxurious_hotel.dto.*;
 import com.java06.luxurious_hotel.dto.coverdto.RoomsDTO;
 
@@ -58,20 +59,23 @@ public class BookingServiceImp implements BookingService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Override
     public List<BookingDTO> getBookingByPhone(String phone) {
         List<BookingEntity> bookings = bookingRepository.findByGuest_Phone(phone);
-        return bookings.stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
+        return bookings.stream().map(this::bookingEntityToBookingDTO).toList();
     }
 
     @Override
     public List<BookingDTO> getAllBooking() {
-        return bookingRepository.findAll().stream().map(booking -> this.bookingEntityToBookingDTO(booking)).toList();
+        return bookingRepository.findAll().stream().map(this::bookingEntityToBookingDTO).toList();
     }
 
     @Override
     public BookingDTO getDetailBooking(int idBooking) {
-        return bookingRepository.findById(idBooking).stream().map(booking -> this.bookingEntityToBookingDTO(booking))
+        return bookingRepository.findById(idBooking).stream().map(this::bookingEntityToBookingDTO)
                 .findFirst().orElseThrow(BookingNotFoundException::new);
     }
 
@@ -177,6 +181,10 @@ public class BookingServiceImp implements BookingService {
         //Kiểm tra xem token xác nhận đã hết hạn hay chưa
         int idBooking = Integer.parseInt(jwtUtils.verifyConfirmToken(request.token()));
 
+        if (idBooking != request.id()) {
+            throw new RuntimeException("The idBooking inside the token does not match the idBooking that needs to be confirmed.");
+        }
+
         //Kiểm tra lại trong thời gian confirm đã có khách nào đặt trùng phòng hay không
         LocalDateTime inDate = booking.getCheckIn();
         LocalDateTime outDate = booking.getCheckOut();
@@ -191,7 +199,11 @@ public class BookingServiceImp implements BookingService {
         BookingStatusEntity bookingStatusEntity = new BookingStatusEntity();
         bookingStatusEntity.setId(2);
         booking.setBookingStatus(bookingStatusEntity);
-        bookingRepository.save(booking);
+        BookingEntity bookingEntity = bookingRepository.save(booking);
+
+        //Gửi thông tin booking lên rabbitmq để gửi email xác nhận booking thành công
+        BookingDTO bookingDTO = this.bookingEntityToBookingDTO(bookingEntity);
+        this.sendBookingDTOtoQueue(bookingDTO);
     }
 
     @Transactional
@@ -413,6 +425,19 @@ public class BookingServiceImp implements BookingService {
         )));
 
         return bookingDTO;
+    }
+
+    private void sendBookingDTOtoQueue(BookingDTO bookingDTO) {
+        try {
+            String json = objectMapper.writeValueAsString(bookingDTO);
+            rabbitTemplate.convertAndSend(
+                    RabbitmqConfig.BOOKING_EMAIL_EXCHANGE,
+                    RabbitmqConfig.SUCCESS_BOOKING_EMAIL_ROUTING_KEY,
+                    json);
+            System.out.println("sent booking to queue");
+        } catch (Exception e){
+            System.out.println("confirmBooking(): Error parse bookingDTO to JSON | " + e );
+        }
     }
 
 }
