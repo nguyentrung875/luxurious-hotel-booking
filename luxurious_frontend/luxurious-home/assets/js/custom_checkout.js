@@ -94,7 +94,6 @@ $(document).ready(function (e) {
 });
 
 function addBooking(inputAddBooking) {
-    console.log(inputAddBooking)
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
@@ -118,11 +117,10 @@ function addBooking(inputAddBooking) {
 }
 
 function sendConfirmEmail(inputAddBooking) {
-    console.log(inputAddBooking)
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        url: "http://localhost:9999/email/sendToQueue",
+        url: "http://localhost:9999/email/sendBookingInfoToQueue",
         data: JSON.stringify(inputAddBooking),
         success: function (response) {
             console.log(response);

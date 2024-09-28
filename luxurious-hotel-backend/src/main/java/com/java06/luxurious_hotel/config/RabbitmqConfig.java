@@ -6,29 +6,45 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitmqConfig {
+    final static public String BOOKING_EMAIL_EXCHANGE = "booking-email-exchange";
+    final static public String CONFIRM_BOOKING_EMAIL_QUEUE = "confirm-booking-email-queue";
+    final static public String CONFIRM_BOOKING_EMAIL_ROUTING_KEY = "/confirm-booking-email";
+    final static public String SUCCESS_BOOKING_EMAIL_QUEUE = "success-booking-email-queue";
+    final static public String SUCCESS_BOOKING_EMAIL_ROUTING_KEY = "/success-booking-email";
 
-    final static public String CONFIRM_EMAIL_QUEUE = "confirm-email-queue";
-    final static public String CONFIRM_EMAIL_EXCHANGE = "confirm-email-exchange";
-    final static public String CONFIRM_EMAIL_ROUTING_KEY = "/confirm-email";
-
+    @Bean public Exchange exchangeBookingEmail()
+    {
+        return new TopicExchange(BOOKING_EMAIL_EXCHANGE);
+    }
 
     @Bean
     public Queue queueConfirmEmail()
     {
-        return new Queue(CONFIRM_EMAIL_QUEUE, true);
-    }
-
-    @Bean public Exchange exchangeConfirmEmail()
-    {
-        return new TopicExchange(CONFIRM_EMAIL_EXCHANGE);
+        return new Queue(CONFIRM_BOOKING_EMAIL_QUEUE, true);
     }
 
     @Bean
-    public Binding binding()
+    public Queue queueSuccessBookingEmail()
+    {
+        return new Queue(SUCCESS_BOOKING_EMAIL_QUEUE, true);
+    }
+
+
+    @Bean
+    public Binding confirmBookingBinding()
     {
         return BindingBuilder.bind(queueConfirmEmail())
-                .to(exchangeConfirmEmail())
-                .with(CONFIRM_EMAIL_ROUTING_KEY)
+                .to(exchangeBookingEmail())
+                .with(CONFIRM_BOOKING_EMAIL_ROUTING_KEY)
+                .noargs();
+    }
+
+    @Bean
+    public Binding successBookingBinding()
+    {
+        return BindingBuilder.bind(queueSuccessBookingEmail())
+                .to(exchangeBookingEmail())
+                .with(SUCCESS_BOOKING_EMAIL_ROUTING_KEY)
                 .noargs();
     }
 }
