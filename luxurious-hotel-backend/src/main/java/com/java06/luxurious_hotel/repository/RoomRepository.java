@@ -25,6 +25,7 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Integer> {
     List<RoomEntity> findRoomEntityByRoomType(RoomTypeEntity roomTypeEntity);
 
 
+
     @Query("SELECT new com.java06.luxurious_hotel.dto.RoomAvailableInfo(r) " +
             "FROM room r join r.roomType rt " +
             "WHERE r.id NOT IN (SELECT rb.room.id FROM booking b " +

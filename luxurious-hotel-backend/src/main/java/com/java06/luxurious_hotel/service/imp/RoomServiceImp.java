@@ -5,11 +5,15 @@ import com.java06.luxurious_hotel.dto.searchAvaiRoom.BedTypeDTO;
 import com.java06.luxurious_hotel.dto.searchAvaiRoom.RoomAvailableDTO;
 import com.java06.luxurious_hotel.dto.searchAvaiRoom.RoomTypeAvailableDTO;
 import com.java06.luxurious_hotel.entity.*;
+import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
 import com.java06.luxurious_hotel.repository.*;
+import com.java06.luxurious_hotel.request.AddRoomRequest;
 import com.java06.luxurious_hotel.request.SearchRoomRequest;
+import com.java06.luxurious_hotel.request.UpdateRoomRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +25,8 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
 
     @Autowired
     private RoomTypeRepository roomTypeRepository;
+
+
 
     @Autowired
     private RoomBookingRepository roomBookingRepository;
@@ -109,7 +115,7 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
 
     }
 
-
+    @Transactional
     @Override
     public List<RoomTypeAvailableDTO> getAvailableRooms(SearchRoomRequest searchRoomRequest) {
         List<RoomAvailableInfo> roomAvailableInfoList = roomRepository.findAvailableRoom(
@@ -168,7 +174,7 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
                 checkIn = false;
             }
 
-            System.out.println("number is "+ num);
+            //System.out.println("number is "+ num);
 
             // Add available room to the corresponding room type
             RoomAvailableDTO roomAvailableDTO = new RoomAvailableDTO();
@@ -181,10 +187,101 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
 
         return new ArrayList<>(roomTypeMap.values());
     }
+    @Transactional
+    @Override
+    public void saveRoom(AddRoomRequest addRoomRequest) {
+
+        RoomEntity roomEntity = new RoomEntity();
+        roomEntity.setName(addRoomRequest.name());
+
+        RoomTypeEntity roomTypeEntity = new RoomTypeEntity();
+        roomTypeEntity.setId(addRoomRequest.idRoomType());
+        roomEntity.setRoomType(roomTypeEntity);
+
+        roomRepository.save(roomEntity);
+    }
+
+    @Override
+    public RoomDTO findRoomById(int id) {
+         RoomEntity  roomEntity = roomRepository.findById(id).orElseThrow(()-> new RuntimeException("Room not found"));
+
+
+            RoomDTO roomDTO = new RoomDTO();
+            roomDTO.setId(roomEntity.getId());
+            roomDTO.setName(roomEntity.getName());
+            RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
+            roomTypeDTO.setId(roomEntity.getRoomType().getId());
+            roomTypeDTO.setName(roomEntity.getRoomType().getName());
+            roomDTO.setRoomTypeDTO(roomTypeDTO);
+
+
+        return roomDTO;
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteRoomById(int id) {
+        if (!roomRepository.existsById(id)){
+            throw new RoomNotFoundException("Room with id: "+ id +" not found!!!");
+        }
 
 
 
 
+        if (roomRepository.existsById(id)) {
+            if (roomBookingRepository.existsByRoomId(id)) {
+                roomBookingRepository.deleteAllByRoomId(id);
+            }
+            roomRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateRoom(UpdateRoomRequest updateRoomRequest) {
+        boolean checkIn = false;
+        if (!roomRepository.existsById(updateRoomRequest.id())) {
+
+
+            throw new RoomNotFoundException("Room Type with id: "+ updateRoomRequest.id() +" not found!!!");
+        }
+        if (!roomTypeRepository.existsById(updateRoomRequest.idRoomType())) {
+
+            throw new RoomNotFoundException("Room Type with id: "+ updateRoomRequest.idRoomType() +" not found!!!");
+        }
+
+        if (roomRepository.existsById(updateRoomRequest.id()) && roomTypeRepository.existsById(updateRoomRequest.idRoomType())) {
+            RoomEntity roomEntity = new RoomEntity();
+            roomEntity.setId(updateRoomRequest.id());
+            roomEntity.setName(updateRoomRequest.name());
+
+            RoomTypeEntity roomTypeEntity = new RoomTypeEntity();
+            roomTypeEntity.setId(updateRoomRequest.idRoomType());
+            roomEntity.setRoomType(roomTypeEntity);
+            roomRepository.save(roomEntity);
+            checkIn = true;
+        }
+
+        return checkIn;
+    }
+
+    @Override
+    public List<RoomDTO> getAllRoom() {
+        List<RoomEntity> roomEntityList = roomRepository.findAll();
+        List<RoomDTO> roomDTOList = new ArrayList<>();
+        for (RoomEntity roomEntity : roomEntityList) {
+            RoomDTO roomDTO = new RoomDTO();
+            roomDTO.setId(roomEntity.getId());
+            roomDTO.setName(roomEntity.getName());
+            RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
+            roomTypeDTO.setId(roomEntity.getRoomType().getId());
+            roomTypeDTO.setName(roomEntity.getRoomType().getName());
+            roomDTO.setRoomTypeDTO(roomTypeDTO);
+            roomDTOList.add(roomDTO);
+        }
+        return roomDTOList;
+    }
 
 
 }

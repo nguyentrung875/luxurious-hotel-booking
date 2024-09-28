@@ -6,4 +6,5 @@ import lombok.Data;
 public class RoomDTO {
     private int id;
     private String name;
+    private RoomTypeDTO roomTypeDTO;
 }

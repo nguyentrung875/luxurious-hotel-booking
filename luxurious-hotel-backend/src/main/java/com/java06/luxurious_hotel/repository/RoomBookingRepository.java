@@ -17,6 +17,11 @@ import java.util.List;
 
 @Repository
 public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, RoomBookingKey> {
+
+    boolean existsByRoomId(int id);
+    void deleteAllByRoomId(int id);
+
+
     List<RoomBookingEntity> findByBooking(BookingEntity booking);
     int deleteByBooking(BookingEntity bookingEntity);
     void deleteAllByBooking_Guest_Id(int id);
@@ -30,6 +35,7 @@ public interface RoomBookingRepository extends JpaRepository<RoomBookingEntity, 
             "WHERE :selectDate BETWEEN b.checkIn AND b.checkOut " +
             "AND b.bookingStatus.id IN (2,3,4)")
     List<RoomBookingEntity> findRoomBookingsBySelectedDate(@Param("selectDate") LocalDateTime selectDate);
+
 
 
 //    List<RoomAmenityEntity> findByRoomTypeId(int roomId);

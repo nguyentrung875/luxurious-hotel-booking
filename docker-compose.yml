@@ -5,7 +5,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data  # Volume này lưu trữ dữ liệu Redis (database)
+      - redis_data:/data # Volume này lưu trữ dữ liệu Redis (database)
     networks:
       - local
 
@@ -30,6 +30,16 @@ services:
       RABBITMQ_DEFAULT_PASS: 875879
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq # Lưu trữ dữ liệu của RabbitMQ, docker quản lý
+    networks:
+      - local
+
+  mysql06:
+    image: mysql
+    container_name: mysql06dc
+    ports:
+      - 3308:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=090902
     networks:
       - local
 
