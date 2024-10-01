@@ -45,6 +45,7 @@ public class RoleServiceImp implements RoleService {
         List<RoleDTO> roledto = new ArrayList<>();
         List<RoleEntity> role = roleRepository.findAll();
         List <UserEntity> users = employeeReposiory.findAll();
+        String imageBaseUrl = "http://localhost:9999/file/";
         for (RoleEntity data : role) {
             RoleDTO dto = new RoleDTO();
             dto.setId(data.getId());
@@ -54,13 +55,16 @@ public class RoleServiceImp implements RoleService {
             for (UserEntity user : users) {
                 if (user.getRole().getId() == data.getId()) {
                     EmployeeDTO employee = new EmployeeDTO();
-                    employee.setImage(user.getImage());
                     employee.setId(user.getId());
+                    employee.setImage(user.getImage());
                     employee.setFirstname(user.getFirstName());
                     employee.setLastname(user.getLastName());
                     employee.setEmail(user.getEmail());
+                    if (employee.getImage() !=null && !employee.getImage().isEmpty()) {
+                        String imageUrl = imageBaseUrl + user.getImage();
+                        employee.setImage(imageUrl);
+                    }
                     employees.add(employee);
-                    filesStorageService.load(employee.getImage());
                 }
             }
             dto.setEmployees(employees);
