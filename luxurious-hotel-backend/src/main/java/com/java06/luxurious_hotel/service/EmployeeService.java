@@ -15,6 +15,5 @@ public interface EmployeeService {
     Boolean updateEmployee(UpdateEmployeeRequest updateEmployeeRequest);
     Boolean deleteEmployee(int employeeId);
     EmployeeDTO getEmployee(int employeeId);
-    Map<RoleDTO, List<EmployeeDTO>> getAllEmployee();
 }
 

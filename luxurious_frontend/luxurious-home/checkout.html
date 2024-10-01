@@ -300,15 +300,14 @@
                                     <div class="lh-checkout-block lh-check-login">
                                         <h3 class="lh-checkout-title">Returning Customer</h3>
                                         <div class="lh-check-login-form">
-                                            <form action="#" method="post">
+                                            <form action="#" method="get">
                                                 <span class="lh-check-login-wrap">
-                                                    <label>Phone</label>
-                                                    <input type="text" name="name" placeholder="Enter your phone"
-                                                        required />
+                                                    <label >Phone</label>
+                                                    <input id="input_return_phone" type="number" name="name"
+                                                        placeholder="Enter your phone" required />
                                                 </span>
                                                 <span class="lh-check-login-wrap lh-check-login-btn">
-                                                    <button class="lh-buttons mr-12" type="submit">Load
-                                                        Information</button>
+                                                    <button id="load_info" class="lh-buttons mr-12" type="submit">Load Information</button>
                                                 </span>
                                             </form>
                                         </div>
@@ -323,27 +322,27 @@
                                                 <form action="#" method="post">
                                                     <span class="lh-bill-wrap lh-bill-half">
                                                         <label>First Name*</label>
-                                                        <input type="text" name="firstname"
+                                                        <input id="input_first_name" type="text" name="firstname"
                                                             placeholder="Enter your first name" required />
                                                     </span>
                                                     <span class="lh-bill-wrap lh-bill-half">
                                                         <label>Last Name*</label>
-                                                        <input type="text" name="lastname"
+                                                        <input id="input_last_name" type="text" name="lastname"
                                                             placeholder="Enter your last name" required />
                                                     </span>
                                                     <span class="lh-bill-wrap lh-bill-half">
                                                         <label>Phone*</label>
-                                                        <input type="text" name="phone"
+                                                        <input id="input_phone" type="number" name="phone"
                                                             placeholder="Enter your first name" required />
                                                     </span>
                                                     <span class="lh-bill-wrap lh-bill-half">
                                                         <label>Email*</label>
-                                                        <input type="text" name="email"
+                                                        <input id="input_email" type="text" name="email"
                                                             placeholder="Enter your last name" required />
                                                     </span>
                                                     <span class="lh-bill-wrap">
                                                         <label>Address</label>
-                                                        <input type="text" name="address"
+                                                        <input id="input_address" type="text" name="address"
                                                             placeholder="Address Line 1" />
                                                     </span>
                                                     <!-- <span class="lh-bill-wrap lh-bill-half mb-15">
@@ -410,77 +409,73 @@
                             <form>
                                 <div class="lh-side-reservation-from">
                                     <label>Check In</label>
-                                    <div class="calendar" id="date_1">
-                                        <input type="text" class="reservation-form-control" placeholder="Sep 09,2024">
-                                        <i class="ri-calendar-line"></i>
-                                    </div>
+                                    <!-- <div class="calendar" id="date_1"> -->
+                                    <input id="input_checkin" type="date" class="reservation-form-control"
+                                        placeholder="Sep 09,2024" required>
+                                    <!-- <i class="ri-calendar-line"></i>
+                                    </div> -->
                                 </div>
                                 <div class="lh-side-reservation-from">
                                     <label>Check Out</label>
-                                    <div class="calendar" id="date_2">
-                                        <input type="text" class="reservation-form-control" placeholder="Sep 09,2024">
-                                        <i class="ri-calendar-line"></i>
-                                    </div>
+                                    <!-- <div class="calendar" id="date_2"> -->
+                                    <input id="input_checkout" type="date" class="reservation-form-control"
+                                        placeholder="Sep 09,2024">
+                                    <!-- <i class="ri-calendar-line"></i>
+                                    </div> -->
                                 </div>
-                                <div class="lh-side-reservation-from trung__select">
-                                    <label>Rooms</label>
-                                    <div>
-                                        <select class="form-control chosen-select" multiple>
-                                            <optgroup label="Standard Room (200$/night)">
-                                                <option value="option1">101</option>
-                                                <option value="option2">202</option>
-                                                <option value="option3">301</option>
-                                                <option value="option4">401</option>
-                                            </optgroup>
-                                            <optgroup label="VIP Room (500$/night)">
-                                                <option value="option1">101</option>
-                                                <option value="option2">202</option>
-                                                <option value="option3">301</option>
-                                                <option value="option4">401</option>
-                                            </optgroup>
-                                            <optgroup label="Family Room (200$/night)">
-                                                <option value="option1">101</option>
-                                                <option value="option2">202</option>
-                                                <option value="option3">301</option>
-                                                <option value="option4">401</option>
-                                            </optgroup>
-                                        </select>
-                                        <button id="getValues">Get Selected Values</button>
-                                    </div>
-                                </div>
+
                                 <div class="lh-side-reservation-from">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label>Adult</label>
-                                            <div class="custom-select reservation-form-control">
-                                                <select>
-                                                    <option value="option1">1</option>
-                                                    <option value="option2">2</option>
-                                                    <option value="option3">3</option>
-                                                    <option value="option4">4</option>
-                                                </select>
-                                            </div>
+                                            <input class="reservation-form-control " id="input_adult" type="number"
+                                                name="adult" placeholder="Enter number of adult" required />
+
                                         </div>
                                         <div class="col-lg-6">
                                             <label>Children</label>
-                                            <div class="custom-select reservation-form-control">
-                                                <select>
-                                                    <option value="option1">1</option>
-                                                    <option value="option2">2</option>
-                                                    <option value="option3">3</option>
-                                                    <option value="option4">4</option>
+                                            <input class="reservation-form-control " id="input_children" type="number"
+                                                name="children" placeholder="Enter number of children" required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="lh-side-reservation-from trung__select" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label>Rooms</label>
+                                    <a id="load_rooms" style="font-size: 12px; color: rgb(110, 110, 113); cursor: pointer; text-decoration: none;"
+                                    onmouseover="this.style.textDecoration='underline'; this.style.color='#007bff';"
+                                    onmouseout="this.style.textDecoration='none'; this.style.color='rgb(110, 110, 113)';">
+                                        Load available rooms
+                                    </a>
+                                </div>
+                                <div>
+                                    <select id="input_rooms" class="form-control chosen-select" multiple>
+                                        <!-- select rooms -->
+                                    </select>
+                                </div>
+   
+                                <div class="lh-side-reservation-from">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label>Payment method</label>
+                                            <div>
+                                                <select id="input_payment_method" class="form-control chosen-select">
+
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+
+
                                 <div class="lh-side-reservation-from">
                                     <h4>Total</h4>
-                                    <p>$500</p>
+                                    <p id="input_total"> </p>
                                 </div>
                                 <div class="lh-side-reservation-from">
                                     <div class="lh-side-reservation-from-buttons">
-                                        <button class="lh-buttons result-placeholder" type="submit">
+                                        <button id="submit_booking" class="lh-buttons result-placeholder" type="button">
                                             Book Now
                                         </button>
                                     </div>

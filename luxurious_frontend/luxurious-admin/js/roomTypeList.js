@@ -295,7 +295,7 @@ $(document).ready(function() {
             }
         });
     } else {
-        alert("No room ID found. Please try again.");
+        //alert("No room ID found. Please try again.");
     }
 
      
@@ -315,6 +315,8 @@ $(document).ready(function() {
     $('#updateRoomTypeForm').on('submit', function(event) {
         event.preventDefault();  
 
+        //alert("meo meo");
+
         var formData = new FormData(this);
 
          
@@ -329,6 +331,8 @@ $(document).ready(function() {
             formData.append('newImages[]', newImages[i]);
         }
 
+
+        alert(JSON.stringify(formData))
          
         $.ajax({
             url: "http://localhost:9999/roomType",  
@@ -339,6 +343,8 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.statusCode === 200) {
                     alert('Room type updated successfully!');
+                    localStorage.removeItem('editRoomId');
+                    window.location.href = "room_type_mana.html";
                 } else {
                     alert('Failed to update room type: ' + response.message);
                 }
@@ -347,19 +353,10 @@ $(document).ready(function() {
                 console.error("Status: " + status);
                 console.error("Error: " + error);
                 console.error("Response: " + xhr.responseText);
-                alert('There was an error submitting the form.');
+                //alert('There was an error submitting the form.');
+                //localStorage.removeItem('editRoomId');
+                // window.location.href = "room_type_mana.html";
             }
         });
     });
 });
-
-
-
-
-
-
-
-
-
-
-

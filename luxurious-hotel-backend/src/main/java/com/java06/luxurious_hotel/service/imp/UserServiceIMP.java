@@ -4,6 +4,7 @@ import com.java06.luxurious_hotel.dto.GuestDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.exception.role.RoleNotFoundException;
 import com.java06.luxurious_hotel.exception.user.DuplicateMailOrPhoneException;
+import com.java06.luxurious_hotel.exception.user.UserNotFoundException;
 import com.java06.luxurious_hotel.repository.*;
 import com.java06.luxurious_hotel.request.AddGuestRequest;
 import com.java06.luxurious_hotel.request.UpdateGuestRequest;
@@ -145,6 +146,18 @@ public class UserServiceIMP implements UserService {
     }
 
 
+    @Override
+    public GuestDTO getGuestInfoByPhone(String phone) {
+        return userRepository.findUserEntityByPhone(phone).stream().map(userEntity -> {
+            GuestDTO guestDTO = new GuestDTO();
+            guestDTO.setFirstName(userEntity.getFirstName());
+            guestDTO.setLastName(userEntity.getLastName());
+            guestDTO.setPhone(userEntity.getPhone());
+            guestDTO.setAddress(userEntity.getAddress());
+            guestDTO.setEmail(userEntity.getEmail());
+            return guestDTO;
+        }).findFirst().orElseThrow(UserNotFoundException::new);
+    }
 
     @Override
     public List<GuestDTO> getListGuest() {

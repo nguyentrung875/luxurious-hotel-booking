@@ -1,5 +1,6 @@
 package com.java06.luxurious_hotel.service.imp;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java06.luxurious_hotel.dto.*;
 import com.java06.luxurious_hotel.entity.RoomEntity;
 import com.java06.luxurious_hotel.repository.BookingStatusRepository;
@@ -8,8 +9,10 @@ import com.java06.luxurious_hotel.repository.PaymentStatusRepository;
 import com.java06.luxurious_hotel.repository.RoomRepository;
 import com.java06.luxurious_hotel.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,10 +33,29 @@ public class StatusServiceImp implements StatusService {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public StatusDTO getAllStatus() {
-
         StatusDTO statusDTO = new StatusDTO();
+
+        //Nếu dữ liệu có trong redis
+        if (redisTemplate.hasKey("statusDTO")){
+            System.out.println("Có redis");
+            var json = redisTemplate.opsForValue().get("statusDTO").toString();
+            try {
+                statusDTO = objectMapper.readValue(json, StatusDTO.class);
+            } catch (Exception e) {
+                throw new RuntimeException("Error convert JSON to statusDTO: " + e);
+            }
+            return statusDTO;
+        }
+        System.out.println("Không redis");
+
+
         statusDTO.setListBookingStatus(bookingStatusRepository.findAll().stream().map(bookingStatus ->
                 new BookingStatusDTO(bookingStatus.getId(), bookingStatus.getName())).toList());
 
@@ -66,6 +88,7 @@ public class StatusServiceImp implements StatusService {
                 roomTypeDTO.setId(room.getRoomType().getId());
                 roomTypeDTO.setName(room.getRoomType().getName());
                 roomTypeDTO.setPrice(room.getRoomType().getPrice());
+                roomTypeDTO.setCapacity(room.getRoomType().getCapacity());
                 roomTypeDTO.setRooms(new ArrayList<>());
 
                 roomTypeMap.put(roomTypeName, roomTypeDTO);
@@ -80,6 +103,13 @@ public class StatusServiceImp implements StatusService {
         }
 
         statusDTO.setListRoomType(new ArrayList<>(roomTypeMap.values()));
+
+        try{
+            String json = objectMapper.writeValueAsString(statusDTO);
+            redisTemplate.opsForValue().set("statusDTO", json, Duration.ofDays(7));
+        } catch (Exception e){
+            throw new RuntimeException("Error parse statusDTO to JSON: " + e);
+        }
 
         return statusDTO;
     }

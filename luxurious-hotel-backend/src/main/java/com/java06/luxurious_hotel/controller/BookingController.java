@@ -1,9 +1,12 @@
 package com.java06.luxurious_hotel.controller;
 
+import com.java06.luxurious_hotel.dto.BookingDTO;
 import com.java06.luxurious_hotel.request.AddBookingRequest;
+import com.java06.luxurious_hotel.request.ConfirmBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import com.java06.luxurious_hotel.service.BookingService;
+import com.java06.luxurious_hotel.service.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,22 @@ import org.springframework.web.bind.annotation.*;
 public class BookingController {
     @Autowired
     private BookingService bookingService;
+
+    @PostMapping("/confirm")
+    public ResponseEntity<?> confirmBooking(@RequestBody ConfirmBookingRequest request){
+        bookingService.confirmBooking(request);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("Confirmed booking");
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/p{phone}")
+    public ResponseEntity<?> getBooking(@PathVariable String phone){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(bookingService.getBookingByPhone(phone));
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
 
     @GetMapping
     public ResponseEntity<?> getAllBooking(){
@@ -33,9 +52,10 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<?> addBooking(@Valid @RequestBody AddBookingRequest request){
-        bookingService.addNewBooking(request);
+        BookingDTO bookingDTO = bookingService.addNewBooking(request);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("New booking added successfully!");
+        baseResponse.setData(bookingDTO);
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 

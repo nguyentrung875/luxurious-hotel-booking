@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface UserService {
 
+    GuestDTO getGuestInfoByPhone(String phone);
+
     List<GuestDTO> getListGuest();
 
     Boolean addGuest(AddGuestRequest addGuestRequest);
@@ -22,4 +24,5 @@ public interface UserService {
     Boolean checkPhone(String phone);
 
     GuestDTO getUser(int idUser);
+
 }

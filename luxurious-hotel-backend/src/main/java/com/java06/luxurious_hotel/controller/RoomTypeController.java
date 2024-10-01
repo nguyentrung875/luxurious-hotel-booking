@@ -79,6 +79,7 @@ public class RoomTypeController {
         baseResponse.setData(data);
 
 
+
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
@@ -90,6 +91,7 @@ public class RoomTypeController {
         String data = "";
         boolean isSuccess = roomTypeService.updateRoomType(updateRoomtypeRequest);
 
+        System.out.println("isSuccess: " + isSuccess);
 
         if (isSuccess) {
             data ="Update Roomtype successfully";
@@ -98,8 +100,10 @@ public class RoomTypeController {
             data ="Update room type fail, room type not found";
 
         }
+
+        System.out.println(data);
         baseResponse.setData(data);
-        return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
     @GetMapping("/file/{filename:.+}")

@@ -60,10 +60,10 @@ $(document).ready(function () {
     let roomData = JSON.parse(localStorage.getItem('roomData'));
 
     // Check if roomData exists
-    if (!roomData) {
-        alert('No rooms available.');
-        return;
-    }
+    // if (!roomData) {
+    //     alert('No rooms available.');
+    //     return;
+    // }
 
     // Log the room data for debugging
     console.log(roomData);
@@ -82,8 +82,10 @@ $(document).ready(function () {
                 <div class="rooms-card">
                     <img src="${room.image[0]}" alt="room">
                     <div class="details">
-                        <h3>Room ${room.roomTypeName}</h3>
+                    <a href="#" class="view-more-btn lh-buttons-2" data-room-id="${room.id}">View More <i class="ri-arrow-right-line"></i></a>
+                        <h3>${room.roomTypeName}</h3>
                         <span>$${room.price} / Night</span>
+                        
                         <ul>
                             <li><i class="ri-group-line"></i> ${room.capacity} Persons</li>
                             <li><i class="ri-hotel-bed-line"></i> ${room.bedType.name}</li>
@@ -96,7 +98,7 @@ $(document).ready(function () {
                             <li><i class="mdi mdi-pool"></i> Swimming Pool</li>
                             <li><i class="ri-wifi-line"></i> Free Wifi</li>
                         </ul>
-                        <a href="#" class="lh-buttons-2">View More <i class="ri-arrow-right-line"></i></a>
+                        
                     </div>
                 </div>
             </div>
@@ -104,5 +106,146 @@ $(document).ready(function () {
         // Append the room card to the container
         roomsContainer.append(roomCard);
     });
+
+
+
+    $('.view-more-btn').on('click', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior
+    
+        // Get the roomTypeId from the button's data attribute
+        let roomTypeId = $(this).attr('data-room-id');
+
+    
+console.log(roomTypeId)
+
+        // Make an AJAX call to get room type details by ID
+        $.ajax({
+            url: `http://localhost:9999/roomType/${roomTypeId}`,  // Update the URL as needed
+            type: 'GET',
+            success: function (response) {
+                // Assuming the API returns the room details
+                console.log('Room details:', response);
+    
+                // Save the room details in localStorage
+                localStorage.setItem('roomDetails', JSON.stringify(response));
+    
+                // Redirect to the room-details.html page
+                window.location.href = 'room-details.html';
+            },
+            error: function (xhr, status, error) {
+                
+                alert('Failed to retrieve room details. Please try again.');
+            }
+        });
+    });
+
 });
-//<li><i class="ri-restaurant-2-line"></i> There are currently ${room.numberAvailable} rooms available </li>
+
+$(document).ready(function () {
+    // Retrieve the room details from localStorage
+    let roomDetails = JSON.parse(localStorage.getItem('roomDetails'));
+
+    // Kiểm tra nếu roomDetails không có
+    if (!roomDetails || !roomDetails.data) {
+        alert('No room details found.');
+        return;
+    }
+
+    // Log để kiểm tra dữ liệu
+    console.log(roomDetails);
+
+    // 2. Cập nhật nội dung của các phần tử HTML với dữ liệu từ roomDetails.data
+    $('#nameRoomType').text(roomDetails.data.name); // Tên phòng
+    $('.lh-room-details-contain p').text(roomDetails.data.overview || "No overview available."); // Mô tả phòng
+    $('#roomTypePrice').text(roomDetails.data.price + " $" || "No Price available.");
+
+    // Xử lý phần tiện ích
+    if (roomDetails.data.amenity) {
+        let amenitiesArray = roomDetails.data.amenity.split(','); // Tách tiện ích bằng dấu phẩy
+
+        // 3. Tạo chuỗi HTML để hiển thị tiện ích dưới dạng danh sách kèm tiêu đề
+        let amenitiesHTML = '';
+        amenitiesArray.forEach(function (amenity) {
+            amenitiesHTML += `<li><code>*</code> ${amenity.trim()}</li>`;
+        });
+        //amenitiesHTML += '';
+
+        // 4. Chèn danh sách tiện ích vào phần tử HTML
+        $('.lh-room-details-amenities .row').html(amenitiesHTML);
+    } else {
+        // Nếu không có tiện ích, hiển thị thông báo
+        $('.lh-room-details-amenities .row').html('<h4 class="lh-room-inner-heading">Amenities</h4><p>No amenities available.</p>');
+    }
+
+    // Hiển thị tiêu đề và danh sách phòng trống
+    //$('#availableRoomTitle').text("Available Rooms");
+
+    // 3. Kiểm tra và hiển thị danh sách các phòng (roomName)
+    if (roomDetails.data.roomName && roomDetails.data.roomName.length > 0) {
+        let roomNameHTML = '<h4 class="lh-room-inner-heading">Available Rooms</h4>';
+        roomDetails.data.roomName.forEach(function (room, index) {
+            // Thêm class "shake" và "shake-X" để áp dụng độ trễ khác nhau
+            roomNameHTML += `<li class="shake shake-${index}">${room}</li>`;
+        });
+        $('#availableRoomList').html(roomNameHTML);
+    } else {
+        $('#availableRoomList').html('<li>No rooms available</li>');
+    }
+
+    $('#bedType').text(`Bed Type: ${roomDetails.data.bedName}`); 
+
+
+   // Load hình ảnh từ JSON vào gallery
+   if (roomDetails.data.image && roomDetails.data.image.length > 0) {
+    // Hiển thị hình ảnh đầu tiên như là main image
+    $('#largeRoomImage').attr('src', roomDetails.data.image[0]);
+
+    // Tạo chuỗi HTML cho gallery thumbnail
+    let thumbnailHTML = '';
+    roomDetails.data.image.forEach(function (imageUrl, index) {
+        thumbnailHTML += `
+            <img src="${imageUrl}" alt="Room ${index + 1}" onclick="changeImage('${imageUrl}')">
+        `;
+    });
+
+    // Chèn thumbnails vào gallery
+    $('#thumbnailGallery').html(thumbnailHTML);
+} else {
+    // Nếu không có hình ảnh, hiển thị placeholder hoặc thông báo
+    $('#largeRoomImage').attr('src', 'assets/img/no-image.png');
+    $('#thumbnailGallery').html('<p>No images available</p>');
+}
+
+
+});
+
+function changeImage(newImageUrl) {
+    $('#largeRoomImage').attr('src', newImageUrl);
+}
+
+
+$(document).ready(function(){
+    // Slider chính
+    $('.slider-for').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        fade: true,
+        asNavFor: '.slider-nav'
+    });
+
+    // Slider ảnh nhỏ
+    $('.slider-nav').slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        asNavFor: '.slider-for',
+        dots: false,
+        centerMode: true,
+        focusOnSelect: true
+    });
+});
+
+
+
+
+

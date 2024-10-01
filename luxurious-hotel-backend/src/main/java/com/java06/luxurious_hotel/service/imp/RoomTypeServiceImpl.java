@@ -1,6 +1,8 @@
 package com.java06.luxurious_hotel.service.imp;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java06.luxurious_hotel.dto.RoomTypeDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.entity.keys.RoomAmenityKey;
@@ -13,6 +15,8 @@ import com.java06.luxurious_hotel.request.UpdateRoomtypeRequest;
 import com.java06.luxurious_hotel.service.FilesStorageService;
 import com.java06.luxurious_hotel.service.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +30,8 @@ import java.util.stream.Collectors;
 @Service
 public class RoomTypeServiceImpl implements RoomTypeService {
 
+    @Value("${key.list.roomtype}")
+    private String listRoomTypeKey;
     @Autowired
     private RoomRepository roomRepository;
 
@@ -40,6 +46,9 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Autowired
     private FilesStorageService filesStorageService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Transactional
     @Override
@@ -84,6 +93,8 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
         boolean result = false;
 
+
+        System.out.println("This is update room type");
         Optional<RoomTypeEntity> roomTypeEntityCheck = roomTypeRepository.findById(updateRoomtypeRequest.id());
 
         if (roomTypeEntityCheck.isPresent()) {
@@ -135,40 +146,75 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public List<RoomTypeDTO> allRoomTypes() {
-        List<RoomTypeEntity> roomTypeEntityList = roomTypeRepository.findAll();
+
+        // parse object to json type
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // "List DTO" to respond to  user request
         List<RoomTypeDTO> roomTypeDTOList = new ArrayList<>();
-        for (RoomTypeEntity roomTypeEntity : roomTypeEntityList) {
-            RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
-            roomTypeDTO.setId(roomTypeEntity.getId());
-            roomTypeDTO.setName(roomTypeEntity.getName());
-            roomTypeDTO.setOverview(roomTypeEntity.getOverview());
-            roomTypeDTO.setPrice(roomTypeEntity.getPrice());
-            roomTypeDTO.setArea(roomTypeEntity.getArea());
-            roomTypeDTO.setCapacity(roomTypeEntity.getCapacity());
-            roomTypeDTO.setBedName(roomTypeEntity.getBedType().getName());
 
-            List<RoomEntity> roomEntityList = roomRepository.findRoomEntityByRoomType(roomTypeEntity);
-            List<String> roomNameList = roomEntityList.stream().map(RoomEntity::getName).collect(Collectors.toList());
-            roomTypeDTO.setRoomName(roomNameList);
+        if (redisTemplate.hasKey(listRoomTypeKey)) {
 
-            String imagesString = roomTypeEntity.getImage();
-            if (imagesString != null && !imagesString.isEmpty()) {
-                List<String> imagesList = Arrays.stream(imagesString.split(","))
-                        .collect(Collectors.toList()).stream().map(item -> ("http://localhost:9999/roomType/file/"+item)).toList();
-                roomTypeDTO.setImage(imagesList);
+             String data = redisTemplate.opsForValue().get(listRoomTypeKey).toString();
+
+            try {
+                roomTypeDTOList = objectMapper.readValue(data, List.class);
+            }catch (JsonProcessingException e){
+                throw new RuntimeException("Parsing to Object error"+ e.getMessage());
             }
+        }else {
 
-            List<RoomAmenityEntity> list = roomAmenityRepository.findByRoomTypeId(roomTypeEntity.getId());
-            String amenityStr = list.stream().
-                    map(roomAmenityEntity -> roomAmenityEntity.getAmenity().getDescription()).
-                    collect(Collectors.joining(", "));
+             // get All Value Form Dbase
+            List<RoomTypeEntity> roomTypeEntityList = roomTypeRepository.findAll();
+            for (RoomTypeEntity roomTypeEntity : roomTypeEntityList) {
+                RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
+                roomTypeDTO.setId(roomTypeEntity.getId());
+                roomTypeDTO.setName(roomTypeEntity.getName());
+                roomTypeDTO.setOverview(roomTypeEntity.getOverview());
+                roomTypeDTO.setPrice(roomTypeEntity.getPrice());
+                roomTypeDTO.setArea(roomTypeEntity.getArea());
+                roomTypeDTO.setCapacity(roomTypeEntity.getCapacity());
+                roomTypeDTO.setBedName(roomTypeEntity.getBedType().getName());
 
-            roomTypeDTO.setAmenity(amenityStr);
-            //          for (RoomAmenityEntity roomAmenityEntity : list) {
+                List<RoomEntity> roomEntityList = roomRepository.findRoomEntityByRoomType(roomTypeEntity);
+                List<String> roomNameList = roomEntityList.stream().map(RoomEntity::getName).collect(Collectors.toList());
+                roomTypeDTO.setRoomName(roomNameList);
+
+                String imagesString = roomTypeEntity.getImage();
+                if (imagesString != null && !imagesString.isEmpty()) {
+                    List<String> imagesList = Arrays.stream(imagesString.split(","))
+                            .collect(Collectors.toList()).stream().map(item -> ("http://localhost:9999/roomType/file/"+item)).toList();
+                    roomTypeDTO.setImage(imagesList);
+                }
+
+                List<RoomAmenityEntity> list = roomAmenityRepository.findByRoomTypeId(roomTypeEntity.getId());
+                String amenityStr = list.stream().
+                        map(roomAmenityEntity -> roomAmenityEntity.getAmenity().getDescription()).
+                        collect(Collectors.joining(", "));
+
+                roomTypeDTO.setAmenity(amenityStr);
+                //          for (RoomAmenityEntity roomAmenityEntity : list) {
 //              amenityStr+= (roomAmenityEntity.getAmenity().getDescription()+", ");
 //          }
-            roomTypeDTOList.add(roomTypeDTO);
+                roomTypeDTOList.add(roomTypeDTO);
+            }
+
+
+
+            // Saving to Redis
+            try {
+                String jsonString = objectMapper.writeValueAsString(roomTypeDTOList);
+                redisTemplate.opsForValue().set(listRoomTypeKey, jsonString);
+
+            }catch (JsonProcessingException e) {
+                throw new RuntimeException("Parsing json error"+e.getMessage());
+            }
         }
+
+
+
+
+
         return roomTypeDTOList;
     }
 
