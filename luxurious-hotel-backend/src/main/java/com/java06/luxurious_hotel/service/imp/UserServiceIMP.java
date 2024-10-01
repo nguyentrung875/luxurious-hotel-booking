@@ -3,6 +3,7 @@ package com.java06.luxurious_hotel.service.imp;
 import com.java06.luxurious_hotel.dto.GuestDTO;
 import com.java06.luxurious_hotel.entity.*;
 import com.java06.luxurious_hotel.exception.role.RoleNotFoundException;
+import com.java06.luxurious_hotel.exception.user.DuplicateMailOrPhoneException;
 import com.java06.luxurious_hotel.repository.*;
 import com.java06.luxurious_hotel.request.AddGuestRequest;
 import com.java06.luxurious_hotel.request.UpdateGuestRequest;
@@ -177,8 +178,13 @@ public class UserServiceIMP implements UserService {
         // set ngày khởi tạo
         userEntity.setDob(LocalDate.now());
 
-        userEntity.setEmail(addGuestRequest.email());
-        userEntity.setPhone(addGuestRequest.phone());
+        try {
+            userEntity.setEmail(addGuestRequest.email());
+            userEntity.setPhone(addGuestRequest.phone());
+        }catch (Exception e){
+            throw new DuplicateMailOrPhoneException(e.getMessage());
+        }
+
         userEntity.setAddress(addGuestRequest.address());
         userEntity.setSummary(addGuestRequest.summary());
 

@@ -51,7 +51,6 @@ public class UserController {
     @PostMapping("/addguest")
     public ResponseEntity<?> addGuest(@RequestBody AddGuestRequest addGuestRequest){
         Boolean check = userService.addGuest(addGuestRequest);
-        System.out.println("rsssss");
         BaseResponse response = new BaseResponse();
         response.setData(check);
 
