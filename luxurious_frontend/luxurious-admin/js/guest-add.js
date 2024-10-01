@@ -111,7 +111,7 @@ $(document).ready(function () {
 
     async function checkEmailExistence(email) {
         let checkEmail = false;
-        await $.ajax({            
+        await $.ajax({
             url: "http://localhost:9999/user/checkemail?email=" + encodeURIComponent(email),
             method: "POST",
             contentType: "application/x-www-form-urlencoded"

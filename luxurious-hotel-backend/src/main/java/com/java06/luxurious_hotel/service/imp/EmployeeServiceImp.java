@@ -36,7 +36,6 @@ public class EmployeeServiceImp implements EmployeeService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Transactional
     @Override
     public void addEmployee(AddEmployeeRequest addEmployeeRequest) {
