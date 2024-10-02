@@ -1,7 +1,11 @@
 package com.example.emailconsumer.service;
 
-import com.example.emailconsumer.request.AddBookingRequest;
+import com.example.emailconsumer.dto.AddBookingRequest;
+import com.example.emailconsumer.dto.BookingDTO;
+import com.example.emailconsumer.dto.RoomDTO;
 import com.example.emailconsumer.utils.JwtUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -12,6 +16,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,10 +25,82 @@ public class EmailService {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private final JavaMailSender mailSender;
 
     @Value("${spring.mail.from}")
     private String emailFrom;
+    public String sendSuccessBookingEmail(String bookingJson) throws MessagingException, JsonProcessingException {
+
+        BookingDTO booking = objectMapper.readValue(bookingJson, BookingDTO.class);
+
+        System.out.println("Email sending...");
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setFrom(emailFrom);
+
+        helper.setTo(booking.getEmail());
+
+        String roomNo = booking.getRoomTypes().values().stream()
+                .flatMap(List::stream) // Chuyển đổi List<List<Room>> thành Stream<Room>
+                .map(RoomDTO::getName) // Lấy tên phòng
+                .collect(Collectors.joining(", ")); // Thu thập kết quả vào List
+
+        String content = "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Booking Confirmation</title>\n" +
+                "</head>\n" +
+                "\n" +
+                "<body style=\"font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;\">\n" +
+                "    <div style=\"max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\">\n" +
+                "        <h2 style=\"text-align: center; color: #4CAF50;\">Booking Successful!</h2>\n" +
+                "        <p style=\"font-size: 16px; color: #333333; text-align: center;\">Thank you for choosing our services. Here are the details of your booking:</p>\n" +
+                "        <hr style=\"border: 0; border-top: 1px solid #dddddd;\">\n" +
+                "\n" +
+                "        <h3 style=\"color: #333333; margin-bottom: 10px;\">Booking Information</h3>\n" +
+                "        <div style=\"display: flex; justify-content: space-between;\">\n" +
+                "            <!-- Left Column -->\n" +
+                "            <div style=\"width: 48%;\">\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Name: <strong>"+ booking.getFirstName() +" " + booking.getLastName()+"</strong></p>\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Phone: <strong>"+booking.getPhone()+"</strong></p>\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Check-in Date: <strong>"+booking.getCheckIn()+"</strong></p>\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Check-out Date: <strong>"+booking.getCheckOut()+"</strong></p>\n" +
+                "            </div>\n" +
+                "            <!-- Right Column -->\n" +
+                "            <div style=\"width: 48%;\">\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Rooms: <strong>"+roomNo+"</strong></p>\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Guests: <strong>"+booking.getAdultNo()+" Adults, "+booking.getChildrenNo()+" Child</strong></p>\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Paid Amount: <strong>$"+booking.getPaidAmount()+"</strong></p>\n" +
+                "                <p style=\"font-size: 14px; color: #555555;\">Total: <strong>$"+booking.getTotal()+"</strong></p>\n" +
+                "            </div>\n" +
+                "        </div>\n" +
+                "        <hr style=\"border: 0; border-top: 1px solid #dddddd;\">\n" +
+                "\n" +
+                "        <p style=\"font-size: 14px; color: #555555;\">If you have any questions, feel free to contact us at <a href=\"mailto:support@hotel.com\" style=\"color: #4CAF50; text-decoration: none;\">support@hotel.com</a>.</p>\n" +
+                "\n" +
+                "        <div style=\"text-align: center; margin-top: 20px;\">\n" +
+                "            <a href=\"http://127.0.0.1:5500/luxurious-home/booking-history.html\" style=\"background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;\">Visit Our Website</a>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "\n" +
+                "</html>\n";
+
+        helper.setSubject("Confirm your booking - Luxurious Hotel");
+        helper.setText(content, true);
+
+        mailSender.send(message);
+        System.out.println("Success email has been sent to " + booking.getEmail());
+        return "Success email has been sent to " + booking.getEmail();
+    }
 
     public String sendConfirmBookingEmail(String bookingJson) throws MessagingException {
         Gson gson = new Gson();

@@ -1,4 +1,4 @@
-package com.example.emailconsumer.request;
+package com.example.emailconsumer.dto;
 
 import java.util.List;
 

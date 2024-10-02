@@ -513,7 +513,7 @@
 													<div class="profile-img">
 														<div class="avatar-preview">
 															<div class="t-img" id="imagePreview"
-																style="background-image: url(assets/img/user/11.jpg); background-position: center;">
+																style="background-image:  url(assets/img/user/thumb.jpg); background-position: center;">
 															</div>
 														</div>
 														<span class="tag-label online"></span>
@@ -523,30 +523,10 @@
 															<label for="imageUpload"></label>
 														</div>
 													</div>
-													<div class="lh-settings">
-														<a href="#" class="lh-btn-primary m-r-10">Update Profile</a>
-														<div class="dropdown" title="Status">
-															<button class="btn btn-secondary dropdown-toggle"
-																type="button" data-bs-toggle="dropdown"
-																aria-expanded="false">
-																<i class="mdi mdi-dots-vertical"></i>
-															</button>
-															<ul class="dropdown-menu">
-																<li><a class="dropdown-item" href="#"><span
-																			class="tag-label online"></span>Online</a>
-																</li>
-																<li><a class="dropdown-item" href="#"><span
-																			class="tag-label offline"></span>Offline</a>
-																</li>
-																<li><a class="dropdown-item" href="#"><span
-																			class="tag-label busy"></span>Busy</a></li>
-															</ul>
-														</div>
-													</div>
 												</div>
 												<div class="form-group">
 													<textarea class="form-control" id="profile_detail" rows="9"
-														placeholder="Enter Details">I am a team leader of Luxurious technology. I have a 6+ years of experience. I have experience using PHP, HTML, CSS, JavaScript/jQuery, MySQL and associated frameworks to build specialized webpages. I specialize in WordPress customizations, CSS animation and custom features.
+														placeholder="Enter Details">
 													</textarea>
 												</div>
 											</div>
@@ -561,11 +541,7 @@
 									<div class="row">
 										<div class="col-sm-12">
 											<h3>Account Details</h3>
-											<div class="lh-team-detail">
-												<p>From your account you can easily view and track Deals. You can manage
-													and change your account information like address, contact
-													information
-													and history of deals.</p>
+											<div class="lh-team-detail" id="employee-summary">
 											</div>
 										</div>
 										<div class="col-md-6 col-sm-12">
@@ -573,8 +549,8 @@
 												<h6>First Name</h6>
 												<ul>
 														<div class="form-group">
-															<input type="email" class="form-control"
-																placeholder="Enter First Name" value="waily">
+															<input type="text" class="form-control" id="employee-firstname"
+																placeholder="Enter First Name">
 														</div>
 													</li>
 												</ul>
@@ -585,8 +561,8 @@
 												<h6>Last Name</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
-																placeholder="Enter Last Name" value=John>
+															<input type="text" class="form-control" id="employee-lastname"
+																placeholder="Enter Last Name">
 														</div>
 													</li>
 												</ul>
@@ -597,19 +573,19 @@
 												<h6>Date Of Birth</h6>
 												<ul>
 													<li>
-														<textarea class="form-control" id="profile_address1" rows="2"
-															placeholder="Enter DOB">22/12/2004</textarea>
+														<textarea class="form-control" id="employee-dob" rows="2"
+															placeholder="Enter DOB"></textarea>
 													</li>
 												</ul>
 											</div>
 										</div>
 										<div class="col-md-6 col-sm-12">
 											<div class="lh-team-detail">
-												<h6>Contact Number</h6>
+												<h6>Phone Number</h6>
 												<ul>
 													<li>
-														<textarea class="form-control" id="profile_address2" rows="2"
-															placeholder="Enter Phone Number"> 0123456789</textarea>
+														<textarea class="form-control" id="employee-phone" rows="2"
+															placeholder="Enter Phone Number"></textarea>
 													</li>
 												</ul>
 											</div>
@@ -619,8 +595,8 @@
 												<h6>Email</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
-																placeholder="Enter EMail" value="WileyWaites@gmail.com">
+															<input type="email" class="form-control" id="employee-email"
+																placeholder="Enter EMail">
 														</div>
 													</li>
 												</ul>
@@ -631,9 +607,8 @@
 												<h6>Address</h6>
 												<ul>
 														<div class="form-group">
-															<input type="text" class="form-control"
-																placeholder="Enter Address"
-																value="qweqweqweqwe">
+															<input type="text" class="form-control" id="employee-address"
+																placeholder="Enter Address">
 														</div>
 												</ul>
 											</div>
@@ -643,14 +618,13 @@
 												<div class="col-md-6 col-sm-12">
 													<div class="lh-team-detail">
 														<h6>Role</h6>
-														<select class="form-control form-control-line"  name="Idrole" id="id_role">
-															<option value="">-- Select Role --</option>
-															<!-- <option>Admin</option>
-															<option>restaurant manager</option>
-															<option>hotel manager</option>
-															<option>guest</option> -->
+														<select class="form-control form-control-line" name="roleId" id="employee-role">
+															<option>---Select Role---</option>
 														</select>
 													</div>
+												</div>
+												<div class="col-md-6 col-sm-12">
+													<button type="submit" id="userUpdate" class="btn btn-primary">Update</button>
 												</div>
 												</ul>
 											</div>
@@ -811,10 +785,10 @@
 	<script src="assets/js/vendor/moment.min.js"></script>
 	<script src="assets/js/vendor/daterangepicker.js"></script>
 	<script src="assets/js/vendor/date-range.js"></script>
+	<script src="js/EmployeeUpdate.js"></script>
 
 	<!-- Main Custom -->
 	<script src="assets/js/main.js"></script>
-	<script src="js/Role.js"></script>
 </body>
 
 

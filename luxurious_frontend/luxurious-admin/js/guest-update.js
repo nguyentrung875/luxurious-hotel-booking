@@ -71,7 +71,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "http://localhost:9999/user/updateguest",
                 method: "POST",
-                contentType:"application/json",
+                contentType:"application/json", // RequestBody
                 data:JSON.stringify({
                     
                         "idGuest": guestData.idGuest,
@@ -132,7 +132,7 @@ function loadGuestData() {
     }
 
     $.ajax({
-        url: `http://localhost:9999/user/getvalueuserbyid/${id}`,
+        url: `http://localhost:9999/user/getvalueuserbyid/${id}`, // PathVariable
         method: "POST",
     }).done(function(item){
         

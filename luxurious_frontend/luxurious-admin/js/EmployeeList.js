@@ -6,7 +6,6 @@ $(document).ready(function() {
             if (response.statusCode === 200) {
                 let data = response.data;
                 let roleContainer = $('#list-employee');  // Chọn container để hiển thị
-
                 roleContainer.empty();  // Xóa các phần tử cũ nếu có
 
                 // Lặp qua danh sách role và nhân viên tương ứng
@@ -25,6 +24,9 @@ $(document).ready(function() {
                         roleCard += `
                             <div class="lh-role-item d-flex justify-content-between align-items-center">
                                 <div class="team-detail d-flex align-items-center">
+                                    <div class="employee-image">
+                                        <img src="${employee.image}" alt="Employee Image" class="img-fluid rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                    </div>
                                     <div class="info">
                                         <h6 class="mb-0">${employee.firstname} ${employee.lastname}</h6>
                                         <p class="mb-0">${employee.email}</p>
@@ -35,9 +37,9 @@ $(document).ready(function() {
                                         <i class="mdi mdi-dots-vertical"></i> <!-- Ba chấm -->
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton-${employee.id}">
-                                        <li><button class="dropdown-item text-primary view-btn" data-id="${employee.id}">Xem</button></li>
-                                        <li><button class="dropdown-item text-warning edit-btn" data-id="${employee.id}">Sửa</button></li>
-                                        <li><button class="dropdown-item text-danger delete-btn" data-id="${employee.id}">Xóa</button></li>
+                                        <li><button class="dropdown-item text-primary view-btn" onclick="viewEmployee(${employee.id})">View</button></li>
+                                        <li><button class="dropdown-item text-warning edit-btn" onclick="UpdateEmployee(${employee.id})">Update</button></li>
+                                        <li><button class="dropdown-item text-danger delete-btn" data-id="${employee.id}">Delete</button></li>
                                     </ul>
                                 </div>
                             </div>`;
@@ -61,3 +63,12 @@ $(document).ready(function() {
         }
     });
 });
+
+// Hàm để chuyển hướng đến trang team-profile.html với employeeId
+function viewEmployee(employeeId) {
+    window.location.href = `team-profile.html?id=${employeeId}`;
+}
+
+function UpdateEmployee(employeeId) {
+    window.location.href = `team-update.html?id=${employeeId}`;
+}

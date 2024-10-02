@@ -16,7 +16,7 @@ public class JwtUtils {
     @Value("${jwt.key}")
     private String secretKeyString;
 
-    private long CONFIRM_EXP_TIME = 15L*60*1000; //15 phút confirm booking
+    private long CONFIRM_EXP_TIME = 24L*60*60*1000; //15 phút confirm booking
 
     public String generateConfirmBookingToken(int idBooking) {
         var secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKeyString));
