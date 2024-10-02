@@ -101,7 +101,7 @@ CREATE TABLE room_booking(
 	primary key(id_room, id_booking)
 );
 
-CREATE TABLE user(
+CREATE TABLE users(
 	id int auto_increment,
 	username varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
 	password varchar(100),
@@ -112,6 +112,7 @@ CREATE TABLE user(
 	email varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci UNIQUE,
 	address text,
 	summary text,
+	image text,
 	id_role int DEFAULT 1, /*mặc định là ROLE_GUEST*/
 	
 	primary key(id)
@@ -147,7 +148,7 @@ CREATE TABLE booking(
 	primary key(id)
 );
 
-CREATE TABLE role(
+CREATE TABLE roles(
 	id int auto_increment,
 	name varchar(50) unique,
 	description varchar(100),
@@ -189,17 +190,17 @@ ALTER TABLE orders ADD CONSTRAINT fk_id_reservation_orders FOREIGN KEY(id_reserv
 ALTER TABLE orders ADD CONSTRAINT fk_id_status_orders FOREIGN KEY(id_status) REFERENCES order_status(id);
 ALTER TABLE room_type ADD CONSTRAINT fk_id_bed_type_room_type FOREIGN KEY(id_bed_type) REFERENCES bed_type(id);
 ALTER TABLE room ADD CONSTRAINT fk_id_room_type_room FOREIGN KEY(id_room_type) REFERENCES room_type(id);
-ALTER TABLE reservation ADD CONSTRAINT fk_id_guest_reservation FOREIGN KEY(id_guest) REFERENCES user(id);
+ALTER TABLE reservation ADD CONSTRAINT fk_id_guest_reservation FOREIGN KEY(id_guest) REFERENCES users(id);
 ALTER TABLE reservation ADD CONSTRAINT fk_id_table_reservation FOREIGN KEY(id_table) REFERENCES tables(id);
 ALTER TABLE room_booking ADD CONSTRAINT fk_id_room_room_booking FOREIGN KEY(id_room) REFERENCES room(id);
 ALTER TABLE room_booking ADD CONSTRAINT fk_id_booking_room_booking FOREIGN KEY(id_booking) REFERENCES booking(id);
-ALTER TABLE user ADD CONSTRAINT fk_id_role_user FOREIGN KEY(id_role) REFERENCES role(id);
-ALTER TABLE booking ADD CONSTRAINT fk_id_guest_booking FOREIGN KEY(id_guest) REFERENCES user(id);
+ALTER TABLE users ADD CONSTRAINT fk_id_role_users FOREIGN KEY(id_role) REFERENCES roles(id);
+ALTER TABLE booking ADD CONSTRAINT fk_id_guest_booking FOREIGN KEY(id_guest) REFERENCES users(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_payment_status_booking FOREIGN KEY(id_payment_status) REFERENCES payment_status(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_payment_booking FOREIGN KEY(id_payment) REFERENCES payment_method(id);
 ALTER TABLE booking ADD CONSTRAINT fk_id_status_booking FOREIGN KEY(id_status) REFERENCES booking_status(id);
 
-INSERT INTO `role` (name) VALUES
+INSERT INTO `roles` (name) VALUES
 ('ROLE_GUEST'),
 ('ROLE_ADMIN'),
 ('ROLE_HOTEL_MANAGER'),
@@ -534,6 +535,18 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 (5, 44), -- Sparkling Water
 (5, 45); -- Cocktail
 
+
+INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+('admin', '$2a$12$bsO6yLnL4.7nsn9DOvLqqeY6oolhWIrpFEwKHzvGnywyT/rZWNJim', 'admin', 'luxurious', '1990-01-01', '1234567890', 'admin@gmail.com', 'admin', '', 2);
+
+INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+('user', '$2a$12$kXpBtvYgGvRtAkvXvgv3fugdX1oxyxXY7EfI4LveoSlqVPT5xUpWq', 'user', 'luxurious', '1990-01-01', '1234567891', 'user@gmail.com', 'user', '', 1);
+
+
+-- ---------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------------------------------------------
 -- ---------------------------------------------------------------------------------------------------------------
 -- Phần thêm/sửa/xóa dữ liệu nếu cần:
 -- TRUNG
@@ -555,11 +568,11 @@ WHERE "2025-03-15" BETWEEN b.check_in AND b.check_out
 ;
 
 
-INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
-('admin', '$2a$12$bsO6yLnL4.7nsn9DOvLqqeY6oolhWIrpFEwKHzvGnywyT/rZWNJim', 'admin', 'luxurious', '1990-01-01', '1234567890', 'admin@gmail.com', 'admin', '', 2);
-
-INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
-('user', '$2a$12$kXpBtvYgGvRtAkvXvgv3fugdX1oxyxXY7EfI4LveoSlqVPT5xUpWq', 'user', 'luxurious', '1990-01-01', '1234567891', 'user@gmail.com', 'user', '', 1);
+-- INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+-- ('admin', '$2a$12$bsO6yLnL4.7nsn9DOvLqqeY6oolhWIrpFEwKHzvGnywyT/rZWNJim', 'admin', 'luxurious', '1990-01-01', '1234567890', 'admin@gmail.com', 'admin', '', 2);
+-- 
+-- INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
+-- ('user', '$2a$12$kXpBtvYgGvRtAkvXvgv3fugdX1oxyxXY7EfI4LveoSlqVPT5xUpWq', 'user', 'luxurious', '1990-01-01', '1234567891', 'user@gmail.com', 'user', '', 1);
 
 SHOW VARIABLES LIKE 'event_scheduler';
 
@@ -588,10 +601,10 @@ SET TIME_ZONE="+7:00";
 
 -- HẬU
 -- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
-RENAME TABLE user TO users;
-RENAME TABLE role TO roles;
-ALTER TABLE users DROP FOREIGN KEY fk_id_role_user;
-ALTER TABLE users ADD CONSTRAINT fk_id_role_users FOREIGN KEY(id_role) REFERENCES roles(id);
+-- RENAME TABLE user TO users;
+-- RENAME TABLE role TO roles;
+-- ALTER TABLE users DROP FOREIGN KEY fk_id_role_user;
+-- ALTER TABLE users ADD CONSTRAINT fk_id_role_users FOREIGN KEY(id_role) REFERENCES roles(id);
 
 -- dữ liệu test user, reservation
 INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
