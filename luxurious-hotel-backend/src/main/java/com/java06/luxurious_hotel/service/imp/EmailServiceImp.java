@@ -165,5 +165,10 @@ public class EmailServiceImp implements EmailService {
         return "Confirmation email has been sent to " + booking.getGuest().getEmail();
     }
 
+    @Override
+    public String sendSuccessfulBookingEmailToQueue(int idBooking) {
+        return null;
+    }
+
 
 }

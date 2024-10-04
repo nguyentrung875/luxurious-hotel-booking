@@ -13,4 +13,5 @@ import java.util.List;
 public interface EmailService {
     String sendEmail(String recipients, String subject, String content, MultipartFile[] files) throws MessagingException;
     String sendConfirmBookingEmail(int idBooking) throws MessagingException;
+    String sendSuccessfulBookingEmailToQueue(int idBooking);
 }
