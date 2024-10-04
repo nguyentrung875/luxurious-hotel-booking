@@ -1,6 +1,5 @@
 package com.java06.luxurious_hotel.config;
 
-import com.java06.luxurious_hotel.enumContraints.RabbitmqEnum;
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,7 @@ public class RabbitmqConfig {
     final static public String NOTIFICATION_QUEUE = "notification-queue";
     final static public String NOTIFICATION_ROUTING_KEY = "/notification";
 
-    @Bean public Exchange exchangeBookingEmail() { return new TopicExchange(RabbitmqEnum.BOOKING_EMAIL_EXCHANGE.getKey()); }
+    @Bean public Exchange exchangeBookingEmail() { return new TopicExchange(BOOKING_EMAIL_EXCHANGE); }
 
     @Bean public Exchange exchangeNotification()
     {
