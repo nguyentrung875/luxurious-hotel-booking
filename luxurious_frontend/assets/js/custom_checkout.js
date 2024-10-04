@@ -107,7 +107,7 @@ function addBooking(inputAddBooking) {
                 inputAddBooking.idBooking = response.data.id
                 sendConfirmEmail(inputAddBooking)
                 alert(`Add new booking successfully! Please check email ${inputAddBooking.email} to confirm booking within 24 hours`)
-                // window.location.href = `booking-history.html`
+                window.location.href = `booking-history.html`
             }
         },
         error: function (response) {
