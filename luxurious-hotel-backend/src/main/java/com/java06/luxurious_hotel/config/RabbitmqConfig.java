@@ -1,5 +1,6 @@
 package com.java06.luxurious_hotel.config;
 
+import com.java06.luxurious_hotel.enumContraints.RabbitmqEnum;
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +13,15 @@ public class RabbitmqConfig {
     final static public String SUCCESS_BOOKING_EMAIL_QUEUE = "success-booking-email-queue";
     final static public String SUCCESS_BOOKING_EMAIL_ROUTING_KEY = "/success-booking-email";
 
-    @Bean public Exchange exchangeBookingEmail()
+    final static public String NOTIFICATION_EXCHANGE = "notification-exchange";
+    final static public String NOTIFICATION_QUEUE = "notification-queue";
+    final static public String NOTIFICATION_ROUTING_KEY = "/notification";
+
+    @Bean public Exchange exchangeBookingEmail() { return new TopicExchange(RabbitmqEnum.BOOKING_EMAIL_EXCHANGE.getKey()); }
+
+    @Bean public Exchange exchangeNotification()
     {
-        return new TopicExchange(BOOKING_EMAIL_EXCHANGE);
+        return new TopicExchange(NOTIFICATION_EXCHANGE);
     }
 
     @Bean
@@ -29,6 +36,11 @@ public class RabbitmqConfig {
         return new Queue(SUCCESS_BOOKING_EMAIL_QUEUE, true);
     }
 
+    @Bean
+    public Queue queueNotification()
+    {
+        return new Queue(NOTIFICATION_QUEUE, true);
+    }
 
     @Bean
     public Binding confirmBookingBinding()
@@ -45,6 +57,15 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(queueSuccessBookingEmail())
                 .to(exchangeBookingEmail())
                 .with(SUCCESS_BOOKING_EMAIL_ROUTING_KEY)
+                .noargs();
+    }
+
+    @Bean
+    public Binding notificationBinding()
+    {
+        return BindingBuilder.bind(queueNotification())
+                .to(exchangeNotification())
+                .with(NOTIFICATION_ROUTING_KEY)
                 .noargs();
     }
 }

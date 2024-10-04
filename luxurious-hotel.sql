@@ -181,6 +181,16 @@ CREATE TABLE invalid_token(
 	primary key(id)
 );
 
+CREATE TABLE notification(
+	id int auto_increment,
+	title varchar(20),
+	message varchar(100),
+	noti_type varchar(100),
+	create_time timestamp,
+	unread boolean,
+	primary key(id)
+);
+
 ALTER TABLE room_amenity ADD CONSTRAINT fk_id_room_type_room_amenity FOREIGN KEY(id_room_type) REFERENCES room_type(id);
 ALTER TABLE room_amenity ADD CONSTRAINT fk_id_amenity_room_amenity FOREIGN KEY(id_amenity) REFERENCES amenity(id);
 ALTER TABLE food_menu ADD CONSTRAINT fk_id_menu_food_menu FOREIGN KEY(id_menu) REFERENCES menu(id);
