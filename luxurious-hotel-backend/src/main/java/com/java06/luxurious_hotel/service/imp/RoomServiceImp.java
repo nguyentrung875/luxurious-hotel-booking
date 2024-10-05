@@ -11,6 +11,8 @@ import com.java06.luxurious_hotel.request.AddRoomRequest;
 import com.java06.luxurious_hotel.request.SearchRoomRequest;
 import com.java06.luxurious_hotel.request.UpdateRoomRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomService {
+
+
+    @Value("${key.list.roomtype}")
+    private String listRoomTypeKey;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Autowired
     private RoomTypeRepository roomTypeRepository;
@@ -199,6 +208,7 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
         roomEntity.setRoomType(roomTypeEntity);
 
         roomRepository.save(roomEntity);
+        redisTemplate.delete(listRoomTypeKey);
     }
 
     @Override
@@ -233,7 +243,10 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
                 roomBookingRepository.deleteAllByRoomId(id);
             }
             roomRepository.deleteById(id);
+
+            redisTemplate.delete(listRoomTypeKey);
             return true;
+
         }
         return false;
     }
@@ -261,6 +274,8 @@ public class RoomServiceImp implements com.java06.luxurious_hotel.service.RoomSe
             roomEntity.setRoomType(roomTypeEntity);
             roomRepository.save(roomEntity);
             checkIn = true;
+            // xoá redis sau mỗi lần chỉnh sữa
+            redisTemplate.delete(listRoomTypeKey);
         }
 
         return checkIn;

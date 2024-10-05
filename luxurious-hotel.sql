@@ -654,6 +654,36 @@ VALUES
 ('2024-08-03 00:00:00', '2024-08-07 00:00:00', 102, 5, 1, 2, 2, 2, 1, 150.00, 300.00, '2024-07-17 09:30:00'),
 ('2024-08-05 00:00:00', '2024-08-10 00:00:00', 103, 6, 3, 0, 1, 1, 3, 350.00, 400.00, '2024-07-18 11:15:00');
 
+
+
+UPDATE room_type
+SET image = CASE id
+    WHEN 1 THEN 'istockphoto-954121470-612x612.jpg,
+istockphoto-1066999762-612x612.jpg'
+    WHEN 2 THEN 'istockphoto-1066999762-612x612.jpg,
+istockphoto-1266155634-612x612.jpg'
+    WHEN 3 THEN 'istockphoto-1266155634-612x612.jpg,
+istockphoto-1318363878-612x612.jpg'
+    WHEN 4 THEN 'istockphoto-1318363878-612x612.jpg,
+istockphoto-1334117334-612x612.jpg'
+    WHEN 5 THEN 'istockphoto-1334117334-612x612.jpg,
+istockphoto-1370825295-612x612.jpg'
+END
+WHERE id IN (1, 2, 3, 4, 5);
+
+
+
+
+
+
 -- THÁI
 ALTER TABLE users 
 ADD COLUMN image TEXT;
+
+
+
+
+ 
+ 
+
+
