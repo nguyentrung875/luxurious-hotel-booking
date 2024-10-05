@@ -7,6 +7,7 @@ import com.java06.luxurious_hotel.dto.*;
 import com.java06.luxurious_hotel.dto.coverdto.RoomsDTO;
 
 import com.java06.luxurious_hotel.entity.*;
+import com.java06.luxurious_hotel.enumContraints.NotificationType;
 import com.java06.luxurious_hotel.exception.booking.BookingNotFoundException;
 import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
 import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
@@ -19,14 +20,12 @@ import com.java06.luxurious_hotel.request.ConfirmBookingRequest;
 import com.java06.luxurious_hotel.request.UpdateBookingRequest;
 import com.java06.luxurious_hotel.service.BookingService;
 import com.java06.luxurious_hotel.service.EmailService;
+import com.java06.luxurious_hotel.service.NotificationService;
 import com.java06.luxurious_hotel.utils.JwtUtils;
-import io.jsonwebtoken.Claims;
-import jakarta.mail.MessagingException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,22 +57,25 @@ public class BookingServiceImp implements BookingService {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public List<BookingDTO> getBookingByPhone(String phone) {
         List<BookingEntity> bookings = bookingRepository.findByGuest_Phone(phone);
-        return bookings.stream().map(this::bookingEntityToBookingDTO).toList();
+        return bookings.stream().map(this::convertBookingEntityToBookingDTO).toList();
     }
 
     @Override
     public List<BookingDTO> getAllBooking() {
-        return bookingRepository.findAll().stream().map(this::bookingEntityToBookingDTO).toList();
+        return bookingRepository.findAll().stream().map(this::convertBookingEntityToBookingDTO).toList();
     }
 
     @Override
     public BookingDTO getDetailBooking(int idBooking) {
-        return bookingRepository.findById(idBooking).stream().map(this::bookingEntityToBookingDTO)
+        return bookingRepository.findById(idBooking).stream().map(this::convertBookingEntityToBookingDTO)
                 .findFirst().orElseThrow(BookingNotFoundException::new);
     }
 
@@ -165,6 +167,13 @@ public class BookingServiceImp implements BookingService {
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.setId(insertedBooking.getId());
 
+        //Gửi notification
+        notificationService.sendNotification(
+                "New booking (ID: "+insertedBooking.getId()+")",
+                "Room " + request.roomName() + " have been booked by " + userEntity.getEmail(),
+                NotificationType.ALERT
+        );
+
         return bookingDTO;
     }
 
@@ -200,8 +209,15 @@ public class BookingServiceImp implements BookingService {
         BookingEntity bookingEntity = bookingRepository.save(booking);
 
         //Gửi thông tin booking lên rabbitmq để gửi email xác nhận booking thành công
-        BookingDTO bookingDTO = this.bookingEntityToBookingDTO(bookingEntity);
+        BookingDTO bookingDTO = this.convertBookingEntityToBookingDTO(bookingEntity);
         this.sendBookingDTOtoQueue(bookingDTO);
+
+        //Gửi notification lên rabbitmq
+        notificationService.sendNotification(
+                "Confirmed booking (ID: "+bookingEntity.getId()+")",
+                "Booking have been confirmed successfully!",
+                NotificationType.SUCCESS
+        );
     }
 
     @Transactional
@@ -253,6 +269,12 @@ public class BookingServiceImp implements BookingService {
         updateBooking.setTotal(request.total());
 
         bookingRepository.save(updateBooking);
+        //Gửi notification
+        notificationService.sendNotification(
+                "Booking updated(ID: "+updateBooking.getId()+")",
+                "Booking " + updateBooking.getId() + " have been updated successfully!",
+                NotificationType.SUCCESS
+        );
     }
 
     @Transactional
@@ -362,10 +384,6 @@ public class BookingServiceImp implements BookingService {
             bookingGuestDTOS.add(bookingGuestDTO);
         }
 
-
-
-
-
         return bookingGuestDTOS;
 
 //        // lấy danh sách trả về từ câu qr
@@ -467,7 +485,7 @@ public class BookingServiceImp implements BookingService {
         return notAvalableRooms;
     }
 
-    private BookingDTO bookingEntityToBookingDTO(BookingEntity booking) {
+    private BookingDTO convertBookingEntityToBookingDTO(BookingEntity booking) {
 
         if (booking == null) return null;
 

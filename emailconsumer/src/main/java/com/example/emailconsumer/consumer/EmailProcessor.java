@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class EmailProcessor {
 
     @Autowired
@@ -36,7 +38,7 @@ public class EmailProcessor {
         try {
             emailService.sendConfirmBookingEmail(data);
         } catch (Exception e){
-            System.out.println("Error send Confirm Email: " + e.getMessage());
+            log.error("Error send Confirm Email: " + e.getMessage());
         }
     }
 
@@ -45,7 +47,7 @@ public class EmailProcessor {
         try {
             emailService.sendSuccessBookingEmail(data);
         } catch (Exception e){
-            System.out.println("Error send Success Email: " + e.getMessage());
+            log.error("Error send Confirm Email: " + e.getMessage());
         }
     }
 }

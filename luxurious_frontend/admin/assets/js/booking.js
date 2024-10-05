@@ -16,6 +16,7 @@ $(document).ready(function () {
         inputBooking.checkInDate = $('#input_checkin').val();
         inputBooking.checkOutDate = $('#input_checkout').val();
         inputBooking.rooms = $('#input_rooms').val();
+        inputBooking.roomName = $('#input_rooms option:selected').toArray().map(item => item.text)
         inputBooking.adultNumber = $('#input_adult').val();
         inputBooking.childrenNumber = $('#input_children').val();
         inputBooking.idBookingStatus = $('#input_booking_status').val();
