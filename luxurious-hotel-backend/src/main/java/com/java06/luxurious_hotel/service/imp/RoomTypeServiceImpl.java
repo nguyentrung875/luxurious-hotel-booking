@@ -77,12 +77,17 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
 
         RoomTypeEntity roomType = roomTypeRepository.save(roomTypeEntity);
+        if (roomType != null) {
+            redisTemplate.delete(listRoomTypeKey);
+        }
 
         for (MultipartFile multipartFile : listMFiles) {
             filesStorageService.save(multipartFile);
         }
 
         addAmenitiesToRoomType(roomType.getId(), addRoomtypeRequest.idAmenity());
+
+
 
 
     }
@@ -135,6 +140,9 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             addAmenitiesToRoomType(roomType.getId(), updateRoomtypeRequest.idAmenity());
 
             result = true;
+
+            // xoá redis
+            redisTemplate.delete(listRoomTypeKey);
 
         }
 
@@ -275,6 +283,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             roomTypeRepository.deleteById(id);
 
             isSuccess = true;
+            redisTemplate.delete(listRoomTypeKey);
         }
 
         return isSuccess;

@@ -89,7 +89,8 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
-                    alert('Đã có lỗi xảy ra khi xóa');
+                    // Function thong báo, nếu xoá không được
+                     showCustomAlert();
                 }
             });
         }
@@ -99,46 +100,12 @@ $(document).ready(function() {
 
 
 
-// adđ front end
-
-$(document).ready(function() {
-    $('#addRoomTypeForm').on('submit', function(event) {
-        event.preventDefault(); // Ngăn chặn hành động submit mặc định
-
-        var formData = new FormData(this); // Sử dụng FormData để thu thập dữ liệu từ form
-
-
-
-        // Lưu ý: Đảm bảo rằng input type="file" có name="images[]" nếu bạn muốn tải nhiều tệp
-
-        $.ajax({
-            url: "http://localhost:9999/roomType", // Thay thế bằng endpoint của bạn
-            method: "POST",
-            data: formData,
-            processData: false, // Ngăn không cho jQuery xử lý dữ liệu
-            contentType: false, // Không đặt kiểu contentType vì chúng ta đã dùng FormData
-            success: function(response) {
-                if (response.statusCode === 200) {
-                    alert('Room type added successfully!');
-                } else {
-                    alert('Failed to add room type: ' + response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Status: " + status);
-                console.error("Error: " + error);
-                console.error("Response: " + xhr.responseText);
-                alert('There was an error submitting the form.');
-            }
-        });
-    });
-});
-
+ 
 // hiển thị hình ảnh tạm
 
 $(document).ready(function() {
     $('#imageUpload').on('change', function() {
-        $('#imagePreview').empty(); // Xóa hình ảnh cũ
+        $('#imagePreview').empty();  
         var files = this.files;
 
         if (files) {
@@ -160,20 +127,9 @@ $(document).ready(function() {
 $(document).ready(function() {
     
     $(document).on('click', '.edit-btn', function(event) {
-        event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
-
-        var roomId = $(this).data('id'); // Lấy ID của RoomType
-
-        alert(roomId); // Kiểm tra xem roomId có đúng không
-
-        
-        //sessionStorage.setItem('editRoomId', roomId);
-
-        //localStorage.setItem('roomData', JSON.stringify(response.data));
-
+        event.preventDefault();  
+        var roomId = $(this).data('id');  
         localStorage.setItem('editRoomId', roomId);
-
-        
         window.location.href = "RoomTypeUpdate.html";
     });
 });
@@ -183,10 +139,7 @@ $(document).ready(function() {
      
     var imagesToDelete = [];
     var existingImages = [];  
-
-     
-    //var roomId = sessionStorage.getItem('editRoomId');
-    var roomId = localStorage.getItem('editRoomId');
+     var roomId = localStorage.getItem('editRoomId');
 
     if (roomId) {
         $.ajax({
@@ -205,10 +158,6 @@ $(document).ready(function() {
                     $('input[name="area"]').val(room.area);
                     $('input[name="capacity"]').val(room.capacity);
                     $('select[name="iDBedType"]').val(room.bedNum);
-
-                     
-                    var roomNameString = room.roomName.join(', ');
-                    $('input[name="roomName"]').val(roomNameString);
 
                     
                     if (room.image && room.image.length > 0) {
@@ -245,8 +194,7 @@ $(document).ready(function() {
                             existingImages.push(imageUrl);
                         });
                     }
-
-                     
+ 
                     if (room.amenity) {
                         const amenityMap = {
                             "Free Wi-Fi": 1,
@@ -291,12 +239,11 @@ $(document).ready(function() {
                 console.error("Status: " + status);
                 console.error("Error: " + error);
                 console.error("Response: " + xhr.responseText);
-                alert('There was an error loading the room type details.');
+                
             }
         });
     } else {
-        //alert("No room ID found. Please try again.");
-    }
+     }
 
      
     $(document).on('click', '.remove-image-btn', function() {
@@ -315,8 +262,7 @@ $(document).ready(function() {
     $('#updateRoomTypeForm').on('submit', function(event) {
         event.preventDefault();  
 
-        //alert("meo meo");
-
+ 
         var formData = new FormData(this);
 
          
@@ -332,8 +278,7 @@ $(document).ready(function() {
         }
 
 
-        alert(JSON.stringify(formData))
-         
+          
         $.ajax({
             url: "http://localhost:9999/roomType",  
             method: "PUT",
@@ -353,10 +298,66 @@ $(document).ready(function() {
                 console.error("Status: " + status);
                 console.error("Error: " + error);
                 console.error("Response: " + xhr.responseText);
-                //alert('There was an error submitting the form.');
-                //localStorage.removeItem('editRoomId');
-                // window.location.href = "room_type_mana.html";
+                 
             }
         });
     });
 });
+
+
+function showCustomAlert() {
+    var alertBox = document.getElementById('customAlert');
+    var alertMessage = document.getElementById('alertMessage');
+    var alertLink = document.getElementById('alertLink');
+
+     alertMessage.textContent = 'Cannot delete this RoomType, Click this link to ';
+    alertLink.href = 'http://127.0.0.1:5501/luxurious_frontend/admin/room-list.html';  
+
+     alertBox.style.display = 'flex';
+
+     document.getElementById('closeAlert').onclick = function() {
+        alertBox.style.display = 'none';
+    };
+}
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+    // $(document).ready(function() {
+    //     // Hàm để gọi API và lấy hình ảnh
+    //     function loadImages() {
+    //         $.ajax({
+    //             url: 'http://localhost:9999/roomType', // URL của API
+    //             method: 'GET',
+    //             dataType: 'json',
+    //             success: function(data) {
+    //                 const imagePreview = $('#imagePreview');
+    //                 imagePreview.empty(); // Xóa hình ảnh cũ trước khi tải hình ảnh mới
+
+    //                 // Giả sử dữ liệu trả về là một mảng chứa đường dẫn hình ảnh
+    //                 $.each(data, function(index, image) {
+    //                     const img = $('<img>').attr('src', image).css({
+    //                         width: '100px', // Thay đổi kích thước hình ảnh nếu cần
+    //                         margin: '5px'   // Thêm khoảng cách giữa các hình ảnh
+    //                     });
+    //                     imagePreview.append(img); // Thêm hình ảnh vào div xem trước
+    //                 });
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error('Có lỗi xảy ra khi gọi API:', error);
+    //             }
+    //         });
+    //     }
+
+    //     // Gọi hàm loadImages khi trang được tải
+    //     loadImages();
+    // });
+ 

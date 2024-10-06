@@ -19,6 +19,7 @@
 		<!-- Icon CSS -->
 		<link href="assets/css/vendor/materialdesignicons.min.css" rel="stylesheet">
 		<link href="assets/css/vendor/remixicon.css" rel="stylesheet">
+		<link href="assets/css/allert.css" rel="stylesheet">
 
 		<!-- Vendor -->
 		<link href='assets/css/vendor/datatables.bootstrap5.min.css' rel='stylesheet'>
@@ -569,6 +570,7 @@
 										</div>
 									</div>
 								</div>
+								
 								<div class="lh-card-content card-default">
 									<div class="booking-table">
 										<div class="table-responsive">
@@ -576,6 +578,13 @@
 												<button type="button" onclick="window.location.href='RoomTypeAddEdit.html'" class="btn btn-success">Add Room Type</button>
 											</div>
 											<br>
+											<div id="customAlert" class="custom-alert" style="display: none;">
+												<div class="alert-content">
+													<span id="alertMessage">Cannot delete this RoomType.</span>
+													<a href="#" id="alertLink">Click here to edit and delete dependent rooms</a>
+													<button id="closeAlert">X</button>
+												</div>
+											</div>
 											<table id="booking_table" class="table">
 												<thead>
 													<tr>

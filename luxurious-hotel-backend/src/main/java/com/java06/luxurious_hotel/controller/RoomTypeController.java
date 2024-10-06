@@ -19,7 +19,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/roomType")
-@CrossOrigin
+//@CrossOrigin(origins = "http://127.0.0.1:5501")  // Allow requests from this origin
+
 public class RoomTypeController {
 
     @Autowired
