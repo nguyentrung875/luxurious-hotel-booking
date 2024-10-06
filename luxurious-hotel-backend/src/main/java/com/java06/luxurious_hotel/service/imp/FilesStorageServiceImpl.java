@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 
-    private final Path root = Paths.get("C:/Users/Admin/Desktop/Uploads");
+    private final Path root = Paths.get("uploads");
     @Override
     public void save(MultipartFile file) {
         try {

@@ -112,6 +112,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public EmployeeDTO getEmployee(int employeeId) {
+        String imageBaseUrl = "http://localhost:9999/file/";
         Optional<UserEntity> employeecheck = employeeReposiory.findById(employeeId);
         return employeecheck.stream().map(userEntity -> {
             EmployeeDTO employeeDTO = new EmployeeDTO();
@@ -121,7 +122,7 @@ public class EmployeeServiceImp implements EmployeeService {
             employeeDTO.setEmail(userEntity.getEmail());
             employeeDTO.setAddress(userEntity.getAddress());
             employeeDTO.setDob(userEntity.getDob());
-            employeeDTO.setImage(userEntity.getImage());
+            employeeDTO.setImage(imageBaseUrl + userEntity.getImage());
             employeeDTO.setSumary(userEntity.getSummary());
             employeeDTO.setPhone(userEntity.getPhone());
             RoleDTO roleDTO= new RoleDTO();

@@ -58,19 +58,63 @@ $(document).ready(function() {
         });
     }
 
-    // Xử lý khi nhấn nút "Save Changes"
     $('#userUpdate').click(function(e) {
         e.preventDefault();  // Ngăn chặn form submit mặc định
+    
+            // Kiểm tra dữ liệu
+    var isValid = true;
+    var message = "";
 
-        // Kiểm tra nếu roleId chưa được chọn
-        if (!$('#employee-role').val()) {
-            alert('Please select a role');
-            return;
-        }
+    // Kiểm tra first name last name (không chứa số hoặc ký tự đặc biệt)
+    var nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/;
+    if (!$('#employee-firstname').val().match(nameRegex)) {
+        message += "Họ không được chứa số hoặc ký tự đặc biệt.\n";
+        isValid = false;
+    }
 
+    if (!$('#employee-lastname').val().match(nameRegex)) {
+        message += "Tên không được chứa số hoặc ký tự đặc biệt.\n";
+        isValid = false;
+    }
+
+    // Kiểm tra phone (chỉ chứa số)
+    var phoneRegex = /^\d+$/;
+    if (!$('#employee-phone').val().match(phoneRegex)) {
+        message += "Số điện thoại chỉ được chứa số.\n";
+        isValid = false;
+    }
+
+    // Kiểm tra định dạng dob (yyyy-mm-dd)
+    var dobRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!$('#employee-dob').val().match(dobRegex)) {
+        message += "Định dạng ngày sinh phải là yyyy-mm-dd.\n";
+        isValid = false;
+    }
+
+    // Kiểm tra định dạng email
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!$('#employee-email').val().match(emailRegex)) {
+        message += "Email chưa đúng định dạng.\n";
+        isValid = false;
+    }
+
+    // Kiểm tra nếu roleId chưa được chọn
+    if (!$('#employee-role').val()) {
+        message += "Vui lòng chọn một vai trò.\n";
+        isValid = false;
+    }
+
+    // Hiển thị thông báo lỗi nếu có
+    if (!isValid) {
+        alert(message);
+        return;
+    }
+
+
+    
         // Tạo đối tượng FormData để upload file hình ảnh cùng các dữ liệu khác
-        let formData = new FormData();
-        formData.append('id', employeeId);  // Thêm ID nhân viên vào FormData
+        let formData = new FormData();  // Use FormData for file upload
+        formData.append('id', employeeId);
         formData.append('firstname', $('#employee-firstname').val());
         formData.append('lastname', $('#employee-lastname').val());
         formData.append('dob', $('#employee-dob').val());
@@ -78,23 +122,24 @@ $(document).ready(function() {
         formData.append('email', $('#employee-email').val());
         formData.append('address', $('#employee-address').val());
         formData.append('summary', $('#employee-summary').val());
-        formData.append('roleId', $('#employee-role').val());
-
-        // Lấy file ảnh nếu có
-        let imageInput = $('#imageUpload')[0];
-        if (imageInput && imageInput.files && imageInput.files.length > 0) {
-            let imageFile = imageInput.files[0];
-            formData.append('imageUpload', imageFile);  // Thêm hình ảnh vào FormData
-        } else {
-            console.log('No image file selected');
+        formData.append('IdRole', $('#employee-role').val());
+    
+        // Add the image file from the file input (ensure your HTML has an input with id='employee-image')
+        let imageFile = $('#imageUpload')[0].files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);  // Append the image file to FormData
+        }else{
+            alert('bạn chưa thêm ảnh')
         }
-        console.log (formData)
+    
+        console.log([...formData]);  // Log formData content for debugging
+    
         // Gửi yêu cầu cập nhật thông tin và hình ảnh của nhân viên
         $.ajax({
-            url: 'http://localhost:9999/employee/${employeeId}',  // API cập nhật thông tin nhân viên
+            url: 'http://localhost:9999/employee',  // API cập nhật thông tin nhân viên
             method: 'PUT',
-            contentType: false,  // Không đặt kiểu nội dung để FormData tự xử lý
-            processData: false,  // Không xử lý dữ liệu thành chuỗi
+            processData: false,  // Ngăn jQuery xử lý dữ liệu
+            contentType: false,  // Ngăn jQuery tự động thiết lập Content-Type
             data: formData,  // Gửi FormData bao gồm cả hình ảnh
             success: function(response) {
                 if (response.statusCode === 200) {
@@ -104,10 +149,7 @@ $(document).ready(function() {
                     alert('Failed to update employee');
                 }
             },
-            error: function(error) {
-                console.error('Error:', error);
-                alert('Error: Unable to update employee');
-            }
         });
     });
+    
 });
