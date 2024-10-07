@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DuplicateMailOrPhoneException extends RuntimeException{
+public class NotNullException extends RuntimeException {
 
     private String message;
 

@@ -16,6 +16,46 @@ import java.util.stream.Stream;
 public class FilesStorageServiceImpl implements FilesStorageService {
 
     private final Path root = Paths.get("C:/Users/Admin/Desktop/Uploads");
+
+    private final Path root1 = Paths.get("E:\\Coder\\java-2024-06\\Project\\hotel\\image");
+
+    @Override
+    public void save1(MultipartFile file) {
+        try {
+            if (!Files.exists(root1)) {
+                Files.createDirectories(root1);
+            }
+
+            //Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+
+            // thực hiện ghi đè nêu hình đã tồn tại ở sever, tranh throw exception(A file of that name already exists.)
+            Files.copy(file.getInputStream(), this.root1.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+
+        } catch (Exception e) {
+//            if (e instanceof FileAlreadyExistsException) {
+//                throw new RuntimeException("A file of that name already exists.");
+//            }
+
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Resource load1(String filename) {
+        try {
+            Path file = root1.resolve(filename);
+
+            Resource resource = new UrlResource(file.toUri());  // Biển file thành resource
+            if(resource.exists()){
+                return resource;
+            }else {
+                throw new FileNotFoundException();
+            }
+        }catch (Exception e){
+            throw new FileNotFoundException(e.getMessage());
+        }
+    }
+
     @Override
     public void save(MultipartFile file) {
         try {
@@ -39,8 +79,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
     @Override
     public Resource load(String filename) {
-
-
 
         try {
             Path file = root.resolve(filename);
@@ -68,4 +106,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     public Stream<Path> loadAll() {
         return Stream.empty();
     }
+
+
 }

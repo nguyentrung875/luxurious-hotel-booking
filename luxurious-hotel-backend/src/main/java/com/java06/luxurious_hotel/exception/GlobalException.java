@@ -6,7 +6,9 @@ import com.java06.luxurious_hotel.exception.room.RoomNotAvailableException;
 import com.java06.luxurious_hotel.exception.room.RoomNotFoundException;
 import com.java06.luxurious_hotel.exception.roomType.AmentityNotFoundException;
 import com.java06.luxurious_hotel.exception.roomType.RoomTypeNotFoundException;
+import com.java06.luxurious_hotel.exception.user.DuplicateMailOrPhoneException;
 import com.java06.luxurious_hotel.exception.user.IncorrectPasswordException;
+import com.java06.luxurious_hotel.exception.user.NotNullException;
 import com.java06.luxurious_hotel.exception.user.UserNotFoundException;
 import com.java06.luxurious_hotel.response.BaseResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -21,6 +23,23 @@ import java.nio.charset.StandardCharsets;
 
 @RestControllerAdvice
 public class GlobalException {
+
+    // Bắt ngoại lệ DataIntegrityViolationException
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<?> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+//        BaseResponse baseResponse = new BaseResponse();
+//        baseResponse.setStatusCode(500);
+//
+//        // Kiểm tra nguyên nhân gốc
+//        Throwable rootCause = e.getRootCause();
+//        if (rootCause != null && rootCause.getMessage().contains("Duplicate entry")) {
+//            baseResponse.setMessage("Duplicate mail or phone number");
+//        } else {
+//            baseResponse.setMessage(rootCause != null ? rootCause.getMessage() : e.getMessage());
+//        }
+//
+//        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleException(Exception e) {
@@ -68,13 +87,25 @@ public class GlobalException {
         return new ResponseEntity<>(baseResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //Bắt exception trùng dữ liệu unique
+    //Bắt exception trùng dữ liệu unique                -->  cho e ké bắt dublicate data này tí, tạo 2 hàm trùng DataIntegrityViolationException bị lỗi hau.chuc95@gmail.com
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handeValidation(DataIntegrityViolationException e) {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setStatusCode(500);
-        baseResponse.setMessage(e.getRootCause().getMessage());
-        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
+//        baseResponse.setMessage(e.getRootCause().getMessage());
+
+        // Kiểm tra nguyên nhân gốc
+        Throwable rootCause = e.getRootCause();
+        if (rootCause != null && rootCause.getMessage().contains("Duplicate entry")) {
+            baseResponse.setMessage("Duplicate mail or phone number");
+            return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        } else {
+            baseResponse.setMessage(e.getRootCause().getMessage());
+            return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
+        }
+
+
+//        return new ResponseEntity<>(baseResponse, HttpStatus.BAD_REQUEST);
     }
 
 //    Handle Exception ROOM ------------------------------------------------------------------------
