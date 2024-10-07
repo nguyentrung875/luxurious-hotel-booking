@@ -17,4 +17,5 @@ public class GuestDTO {
     private LocalDate dob;
     private String firstName;
     private String lastName;
+    private String linkImage;
 }
