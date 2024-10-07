@@ -314,6 +314,8 @@ public class BookingServiceImp implements BookingService {
 
         guestDTO.setId(userEntity.getId());
 
+        guestDTO.setLinkImage("http://localhost:9999/file/hauchuc/" + userEntity.getImage());
+
         guestDTO.setFullName(userEntity.getFirstName() + " " + userEntity.getLastName());
         guestDTO.setEmail(userEntity.getEmail());
         guestDTO.setPhone(userEntity.getPhone());

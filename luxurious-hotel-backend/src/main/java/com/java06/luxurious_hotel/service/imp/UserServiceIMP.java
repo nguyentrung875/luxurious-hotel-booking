@@ -11,6 +11,8 @@ import com.java06.luxurious_hotel.request.UpdateGuestRequest;
 import com.java06.luxurious_hotel.service.UserService;
 import com.java06.luxurious_hotel.supportmethod.ParseName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,12 @@ import java.util.Optional;
 
 @Service
 public class UserServiceIMP implements UserService {
+
+    @Autowired
+    private FilesStorageServiceImpl filesStorageService;
+
+    @Value("${root.path}")
+    private String root;
 
     @Autowired
     private UserRepository userRepository;
@@ -88,6 +96,9 @@ public class UserServiceIMP implements UserService {
     @Override
     public Boolean updateUser(UpdateGuestRequest updateGuestRequest) {
         UserEntity userEntity = new UserEntity();
+
+        UserEntity updatedUser;
+
         userEntity.setId(updateGuestRequest.idGuest());
         String[] names = parseName.parseName(updateGuestRequest.fullName());
         userEntity.setFirstName(names[0]);
@@ -100,7 +111,25 @@ public class UserServiceIMP implements UserService {
         userEntity.setSummary(updateGuestRequest.summary());
         userEntity.setRole(roleRepository.findRoleEntitiesById(2));
 
-        UserEntity updatedUser = userRepository.save(userEntity);
+//        UserEntity updatedUser = userRepository.save(userEntity);
+        try {
+            // Lưu người dùng và xử lý trùng lặp
+            updatedUser = userRepository.save(userEntity);
+        } catch (DataIntegrityViolationException e) {
+            // Kiểm tra nguyên nhân gốc của lỗi bằng getCause()
+            Throwable cause = e.getCause();
+
+            // Log lỗi để kiểm tra nguyên nhân chi tiết
+            System.out.println("Cause: " + (cause != null ? cause.getMessage() : "null"));
+
+            if (cause != null && cause.getMessage().contains("Duplicate entry")) {
+                // Nếu nguyên nhân là lỗi duplicate entry
+                throw new DuplicateMailOrPhoneException("Duplicate mail or phone number");
+            }
+
+            // Bắt thêm lỗi khác nếu có
+            throw e;  // Ném lại lỗi nếu không phải do vi phạm ràng buộc
+        }
 
         if (updatedUser != null && updatedUser.getId() > 0) {
             return true;
@@ -173,6 +202,12 @@ public class UserServiceIMP implements UserService {
             guestDTO.setAddress(user.getAddress());
             guestDTO.setSummary(user.getSummary());
 
+            if (user.getImage() != null){
+                guestDTO.setLinkImage("http://localhost:9999/file/hauchuc/" + user.getImage());
+            }else {
+                guestDTO.setLinkImage("");
+            }
+
             guestDTOS.add(guestDTO);
         }
         return guestDTOS;
@@ -191,12 +226,8 @@ public class UserServiceIMP implements UserService {
         // set ngày khởi tạo
         userEntity.setDob(LocalDate.now());
 
-        try {
-            userEntity.setEmail(addGuestRequest.email());
-            userEntity.setPhone(addGuestRequest.phone());
-        }catch (Exception e){
-            throw new DuplicateMailOrPhoneException(e.getMessage());
-        }
+        userEntity.setEmail(addGuestRequest.email());
+        userEntity.setPhone(addGuestRequest.phone());
 
         userEntity.setAddress(addGuestRequest.address());
         userEntity.setSummary(addGuestRequest.summary());
@@ -211,9 +242,11 @@ public class UserServiceIMP implements UserService {
         }
         userEntity.setRole(guestRole);
 
-        userRepository.save(userEntity);
-
-
+        try {
+            userRepository.save(userEntity);
+        }catch (Exception e){
+            throw new DuplicateMailOrPhoneException("duplicate mail or phone number");
+        }
 
         return userEntity.getId() > 0;
     }
