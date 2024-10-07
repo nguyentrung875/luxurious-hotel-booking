@@ -59,14 +59,13 @@ public class EmployeeServiceImp implements EmployeeService {
     @Transactional
     @Override
     public Boolean updateEmployee(UpdateEmployeeRequest updateEmployeeRequest) {
+        String imageBaseUrl = "http://localhost:9999/file/";
         Optional<UserEntity> usercheck = employeeReposiory.findById(updateEmployeeRequest.id());
         boolean isSuccess = false;
         if (usercheck.isPresent()) {
             UserEntity Employee = usercheck.get();
                 Employee.setId(updateEmployeeRequest.id());
-                Employee.setFirstName(updateEmployeeRequest.firstname());
-
-
+                 Employee.setFirstName(updateEmployeeRequest.firstname());
                 Employee.setLastName(updateEmployeeRequest.lastname());
 
 
@@ -79,8 +78,13 @@ public class EmployeeServiceImp implements EmployeeService {
                 Employee.setDob(LocalDate.parse(updateEmployeeRequest.dob()));
 
 
+            if (updateEmployeeRequest.image() != null && !updateEmployeeRequest.image().isEmpty()) {
+                // Lưu ảnh mới và cập nhật tên ảnh
                 Employee.setImage(updateEmployeeRequest.image().getOriginalFilename());
                 filesStorageService.save(updateEmployeeRequest.image());
+            }else{
+                Employee.setImage(updateEmployeeRequest.existingImageName());
+            }
 
 
                 Employee.setSummary(updateEmployeeRequest.summary());
@@ -126,6 +130,7 @@ public class EmployeeServiceImp implements EmployeeService {
             employeeDTO.setSumary(userEntity.getSummary());
             employeeDTO.setPhone(userEntity.getPhone());
             RoleDTO roleDTO= new RoleDTO();
+            roleDTO.setId(userEntity.getRole().getId());
             roleDTO.setName(userEntity.getRole().getName());
             roleDTO.setDescription(userEntity.getRole().getDescription());
             employeeDTO.setRole(roleDTO);
