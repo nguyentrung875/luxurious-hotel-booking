@@ -48,19 +48,13 @@ public class BookingServiceImp implements BookingService {
     private UserRepository userRepository;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private JwtUtils jwtUtils;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public List<BookingDTO> getBookingByPhone(String phone) {
@@ -210,7 +204,7 @@ public class BookingServiceImp implements BookingService {
 
         //Gửi thông tin booking lên rabbitmq để gửi email xác nhận booking thành công
         BookingDTO bookingDTO = this.convertBookingEntityToBookingDTO(bookingEntity);
-        this.sendBookingDTOtoQueue(bookingDTO);
+        emailService.sendSuccessfulBookingEmailToQueue(bookingDTO);
 
         //Gửi notification lên rabbitmq
         notificationService.sendNotification(
@@ -533,19 +527,6 @@ public class BookingServiceImp implements BookingService {
         )));
 
         return bookingDTO;
-    }
-
-    private void sendBookingDTOtoQueue(BookingDTO bookingDTO) {
-        try {
-            String json = objectMapper.writeValueAsString(bookingDTO);
-            rabbitTemplate.convertAndSend(
-                    RabbitmqConfig.BOOKING_EMAIL_EXCHANGE,
-                    RabbitmqConfig.SUCCESS_BOOKING_EMAIL_ROUTING_KEY,
-                    json);
-            System.out.println("sent booking to queue");
-        } catch (Exception e){
-            System.out.println("confirmBooking(): Error parse bookingDTO to JSON | " + e );
-        }
     }
 
 }
