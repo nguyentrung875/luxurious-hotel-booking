@@ -2,7 +2,6 @@ $(document).ready(function() {
     // Lấy employeeId từ URL
     const urlParams = new URLSearchParams(window.location.search);
     const employeeId = urlParams.get('id');
-
     if (employeeId) {
         // Gọi API để lấy thông tin của nhân viên
         $.ajax({
@@ -21,7 +20,11 @@ $(document).ready(function() {
                     $('#employee-dob').text(employee.dob);  // Hiển thị ngày sinh
                     $('#employee-address').text(employee.address);  // Hiển thị địa chỉ
                     $('#employee-summary').text(employee.summary);  // Hiển thị tóm tắt
-                    $('#employee-image').attr('src', employee.imageUrl);  // Hiển thị ảnh nhân viên
+
+                    // Kiểm tra và hiển thị ảnh nhân viên
+                    if (employee.image) {
+                        $('#employee-image').attr('src', employee.image);  // Hiển thị ảnh nhân viên
+                    }
 
                 } else {
                     console.error('Failed to fetch employee details');
