@@ -138,6 +138,8 @@ function loadGuestData() {
         
         if(item.data.id > 0){
             var valueGuest = item.data;
+            console.log(valueGuest);
+            
             $('#idguest').val(valueGuest.id);
             $('#fullname').val(valueGuest.fullName);  // gán giá trị trong các ô input
             $('#dob').val(valueGuest.dob);

@@ -1,22 +1,26 @@
 $(document).ready(function () {
 
-    getGuest()
+	getGuest()
 
-	
+
 
 });
 
-function getGuest(){
-    $.ajax({
-        url: "http://localhost:9999/user/guests",
-        method: "GET"
-    }).done(function( response){
-        if(response.data){
-            var html = ""
-            for(i=0;i<response.data.length;i++){
+function getGuest() {
+	$.ajax({
+		url: "http://localhost:9999/user/guests",
+		method: "GET"
+	}).done(function (response) {
+		if (response.data) {
+			// Hủy datatable cũ
+			let dt = $('#guest_table').DataTable()
+			dt.destroy();
 
-                var item = response.data[i]
-                html += `<tr>
+			var html = ""
+			for (i = 0; i < response.data.length; i++) {
+
+				var item = response.data[i]
+				html += `<tr>
 													<td class="token">${item.id}</td>
 													<td><img class="cat-thumb" src="${item.linkImage}"
 															alt="clients Image"><span class="name">${item.fullName}</span>
@@ -45,10 +49,13 @@ function getGuest(){
 													</td>
 												</tr>`
 
-            }
+			}
 
-			
-            $('#list-guests').html(html);
+
+
+			$('#list-guests').append(html);
+
+
 
 			// // Khởi tạo DataTable
 			// $('#guest_table').DataTable({
@@ -69,11 +76,12 @@ function getGuest(){
 			// 	info: false, // Tắt thông tin về table VD: Showing 1 to 14 of 14 entries	
 			// });
 
-        }
+		}
+		// Khởi tạo lại datatable
+		$('#guest_table').DataTable();
 
-    })
+	})
 }
 function goToDetails(id) {
-    window.location.href = `guest-details.html?id=${id}`
+	window.location.href = `guest-details.html?id=${id}`
 }
-															
