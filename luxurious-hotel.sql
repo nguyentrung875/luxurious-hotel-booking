@@ -546,9 +546,11 @@ INSERT INTO food_menu (id_menu, id_food) VALUES
 (5, 45); -- Cocktail
 
 
+-- username: admin | password: admin
 INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
 ('admin', '$2a$12$bsO6yLnL4.7nsn9DOvLqqeY6oolhWIrpFEwKHzvGnywyT/rZWNJim', 'admin', 'luxurious', '1990-01-01', '1234567890', 'admin@gmail.com', 'admin', '', 2);
 
+-- username: user | password: user
 INSERT INTO users (username , password, first_name, last_name, dob, phone, email, address, summary, id_role) VALUES 
 ('user', '$2a$12$kXpBtvYgGvRtAkvXvgv3fugdX1oxyxXY7EfI4LveoSlqVPT5xUpWq', 'user', 'luxurious', '1990-01-01', '1234567891', 'user@gmail.com', 'user', '', 1);
 

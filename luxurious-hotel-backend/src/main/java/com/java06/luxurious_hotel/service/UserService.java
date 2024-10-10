@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface UserService {
 
+    GuestDTO getMyInfo();
+
     GuestDTO getGuestInfoByPhone(String phone);
 
     List<GuestDTO> getListGuest();
