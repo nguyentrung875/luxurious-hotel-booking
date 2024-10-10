@@ -13,6 +13,7 @@ import com.java06.luxurious_hotel.supportmethod.ParseName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -174,6 +175,24 @@ public class UserServiceIMP implements UserService {
         return check;
     }
 
+
+    @Override
+    public GuestDTO getMyInfo() {
+        String myUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return userRepository.findByUsername(myUsername).stream().map(userEntity -> {
+            GuestDTO guestDTO = new GuestDTO();
+            guestDTO.setId(userEntity.getId());
+            guestDTO.setUsername(userEntity.getUsername());
+            guestDTO.setFirstName(userEntity.getFirstName());
+            guestDTO.setLastName(userEntity.getLastName());
+            guestDTO.setPhone(userEntity.getPhone());
+            guestDTO.setAddress(userEntity.getAddress());
+            guestDTO.setEmail(userEntity.getEmail());
+            return guestDTO;
+        }).findFirst().orElseThrow(UserNotFoundException::new);
+
+    }
 
     @Override
     public GuestDTO getGuestInfoByPhone(String phone) {
