@@ -177,24 +177,6 @@ public class UserServiceIMP implements UserService {
 
 
     @Override
-    public GuestDTO getMyInfo() {
-        String myUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return userRepository.findByUsername(myUsername).stream().map(userEntity -> {
-            GuestDTO guestDTO = new GuestDTO();
-            guestDTO.setId(userEntity.getId());
-            guestDTO.setUsername(userEntity.getUsername());
-            guestDTO.setFirstName(userEntity.getFirstName());
-            guestDTO.setLastName(userEntity.getLastName());
-            guestDTO.setPhone(userEntity.getPhone());
-            guestDTO.setAddress(userEntity.getAddress());
-            guestDTO.setEmail(userEntity.getEmail());
-            return guestDTO;
-        }).findFirst().orElseThrow(UserNotFoundException::new);
-
-    }
-
-    @Override
     public GuestDTO getGuestInfoByPhone(String phone) {
         return userRepository.findUserEntityByPhone(phone).stream().map(userEntity -> {
             GuestDTO guestDTO = new GuestDTO();

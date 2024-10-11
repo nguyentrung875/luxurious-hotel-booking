@@ -39,9 +39,14 @@ public class AuthenServiceImp implements AuthenService {
                 new UsernamePasswordAuthenticationToken(request.username(), request.password());
         Authentication authen = authenticationManager.authenticate(authenToken);
 
+
+
         String role = authen.getAuthorities()
                 .stream().map(grantedAuthority -> grantedAuthority.getAuthority().toString()
                 ).findFirst().get();
+
+//        AuthorityDTO authorityDTO1 = (AuthorityDTO) authen.getPrincipal();
+//        System.out.println(authorityDTO1);
 
         AuthorityDTO authorityDTO = new AuthorityDTO();
         authorityDTO.setUsername(request.username());
