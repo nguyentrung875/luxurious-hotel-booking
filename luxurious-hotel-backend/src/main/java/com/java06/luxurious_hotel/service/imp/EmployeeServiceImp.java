@@ -1,18 +1,22 @@
 package com.java06.luxurious_hotel.service.imp;
 
 import com.java06.luxurious_hotel.dto.EmployeeDTO;
+import com.java06.luxurious_hotel.dto.GuestDTO;
 import com.java06.luxurious_hotel.dto.RoleDTO;
 import com.java06.luxurious_hotel.entity.RoleEntity;
 import com.java06.luxurious_hotel.entity.UserEntity;
 import com.java06.luxurious_hotel.exception.Employee.EmployeeNotExitsException;
+import com.java06.luxurious_hotel.exception.user.UserNotFoundException;
 import com.java06.luxurious_hotel.repository.EmployeeReposiory;
 import com.java06.luxurious_hotel.repository.RoleRepository;
+import com.java06.luxurious_hotel.repository.UserRepository;
 import com.java06.luxurious_hotel.request.AddEmployeeRequest;
 import com.java06.luxurious_hotel.request.UpdateEmployeeRequest;
 import com.java06.luxurious_hotel.service.EmployeeService;
 import com.java06.luxurious_hotel.service.FilesStorageService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +35,37 @@ public class EmployeeServiceImp implements EmployeeService {
     private EmployeeReposiory employeeReposiory;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public EmployeeDTO getMyInfo() {
+        String imageBaseUrl = "http://localhost:9999/file/";
+        String myUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(myUsername).stream().map(userEntity -> {
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setId(userEntity.getId());
+            employeeDTO.setFirstname(userEntity.getFirstName());
+            employeeDTO.setLastname(userEntity.getLastName());
+            employeeDTO.setEmail(userEntity.getEmail());
+            employeeDTO.setAddress(userEntity.getAddress());
+            employeeDTO.setDob(userEntity.getDob());
+            employeeDTO.setImage(imageBaseUrl + userEntity.getImage());
+            employeeDTO.setSumary(userEntity.getSummary());
+            employeeDTO.setPhone(userEntity.getPhone());
+            RoleDTO roleDTO= new RoleDTO();
+            roleDTO.setId(userEntity.getRole().getId());
+            roleDTO.setName(userEntity.getRole().getName());
+            roleDTO.setDescription(userEntity.getRole().getDescription());
+            employeeDTO.setRole(roleDTO);
+            return employeeDTO;
+        }).findFirst().orElseThrow(UserNotFoundException::new);
+    }
 
     @Transactional
     @Override
