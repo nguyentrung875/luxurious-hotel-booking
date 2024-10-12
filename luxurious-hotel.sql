@@ -611,7 +611,7 @@ FROM booking b
 SHOW VARIABLES LIKE 'time_zone';
 SET TIME_ZONE="+7:00";
 
--- HẬU
+------------------------------------------------------- HẬU
 -- đổi tên users, roles, gỡ foreign key user cũ, đặt lại foreign key cho users
 -- RENAME TABLE user TO users;
 -- RENAME TABLE role TO roles;
@@ -634,6 +634,10 @@ INSERT INTO booking (check_in,check_out,room_number,id_guest,adult_number,childr
 VALUES ('2024-08-01 12:00:00','2024-09-01 12:00:00',1,2,3,2,1,1,1,500,800,'2024-07-01 12:00:00');
 INSERT INTO room_booking (id_room,id_booking)
 VALUES (2,2);
+
+-- thêm cột delete xóa mềm cột sẽ tự động convert sang TINYINT
+ALTER TABLE users
+ADD COLUMN `delete` BOOLEAN DEFAULT FALSE;
 
 -- THANH
 
