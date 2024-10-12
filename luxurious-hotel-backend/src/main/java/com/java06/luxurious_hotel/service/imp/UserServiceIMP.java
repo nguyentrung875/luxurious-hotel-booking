@@ -142,37 +142,37 @@ public class UserServiceIMP implements UserService {
     @Transactional
     @Override
     public Boolean deleteUser(int idUser) {
-        Boolean check = false;
 
-        // Kiểm tra và xóa trong RoomBooking nếu tồn tại
-        if (roomBookingRepository.existsByBooking_Guest_Id(idUser)) {
-            // Xóa booking và room booking tương ứng với guest
-            roomBookingRepository.deleteAllByBooking_Guest_Id(idUser);
-        }
+//        // Kiểm tra và xóa trong RoomBooking nếu tồn tại
+//        if (roomBookingRepository.existsByBooking_Guest_Id(idUser)) {
+//            // Xóa booking và room booking tương ứng với guest
+//            roomBookingRepository.deleteAllByBooking_Guest_Id(idUser);
+//        }
+//
+//        // Kiểm tra và xóa trong Booking nếu tồn tại
+//        if (bookingRepository.existsByGuest_Id(idUser)) {
+//            bookingRepository.deleteAllByGuest_Id(idUser);
+//        }
+//
+//        // Kiểm tra và xóa trong Orders nếu tồn tại
+//        if (ordersRepository.existsByReservation_Guest_Id(idUser)) {
+//            ordersRepository.deleteAllByReservation_Guest_Id(idUser);
+//        }
+//
+//        // Kiểm tra và xóa trong Orders nếu tồn tại
+//        if (reservationRepository.existsByGuestId(idUser)) {
+//            reservationRepository.deleteAllByGuestId(idUser);
+//        }
 
-        // Kiểm tra và xóa trong Booking nếu tồn tại
-        if (bookingRepository.existsByGuest_Id(idUser)) {
-            bookingRepository.deleteAllByGuest_Id(idUser);
-        }
 
-        // Kiểm tra và xóa trong Orders nếu tồn tại
-        if (ordersRepository.existsByReservation_Guest_Id(idUser)) {
-            ordersRepository.deleteAllByReservation_Guest_Id(idUser);
-        }
+        // update status delete guest
+        userRepository.resetDeleteStatus(idUser);
 
-        // Kiểm tra và xóa trong Orders nếu tồn tại
-        if (reservationRepository.existsByGuestId(idUser)) {
-            reservationRepository.deleteAllByGuestId(idUser);
-        }
+        // Lấy lại user để kiểm tra
+        UserEntity user = userRepository.findById(idUser);
 
-        // xóa guest
-        userRepository.deleteById(idUser);
-
-        if (!userRepository.existsById(idUser)) {
-            check = true;
-        }
-
-        return check;
+        // Kiểm tra nếu người dùng tồn tại và trạng thái delete là false (0)
+        return user != null && user.getDelete() == 1;
     }
 
 
@@ -193,23 +193,28 @@ public class UserServiceIMP implements UserService {
     public List<GuestDTO> getListGuest() {
 
         List<UserEntity> listGuest = userRepository.findByRole_Name("ROLE_GUEST");
+
         List<GuestDTO> guestDTOS = new ArrayList<>();
+
         for (UserEntity user : listGuest) {
-            GuestDTO guestDTO = new GuestDTO();
-            guestDTO.setId(user.getId());
-            guestDTO.setFullName(user.getFirstName() + " " + user.getLastName());
-            guestDTO.setPhone(user.getPhone());
-            guestDTO.setEmail(user.getEmail());
-            guestDTO.setAddress(user.getAddress());
-            guestDTO.setSummary(user.getSummary());
 
-            if (user.getImage() != null){
-                guestDTO.setLinkImage("http://localhost:9999/file/hauchuc/" + user.getImage());
-            }else {
-                guestDTO.setLinkImage("");
+            if (user.getDelete() == 0){
+                GuestDTO guestDTO = new GuestDTO();
+                guestDTO.setId(user.getId());
+                guestDTO.setFullName(user.getFirstName() + " " + user.getLastName());
+                guestDTO.setPhone(user.getPhone());
+                guestDTO.setEmail(user.getEmail());
+                guestDTO.setAddress(user.getAddress());
+                guestDTO.setSummary(user.getSummary());
+
+                if (user.getImage() != null){
+                    guestDTO.setLinkImage("http://localhost:9999/file/hauchuc/" + user.getImage());
+                }else {
+                    guestDTO.setLinkImage("");
+                }
+
+                guestDTOS.add(guestDTO);
             }
-
-            guestDTOS.add(guestDTO);
         }
         return guestDTOS;
     }
