@@ -172,7 +172,7 @@ public class UserServiceIMP implements UserService {
         UserEntity user = userRepository.findById(idUser);
 
         // Kiểm tra nếu người dùng tồn tại và trạng thái delete là false (0)
-        return user != null && user.getDelete() == 1;
+        return user != null && user.getDeleted() == 1;
     }
 
 
@@ -198,7 +198,7 @@ public class UserServiceIMP implements UserService {
 
         for (UserEntity user : listGuest) {
 
-            if (user.getDelete() == 0){
+            if (user.getDeleted() == 0){
                 GuestDTO guestDTO = new GuestDTO();
                 guestDTO.setId(user.getId());
                 guestDTO.setFullName(user.getFirstName() + " " + user.getLastName());

@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     @Modifying
-    @Query(value = "UPDATE users u SET u.delete = 1 WHERE u.id = ?1", nativeQuery = true)
+    @Query(value = "UPDATE users u SET u.deleted = 1 WHERE u.id = ?1", nativeQuery = true)
     void resetDeleteStatus(int userId);
 
     List<UserEntity> findByRole_Name(String roleName);

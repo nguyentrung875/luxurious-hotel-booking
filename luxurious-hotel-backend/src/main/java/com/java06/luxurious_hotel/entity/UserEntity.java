@@ -50,8 +50,8 @@ public class UserEntity {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "delete", columnDefinition = "TINYINT(1)")
-    private Integer delete;
+    @Column(name = "deleted", columnDefinition = "TINYINT(1)")
+    private Integer deleted;
 
     @ToString.Exclude
     @ManyToOne

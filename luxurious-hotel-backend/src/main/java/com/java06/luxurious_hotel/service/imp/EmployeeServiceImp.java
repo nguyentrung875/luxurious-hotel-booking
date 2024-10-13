@@ -78,6 +78,7 @@ public class EmployeeServiceImp implements EmployeeService {
         Employee.setAddress(addEmployeeRequest.address());
         Employee.setSummary(addEmployeeRequest.summary());
         Employee.setPhone(addEmployeeRequest.phone());
+        Employee.setDeleted(0);
         Employee.setUsername(addEmployeeRequest.username());
         Employee.setPassword(passwordEncoder.encode(addEmployeeRequest.password()));
         RoleEntity Role = roleRepository.findRoleEntitiesById(addEmployeeRequest.Idrole());
@@ -104,6 +105,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
 
                 Employee.setEmail(updateEmployeeRequest.email());
+                Employee.setDeleted(0);
 
 
                 Employee.setDob(LocalDate.parse(updateEmployeeRequest.dob()));
