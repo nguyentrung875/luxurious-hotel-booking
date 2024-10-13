@@ -637,7 +637,7 @@ VALUES (2,2);
 
 -- thêm cột delete xóa mềm cột sẽ tự động convert sang TINYINT
 ALTER TABLE users
-ADD COLUMN `delete` BOOLEAN DEFAULT FALSE;
+ADD COLUMN `deleted` BOOLEAN DEFAULT FALSE;
 
 -- THANH
 
