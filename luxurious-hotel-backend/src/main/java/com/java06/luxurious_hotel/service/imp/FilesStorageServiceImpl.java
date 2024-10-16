@@ -17,26 +17,22 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
     private final Path root = Paths.get("uploads");
 
-    private final Path root1 = Paths.get("E:\\Coder\\java-2024-06\\Project\\hotel\\image");
+    private final Path root1 = Paths.get("uploads/guest");
 
     @Override
     public void save1(MultipartFile file) {
-        try {
-            if (!Files.exists(root1)) {
-                Files.createDirectories(root1);
+        if (file != null) {
+            try {
+                if (!Files.exists(root1)) {
+                    Files.createDirectories(root1);
+                }
+
+                // Thực hiện ghi đè nếu tệp đã tồn tại trên server, tránh throw exception (tệp đã tồn tại)
+                Files.copy(file.getInputStream(), this.root1.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
             }
-
-            //Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
-
-            // thực hiện ghi đè nêu hình đã tồn tại ở sever, tranh throw exception(A file of that name already exists.)
-            Files.copy(file.getInputStream(), this.root1.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
-
-        } catch (Exception e) {
-//            if (e instanceof FileAlreadyExistsException) {
-//                throw new RuntimeException("A file of that name already exists.");
-//            }
-
-            throw new RuntimeException(e.getMessage());
         }
     }
 

@@ -32,11 +32,11 @@ $(document).ready(function () {
         }
 
         // Kiểm tra định dạng dob (yyyy-mm-dd)
-        var dobRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dob.match(dobRegex)) {
-            message += "Định dạng ngày sinh phải là yyyy-mm-dd.\n";
-            isValid = false;
-        }
+        // var dobRegex = /^\d{4}-\d{2}-\d{2}$/;
+        // if (!dob.match(dobRegex)) {
+        //     message += "Định dạng ngày sinh phải là yyyy-mm-dd.\n";
+        //     isValid = false;
+        // }
 
         // Kiểm tra định dạng email
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
