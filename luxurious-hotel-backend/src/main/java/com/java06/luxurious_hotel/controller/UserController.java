@@ -76,7 +76,8 @@ public class UserController {
             @RequestParam("address") String address,
             @RequestParam("summary") String summary,
             @RequestParam("dob") String dob,
-            @RequestParam("filePicture") MultipartFile filePicture) {
+            // picture có thể null
+            @RequestParam(value = "filePicture", required = false) MultipartFile filePicture) {
 
         // Tạo đối tượng AddGuestRequest từ các tham số
         AddGuestRequest addGuestRequest = new AddGuestRequest(fullName, phone, email, address, summary, dob, filePicture);

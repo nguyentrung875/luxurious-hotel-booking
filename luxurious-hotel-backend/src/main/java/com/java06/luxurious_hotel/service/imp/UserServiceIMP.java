@@ -29,9 +29,6 @@ public class UserServiceIMP implements UserService {
     @Autowired
     private FilesStorageServiceImpl filesStorageService;
 
-    @Value("${root.path}")
-    private String root;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -53,20 +50,15 @@ public class UserServiceIMP implements UserService {
     private OrdersRepository ordersRepository;
 
     @Override
-    public Boolean checkEmail(String email) {
-        UserEntity userEntity = userRepository.findUserEntityByEmail(email);
-        if (userEntity  != null && userEntity.getId() > 0) {
-            return userEntity.getId() > 0;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public GuestDTO getUser(int idUser) {
 
+        // lấy code thông qua idUser
         UserEntity userEntity = userRepository.findById(idUser);
+
+        // khởi tạo DTO
         GuestDTO guestDTO = new GuestDTO();
+
+        // kiểm tra null và gán giá trị vào DTO
         if (userEntity != null) {
             guestDTO.setFullName(userEntity.getFirstName() + " " + userEntity.getLastName());
             guestDTO.setEmail(userEntity.getEmail());
@@ -76,29 +68,22 @@ public class UserServiceIMP implements UserService {
             guestDTO.setAddress(userEntity.getAddress());
             guestDTO.setSummary(userEntity.getSummary());
         }
-        System.out.println("GuestDTO: " + userEntity);
+
         return guestDTO;
     }
 
-
-    @Override
-    public Boolean checkPhone(String phone) {
-
-        Optional<UserEntity> userEntity = userRepository.findUserEntityByPhone(phone);
-        if (userEntity.isPresent()) {
-            UserEntity userEntity1 = userEntity.get();
-
-            return userEntity1.getId() > 0;
-        }
-
-        return false;
-    }
     @Transactional // đảm bảo phương thức được thực hiện trong 1 giao dịch
     @Override
     public Boolean updateUser(UpdateGuestRequest updateGuestRequest) {
         UserEntity userEntity = new UserEntity();
 
         UserEntity updatedUser;
+
+        if (updateGuestRequest.image() != null){
+            userEntity.setImage(updateGuestRequest.image());
+        }else {
+            userEntity.setImage("client.PNG");
+        }
 
         userEntity.setId(updateGuestRequest.idGuest());
         String[] names = parseName.parseName(updateGuestRequest.fullName());
@@ -111,6 +96,7 @@ public class UserServiceIMP implements UserService {
         userEntity.setAddress(updateGuestRequest.address());
         userEntity.setSummary(updateGuestRequest.summary());
         userEntity.setRole(roleRepository.findRoleEntitiesById(2));
+        userEntity.setDeleted(0);
 
 //        UserEntity updatedUser = userRepository.save(userEntity);
         try {
@@ -142,29 +128,6 @@ public class UserServiceIMP implements UserService {
     @Transactional
     @Override
     public Boolean deleteUser(int idUser) {
-
-//        // Kiểm tra và xóa trong RoomBooking nếu tồn tại
-//        if (roomBookingRepository.existsByBooking_Guest_Id(idUser)) {
-//            // Xóa booking và room booking tương ứng với guest
-//            roomBookingRepository.deleteAllByBooking_Guest_Id(idUser);
-//        }
-//
-//        // Kiểm tra và xóa trong Booking nếu tồn tại
-//        if (bookingRepository.existsByGuest_Id(idUser)) {
-//            bookingRepository.deleteAllByGuest_Id(idUser);
-//        }
-//
-//        // Kiểm tra và xóa trong Orders nếu tồn tại
-//        if (ordersRepository.existsByReservation_Guest_Id(idUser)) {
-//            ordersRepository.deleteAllByReservation_Guest_Id(idUser);
-//        }
-//
-//        // Kiểm tra và xóa trong Orders nếu tồn tại
-//        if (reservationRepository.existsByGuestId(idUser)) {
-//            reservationRepository.deleteAllByGuestId(idUser);
-//        }
-
-
         // update status delete guest
         userRepository.resetDeleteStatus(idUser);
 
@@ -174,7 +137,6 @@ public class UserServiceIMP implements UserService {
         // Kiểm tra nếu người dùng tồn tại và trạng thái delete là false (0)
         return user != null && user.getDeleted() == 1;
     }
-
 
     @Override
     public GuestDTO getGuestInfoByPhone(String phone) {
@@ -224,6 +186,14 @@ public class UserServiceIMP implements UserService {
 
         UserEntity userEntity = new UserEntity();
 
+        // save image
+        if (addGuestRequest.filePicture() != null){
+            filesStorageService.save1(addGuestRequest.filePicture());
+            userEntity.setImage(addGuestRequest.filePicture().getOriginalFilename());
+        }else {
+            userEntity.setImage("client.PNG");
+        }
+
         // tách fullname
         String[] names = parseName.parseName(addGuestRequest.fullName());
         userEntity.setFirstName(names[0]);
@@ -248,6 +218,8 @@ public class UserServiceIMP implements UserService {
         }
         userEntity.setRole(guestRole);
 
+        userEntity.setDeleted(0);
+
         try {
             userRepository.save(userEntity);
         }catch (Exception e){
@@ -256,8 +228,5 @@ public class UserServiceIMP implements UserService {
 
         return userEntity.getId() > 0;
     }
-
-
-
 
 }
