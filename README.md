@@ -10,7 +10,7 @@ Backend: RESTFul API, Spring Boot, Spring JPA, MySQL, JWT, Redis, RabbitMQ, WebS
 ## Features
 #### Guest Pages:
 - Display available rooms
-- Search for available rooms based on check-in and check-out dates
+- Search for available rooms
 - Book rooms
 - Confirm bookings via email
 - Search bookings using a phone number
@@ -20,7 +20,7 @@ Backend: RESTFul API, Spring Boot, Spring JPA, MySQL, JWT, Redis, RabbitMQ, WebS
 - Reset password
 - Manage, add, edit, delete bookings
 - Manage, add, edit, delete hotel rooms
-- Manage, add, edit, delete customers
+- Manage, add, edit, delete guest
 - Manage, add, edit, delete staff
 - Real-time notifications for new bookings
 
